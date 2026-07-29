@@ -1,5 +1,5 @@
-import {CASES,DEDUCTIONS,OFFICIAL_SOURCES} from './data.js?v=6.1.0';
-import {rateKey,parseAmount,expectedInputMap,computeCalculator,calculatorSignature,computeDeclaration,validateCase,allActivityBasesEntered,universalChecks,roundToCent} from './logic.js?v=6.1.0';
+import {CASES,DEDUCTIONS,OFFICIAL_SOURCES} from './data.js?v=6.2.0';
+import {rateKey,parseAmount,expectedInputMap,computeCalculator,calculatorSignature,computeDeclaration,validateCase,allActivityBasesEntered,universalChecks,roundToCent} from './logic.js?v=6.2.0';
 
 const STORAGE_KEY='tva_tdfn_v61_state';
 const DEFAULT={version:61,current:0,mode:'guided',steps:{},answers:{},quiz:{},scores:{},assisted:{},attempts:{},reported:{},finalRound:{},acquisitionRate:{},dossierOpen:{},free:{activities:[{label:'Activité 1',rate:6.2}]}};
@@ -85,7 +85,8 @@ function renderCaseHead(){
   switcher.classList.toggle('hidden',c.type==='quiz');
   switcher.querySelectorAll('button').forEach(button=>button.classList.toggle('active',button.dataset.mode===state.mode));
   const focusEligible=c.type!=='quiz'&&(state.mode==='portal'||step>1);
-  const dossierOpen=Boolean(state.dossierOpen[state.current]);
+  const storedDossierState=state.dossierOpen[state.current];
+  const dossierOpen=storedDossierState===undefined ? step===2 : Boolean(storedDossierState);
   const layout=document.querySelector('#workspace');
   layout.classList.toggle('focus-mode',focusEligible&&!dossierOpen);
   const toggle=document.querySelector('#toggleDossier');
@@ -108,13 +109,25 @@ function reportedCurrent(c){const report=state.reported[state.current];return Bo
 function calcSnapshot(c){return computeCalculator(c,answers());}
 function acquisitionRate(){return Number(state.acquisitionRate[state.current]??(current().fields?.acqRate||8.1));}
 
+function calculatorCaseDataMarkup(c){
+  if(c.type==='free') return `<section class="calculator-case-data"><div class="calculator-case-data__head"><div><p class="eyebrow">Données à utiliser</p><h4>Reprenez les activités et TDFN déjà confirmés par l’AFC</h4></div><span class="accounting-basis-inline">${esc(c.accountingBasis||'Selon le dossier')}</span></div><p class="calculator-case-data__note">Le mode libre ne contient pas de montants imposés. Saisissez uniquement les données du dossier réel ou d’un scénario que vous avez préparé.</p></section>`;
+  const items=(c.given||[]).map(item=>`<div class="calculator-case-item"><div><strong>${esc(item.label)}</strong>${item.note?`<small>${esc(item.note)}</small>`:''}</div><div class="calculator-case-value">${Number.isFinite(item.amount)?chf(item.amount,0):''}${item.tag?`<span>${esc(item.tag)}</span>`:''}</div></div>`).join('');
+  return `<section class="calculator-case-data" aria-label="Rappel des données du cas"><div class="calculator-case-data__head"><div><p class="eyebrow">Rappel du dossier</p><h4>Données à reporter ou à calculer</h4></div><span class="accounting-basis-inline">${esc(c.accountingBasis||'Selon le dossier')}</span></div><div class="calculator-case-grid">${items}</div><p class="calculator-case-data__note">Gardez ce rappel visible pendant la saisie. Les montants à introduire dans «Calcul TDFN» sont des contre-prestations brutes, TVA comprise.</p></section>`;
+}
+function calculatorRowInstruction(c){
+  if(c.id==='B') return 'Calculez d’abord le montant TTC à partir de CHF 100’000 HT et du taux légal de 8,1 %.';
+  if(c.id==='G') return 'Saisissez uniquement les ventes imposables en Suisse après la déduction de l’exportation au ch. 220.';
+  if(c.id==='H') return 'Saisissez uniquement la part imposable en Suisse après la déduction au ch. 221.';
+  return 'Reportez le montant TTC correspondant indiqué dans le rappel du dossier.';
+}
+
 function calculatorMarkup(c,{dialog=false}={}){
   const calc=calcSnapshot(c);
   const currentReport=reportedCurrent(c);
   const isFree=c.type==='free';
   const rateOptions=[0.1,0.6,1.3,2.1,3.0,3.7,4.5,5.3,6.2,6.8];
   const rows=(c.rates||[]).map((rate,index)=>`<tr>
-    <td>${isFree?`<input class="text-input activity-name" data-free-label="${index}" value="${esc(freeConfig().activities[index]?.label||'')}" aria-label="Libellé de l’activité ${index+1}">`:`<strong>${esc(rate.label)}</strong>`}</td>
+    <td>${isFree?`<input class="text-input activity-name" data-free-label="${index}" value="${esc(freeConfig().activities[index]?.label||'')}" aria-label="Libellé de l’activité ${index+1}">`:`<strong>${esc(rate.label)}</strong><small class="calculator-row-instruction">${esc(calculatorRowInstruction(c))}</small>`}</td>
     <td>${isFree?`<select class="rate-select" data-free-rate="${index}" aria-label="TDFN de l’activité ${index+1}">${rateOptions.map(value=>`<option value="${value}" ${Number(rate.rate)===value?'selected':''}>${fmt(value,1)} %</option>`).join('')}</select>`:`${fmt(rate.rate,1)} %`}</td>
     <td>${amountInput(rateKey('base',index),`Contre-prestations ${rate.label}`)}</td>
     <td class="computed-money" data-calc-tax="${index}">${chf(calc.lines[index]?.rawTax??calc.lines[index]?.tax??0,4)}</td>
@@ -123,6 +136,7 @@ function calculatorMarkup(c,{dialog=false}={}){
   return `<div class="calculator-shell ${dialog?'calculator-dialog-body':''}">
     <div class="calculator-title"><div><p class="eyebrow">Calcul pédagogique basé sur le prototype AFC</p><h3>Ventilation des contre-prestations par activité</h3><p>Les montants sont bruts, TVA comprise. Le résultat agrégé est reporté au ch. 323.</p></div><span class="transfer-state ${currentReport?'ok':'pending'}">${currentReport?'Calcul reporté':'À reporter'}</span></div>
     <div class="old-period-note"><strong>Période modélisée:</strong> à partir du 01.01.2025. ${isFree?'Saisissez uniquement les activités et TDFN déjà confirmés dans le courrier ou le profil AFC de l’entreprise.':'Les blocs d’anciens taux ne sont pas utilisés dans ce cas.'}</div>
+    ${calculatorCaseDataMarkup(c)}
     ${isFree?'<div class="free-toolbar"><button class="btn" type="button" data-action="add-activity">+ Nouvelle activité</button><span>Maximum pédagogique: 8 activités.</span></div>':''}
     <div class="calculator-table-wrap"><table class="calculator-table"><thead><tr><th>Activité</th><th>TDFN</th><th>Contre-prestations CHF</th><th>Impôt brut CHF</th>${isFree?'<th>Action</th>':''}</tr></thead><tbody>${rows||'<tr><td colspan="5">Ajoutez au moins une activité.</td></tr>'}</tbody></table></div>
     <div class="calculator-summary"><div><span>Taux moyen</span><strong data-calc-average>${fmt(calc.averageRate,4)} %</strong></div><div><span>Contre-prestations</span><strong data-calc-base>${chf(calc.base,2)}</strong></div><div><span>Total de l’impôt</span><strong data-calc-total>${chf(calc.tax,2)}</strong></div></div>
@@ -351,7 +365,7 @@ function handleAction(action,button){
   if(action==='reset-all'&&confirm('Effacer toute la progression de l’entraînement?')){localStorage.removeItem(STORAGE_KEY);state=structuredClone(DEFAULT);renderAll();document.querySelector('#resultArea').innerHTML='';}
 }
 
-document.addEventListener('click',event=>{const button=event.target.closest('button');if(!button)return;if(button.dataset.case!==undefined){selectCase(Number(button.dataset.case));return;}if(button.dataset.mode){state.mode=button.dataset.mode;save();renderAll();return;}if(button.dataset.step){state.steps[state.current]=Number(button.dataset.step);if(Number(button.dataset.step)>1)state.dossierOpen[state.current]=false;save();renderAll();return;}if(button.dataset.action)handleAction(button.dataset.action,button);});
+document.addEventListener('click',event=>{const button=event.target.closest('button');if(!button)return;if(button.dataset.case!==undefined){selectCase(Number(button.dataset.case));return;}if(button.dataset.mode){state.mode=button.dataset.mode;save();renderAll();return;}if(button.dataset.step){const nextStep=Number(button.dataset.step);state.steps[state.current]=nextStep;if(nextStep===2)state.dossierOpen[state.current]=true;if(nextStep===3)state.dossierOpen[state.current]=false;save();renderAll();return;}if(button.dataset.action)handleAction(button.dataset.action,button);});
 document.addEventListener('input',event=>{
   const freeLabel=event.target.closest('[data-free-label]');if(freeLabel){freeConfig().activities[Number(freeLabel.dataset.freeLabel)].label=freeLabel.value;delete state.reported[state.current];save();updateComputed();return;}
   const input=event.target.closest('[data-key],[data-text-key]');if(!input)return;const key=input.dataset.key||input.dataset.textKey;answers()[key]=input.value;input.classList.remove('ok','error','blank');input.removeAttribute('aria-invalid');save();updateComputed();

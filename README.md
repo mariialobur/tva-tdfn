@@ -1,4 +1,4 @@
-# Entraînement au décompte TVA — méthode TDFN v6.1
+# Entraînement au décompte TVA — méthode TDFN v6.2
 
 Projet pédagogique indépendant conçu par Mariia Lobur.
 
@@ -32,7 +32,7 @@ La version 6.1 propose:
 8. déterminer ch. 383, 399, 479 et le solde ch. 500 ou 510;
 9. déclarer séparément les mouvements de fonds aux ch. 900 et 910.
 
-## Améliorations v6.1
+## Améliorations v6.2
 
 - mode de décompte visible dans le dossier;
 - cas B corrigé: le total TTC n’est plus donné avant l’exercice;
@@ -47,7 +47,16 @@ La version 6.1 propose:
 - formulaire complet conservé dans la vue séparée **Prototype AFC**;
 - disparition de la barre horizontale de la déclaration dans le parcours guidé;
 - affichage mobile du calcul TDFN sous forme de cartes;
-- cache-busting des fichiers CSS et JavaScript (`v=6.1.0`).
+- cache-busting des fichiers CSS et JavaScript (`v=6.2.0`).
+
+
+## Correction UX v6.2
+
+- le dossier reste visible par défaut pendant l’étape **Calcul TDFN** sur ordinateur;
+- un bloc **Rappel du dossier** est affiché directement au-dessus des champs de saisie;
+- les montants, taux et hypothèses utiles restent accessibles sur mobile;
+- chaque activité indique clairement si le montant doit être reporté, reconstruit ou limité à la part imposable;
+- l’étape de calcul ne dépend plus de la mémoire de l’utilisateur ni d’un retour manuel à l’étape précédente.
 
 ## Structure
 
@@ -79,7 +88,7 @@ Ouvrir ensuite `http://localhost:8000`.
 
 Déposer le contenu de ce dossier à la racine du dépôt `tva-tdfn`, puis activer GitHub Pages depuis la branche principale et le dossier `/(root)`.
 
-Les fichiers portent un paramètre de version dans `index.html`. Lors d’une future mise à jour, remplacer par exemple `v=6.1.0` par `v=6.2.0` afin d’éviter l’affichage d’anciens fichiers depuis le cache du navigateur.
+Les fichiers portent un paramètre de version dans `index.html`. Lors d’une future mise à jour, remplacer par exemple `v=6.2.0` par `v=6.2.0` afin d’éviter l’affichage d’anciens fichiers depuis le cache du navigateur.
 
 ## Sources principales
 
