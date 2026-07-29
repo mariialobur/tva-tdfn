@@ -9,7 +9,7 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_CH">
   <meta property="og:title" content="Entraînement au décompte TVA suisse — méthode TDFN">
-  <meta property="og:description" content="Treize cas progressifs, un cas libre et une vue pédagogique inspirée du prototype AFC.">
+  <meta property="og:description" content="Treize cas progressifs, un atelier libre et une vue compacte inspirée du prototype AFC.">
   <meta property="og:url" content="https://mariialobur.github.io/tva-tdfn/">
   <meta property="og:image" content="https://mariialobur.github.io/tva-tdfn/assets/preview.png">
   <link rel="canonical" href="https://mariialobur.github.io/tva-tdfn/">
@@ -24,7 +24,7 @@
     <div>
       <p class="kicker">Projet pédagogique indépendant · Suisse</p>
       <h1>Entraînement au décompte TVA — méthode TDFN</h1>
-      <p class="subtitle">Vue pédagogique inspirée du prototype AFC · règles dès le 01.01.2025 · sources consultées le 29.07.2026</p>
+      <p class="subtitle">Vue pédagogique inspirée du prototype AFC · règles dès le 01.01.2025 · version 6 · sources consultées le 29.07.2026</p>
     </div>
     <div class="header-tools">
       <button class="ghost-button" id="openSources" type="button">Référentiel officiel</button>
@@ -37,17 +37,18 @@
 </header>
 <section class="principle" aria-label="Principe TDFN">
   <div class="principle__inner">
-    <strong>Réflexe central</strong>
-    <div class="principle__flow">
-      <span>Facture client: taux légal</span><b>→</b><span>Décompte AFC: CA brut TTC</span><b>×</b><span>TDFN autorisé</span>
-    </div>
-    <small>Pas de déduction séparée de l’impôt préalable réel.</small>
+    <strong>Réflexe:</strong>
+    <div class="principle__flow"><span>taux légal sur la facture</span><b>→</b><span>CA brut TTC × TDFN confirmé</span></div>
+    <small>Sans déduction séparée de l’impôt préalable réel.</small>
+    <p class="principle__assumption"><strong>Hypothèse du parcours:</strong> l’entreprise est déjà assujettie et l’AFC a confirmé par écrit la méthode TDFN ainsi que les taux indiqués. Dans les cas simplifiés, la qualification fiscale ou un montant complexe est fourni comme hypothèse; l’exercice porte alors sur son report.</p>
   </div>
 </section>
 <nav class="case-nav" aria-label="Cas pratiques">
   <div class="case-nav__inner">
-    <label class="mobile-case-picker" for="caseSelect"><span>Choisir un cas</span><select id="caseSelect" aria-label="Choisir un cas pratique"></select></label>
-    <div id="caseTabs" class="case-tabs" role="tablist" aria-label="Choisir un cas"></div>
+    <button class="case-arrow" type="button" data-action="previous" aria-label="Cas précédent">←</button>
+    <label class="mobile-case-picker" for="caseSelect"><span>Parcours</span><select id="caseSelect" aria-label="Choisir un cas pratique"></select></label>
+    <button class="case-arrow" type="button" data-action="next" aria-label="Cas suivant">→</button>
+    <div id="caseTabs" class="case-tabs" hidden aria-hidden="true"></div>
   </div>
 </nav>
 <main class="layout" id="workspace">
@@ -68,6 +69,12 @@
       <summary>Dossier, contrôles et sources du cas</summary>
       <div id="mobileDossierContent"></div>
     </details>
+    <div class="desktop-action-bar" id="desktopActionBar" aria-label="Actions du cas">
+      <button class="btn primary" type="button" data-action="validate">Contrôler</button>
+      <button class="btn" type="button" data-action="solution">Solution</button>
+      <button class="btn" type="button" data-action="next">Cas suivant</button>
+      <button class="btn" type="button" data-action="summary">Bilan</button>
+    </div>
     <div id="workArea"></div>
     <div id="resultArea" aria-live="polite"></div>
   </section>
@@ -76,7 +83,7 @@
   <div>
     <strong>Mariia Lobur</strong> · Projet pédagogique indépendant, sans affiliation à l’AFC.
   </div>
-  <div>Les situations sont simplifiées. La qualification de l’activité, le TDFN autorisé et le traitement d’un cas réel doivent être vérifiés.</div>
+  <div>Dans les cas guidés, l’assujettissement et les TDFN indiqués sont supposés déjà confirmés par l’AFC. Le traitement d’un cas réel doit toujours être vérifié.</div>
 </footer>
 <dialog id="sourceDialog" class="source-dialog" aria-labelledby="sourceTitle">
   <div class="dialog-head">
@@ -95,7 +102,6 @@
   <button type="button" data-action="validate">Contrôler</button>
   <button type="button" data-action="solution">Solution</button>
   <button type="button" data-action="next">Suivant</button>
-  <button type="button" data-action="summary">Bilan</button>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script type="module" src="app.js"></script>
