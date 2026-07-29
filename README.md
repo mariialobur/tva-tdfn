@@ -56,9 +56,9 @@ La version 6.1 propose:
 - `data.js` — cas et registre des sources;
 - `logic.js` — calculs et contrôles indépendants de l’interface;
 - `app.js` — interactions, progression et atelier libre;
-- `assets/preview.png` — visuel Open Graph;
-- `tests/run-tests.mjs` — tests des scénarios corrects;
-- `tests/error-cases.mjs` — tests des incohérences;
+- `preview.png` — visuel Open Graph;
+- `run-tests.mjs` — tests des scénarios corrects;
+- `error-cases.mjs` — tests des incohérences;
 - `AUDIT.md` — décisions métier et limites;
 - `lien-vers-tdfn.html` — bloc à intégrer au parcours méthode effective.
 
@@ -68,8 +68,8 @@ La version 6.1 propose:
 node --check data.js
 node --check logic.js
 node --check app.js
-node tests/run-tests.mjs
-node tests/error-cases.mjs
+node run-tests.mjs
+node error-cases.mjs
 python3 -m http.server 8000
 ```
 

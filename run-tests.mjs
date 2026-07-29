@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {CASES,DEDUCTIONS} from '../data.js';
-import {parseAmount,expectedInputMap,computeCalculator,calculatorSignature,computeDeclaration,validateCase,rateKey,universalChecks} from '../logic.js';
+import {CASES,DEDUCTIONS} from './data.js';
+import {parseAmount,expectedInputMap,computeCalculator,calculatorSignature,computeDeclaration,validateCase,rateKey,universalChecks} from './logic.js';
 
 assert.equal(parseAmount('108’100,50'),108100.5);
 assert.equal(parseAmount(' 10 000 '),10000);

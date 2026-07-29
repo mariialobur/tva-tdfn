@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {CASES} from '../data.js';
-import {computeCalculator,calculatorSignature,universalChecks} from '../logic.js';
+import {CASES} from './data.js';
+import {computeCalculator,calculatorSignature,universalChecks} from './logic.js';
 
 const c=CASES.find(c=>c.id==='A');
 let a={ch200:'100',ch220:'150',r0base:'0'};
