@@ -34,20 +34,21 @@ export function expectedMap(c){return expectedInputMap(c);}
 /**
  * The public AFC prototype exposes three rounding choices but does not publish
  * their production algorithm. The training engine therefore calculates and
- * validates only the transparent “sans arrondi” path, to centimes.
+ * validates only a transparent pedagogical path: no intermediate rounding
+ * by activity. Raw line amounts are summed first; only the displayed total is
+ * rounded to CHF 0.01.
  */
 export function computeCalculator(c,source={}){
   const lines=(c.rates||[]).map((rate,index)=>{
     const base=amountFrom(source,rateKey('base',index));
     const rawTax=base*Number(rate.rate)/100;
-    const tax=roundToCent(rawTax);
-    return {index,label:rate.label,rate:Number(rate.rate),base,rawTax,tax};
+    return {index,label:rate.label,rate:Number(rate.rate),base,rawTax,tax:rawTax,displayTax:roundToCent(rawTax)};
   });
   const base=roundToCent(lines.reduce((sum,line)=>sum+line.base,0));
   const rawTax=lines.reduce((sum,line)=>sum+line.rawTax,0);
-  const tax=roundToCent(lines.reduce((sum,line)=>sum+line.tax,0));
-  const averageRate=base?tax/base*100:0;
-  return {lines,base,tax,rawTax,averageRate,rounding:'none'};
+  const tax=roundToCent(rawTax);
+  const averageRate=base?rawTax/base*100:0;
+  return {lines,base,tax,rawTax,averageRate,rounding:'no-intermediate-rounding'};
 }
 
 export function calculatorSignature(c,source={}){

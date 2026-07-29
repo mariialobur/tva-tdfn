@@ -1,44 +1,47 @@
-# Audit professionnel — version 5
+# Audit professionnel — version 6
 
 ## Décision de positionnement
 
-Le produit est présenté comme un **entraînement pédagogique inspiré du prototype AFC**, et non comme une copie du Portail AFC. Le service en production demeure déterminant pour une déclaration réelle.
+Le produit reste un **entraînement pédagogique inspiré du prototype AFC**, et non une copie du Portail AFC. Le service en production et les décisions de l’AFC restent déterminants.
 
-## Corrections critiques intégrées
+## Corrections intégrées
 
-### 1. Terminologie
+### 1. Hypothèse commune
 
-Les mentions «mode Portail AFC» et «calcul officiel reproduit» ont été remplacées par des formulations prudentes: **Vue prototype AFC** et **calcul pédagogique basé sur le prototype**.
+L’assujettissement, la méthode TDFN et les taux utilisés dans les cas sont supposés déjà confirmés par écrit par l’AFC. Les cas simplifiés indiquent que la qualification ou le montant complexe est fourni comme hypothèse.
 
-### 2. Mobile
+### 2. Atelier libre
 
-- sélecteur de cas regroupé par modules;
-- barre fixe: Contrôler, Solution, Suivant et Bilan;
-- adaptation du cas libre sans bouton de solution;
-- absence de débordement horizontal du document.
+L’atelier libre ne présente plus les TDFN comme un choix autonome. Il demande de reproduire uniquement les activités et taux déjà visibles dans le courrier ou le profil AFC. Le résultat est intitulé **Cohérence arithmétique vérifiée**.
 
 ### 3. Arrondi
 
-Le prototype public montre trois choix, sans publier l’algorithme complet des deux options d’arrondi. La version 5 calcule donc uniquement **Sans arrondi**, au centime. Les deux autres choix restent visibles mais désactivés.
+Aucun arrondi n’est effectué par activité dans le moteur. Les montants bruts sont additionnés, les lignes sont affichées à quatre décimales et seul le total affiché est arrondi à CHF 0.01.
 
-### 4. Règle des 10 %
+Cette méthode est explicitement présentée comme un calcul pédagogique transparent, et non comme la reproduction certifiée de l’algorithme du Portail AFC.
 
-Le cas de dépassement régulier utilise les périodes 2025, 2026 et 2027. La conséquence est placée au début de la quatrième période, le 01.01.2028.
+### 4. Changement de méthode
 
-### 5. Ch. 415
+Le cas K distingue désormais clairement deux décomptes:
 
-Le cas ne présente plus un crédit sans origine. Le dossier comprend désormais:
+- effective → TDFN: correction au ch. 415 du dernier décompte avant le passage;
+- TDFN → effective: déduction au ch. 410 du premier décompte selon la méthode effective.
 
-- procédure de déclaration selon l’art. 38 LTVA;
-- contrat de transfert;
-- inventaire et affectation des actifs;
-- valeurs résiduelles;
-- méthode de décompte des parties;
-- tableau de correction et rapprochement comptable.
+Le ch. 410 est explicitement signalé comme absent du formulaire TDFN montré dans les autres cas.
 
-Le montant à reporter reste fourni, car sa détermination complète dépasse un simple calcul de chiffre d’affaires.
+### 5. Interface
 
-### 6. Contrôles universels
+- largeur maximale ramenée à 1180 px;
+- zone principale limitée à environ 820 px;
+- sélection des cas par modules dans un seul menu;
+- navigation précédent/suivant;
+- dossier latéral raccourci;
+- références et contrôles repliables;
+- actions rapprochées de la zone de saisie;
+- barre mobile ramenée à trois actions;
+- première étape condensée.
+
+## Contrôles conservés
 
 Le moteur vérifie notamment:
 
@@ -51,20 +54,14 @@ Le moteur vérifie notamment:
 - ch. 383 = base × taux légal sélectionné;
 - impossibilité d’un ch. 500 et d’un ch. 510 simultanément positifs.
 
-### 7. Cas libre
-
-L’atelier libre permet d’ajouter jusqu’à huit activités, de choisir un TDFN parmi les taux disponibles dans l’outil, de saisir les bases TTC et de contrôler la cohérence du décompte. Le choix d’un taux ne vaut jamais autorisation de l’AFC.
-
 ## Tests exécutés
 
-- contrôle syntaxique des trois modules JavaScript;
+- contrôle syntaxique de `data.js`, `logic.js` et `app.js`;
 - 13 cas guidés et 1 atelier libre;
 - calculs ch. 323, 379, 383, 399, 479, 500, 510, 900 et 910;
-- erreurs négatives, déductions excessives, report absent, ch. 383 erroné et discordance ch. 299/379;
-- interaction desktop: changement de mode, ouverture de Calcul, ajout d’activités et report;
-- interaction mobile: sélecteur, quatre actions visibles et largeur sans débordement;
-- aucune erreur JavaScript lors des scénarios navigateur testés.
+- test spécifique confirmant l’absence d’arrondi intermédiaire;
+- erreurs négatives, déductions excessives, report absent, ch. 383 erroné et discordance ch. 299/379.
 
-## Limite restante
+## Limites restantes
 
-L’outil ne valide pas la qualification d’une activité, le droit d’utiliser la méthode TDFN, l’exhaustivité des justificatifs ni les particularités d’un dossier réel. Ces éléments nécessitent l’analyse des faits et des sources en vigueur.
+L’outil ne valide pas la qualification d’une activité, le droit d’utiliser la méthode TDFN, l’exhaustivité des justificatifs ni les particularités d’un dossier réel. Les options d’arrondi de production ne sont pas simulées faute de spécification publique complète.

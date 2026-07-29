@@ -1,15 +1,15 @@
 import {CASES,DEDUCTIONS,OFFICIAL_SOURCES} from './data.js';
 import {rateKey,parseAmount,expectedInputMap,computeCalculator,calculatorSignature,computeDeclaration,validateCase,allActivityBasesEntered,universalChecks,roundToCent} from './logic.js';
 
-const STORAGE_KEY='tva_tdfn_v5_state';
-const DEFAULT={version:5,current:0,mode:'guided',steps:{},answers:{},quiz:{},scores:{},assisted:{},attempts:{},reported:{},finalRound:{},acquisitionRate:{},free:{activities:[{label:'Activité 1',rate:6.2}]}};
+const STORAGE_KEY='tva_tdfn_v6_state';
+const DEFAULT={version:6,current:0,mode:'guided',steps:{},answers:{},quiz:{},scores:{},assisted:{},attempts:{},reported:{},finalRound:{},acquisitionRate:{},free:{activities:[{label:'Activité 1',rate:6.2}]}};
 let state=loadState();
 
 function loadState(){
   try{
     const raw=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
-    if(raw?.version===5) return {...structuredClone(DEFAULT),...raw,free:{...structuredClone(DEFAULT.free),...(raw.free||{})}};
-    if(raw?.version===4) return {...structuredClone(DEFAULT),...raw,version:5,free:structuredClone(DEFAULT.free)};
+    if(raw?.version===6) return {...structuredClone(DEFAULT),...raw,free:{...structuredClone(DEFAULT.free),...(raw.free||{})}};
+    if([4,5].includes(raw?.version)) return {...structuredClone(DEFAULT),...raw,version:6,free:{...structuredClone(DEFAULT.free),...(raw.free||{})}};
   }catch{}
   return structuredClone(DEFAULT);
 }
@@ -38,23 +38,25 @@ function renderTabs(){document.querySelector('#caseTabs').innerHTML=CASES.map((c
 
 function dossierMarkup(c,compact=false){
   const links=(c.sourceIds||[]).map(sourceById).filter(Boolean);
-  return `${compact?'':`<div class="panel"><h2 class="entity">${esc(c.entity)}</h2><div class="meta">${esc(c.sector)} · ${esc(c.location)} · ${esc(c.period)}</div><span class="level-pill">${esc(c.level)}</span></div>`}
-    <div class="panel mission"><p class="eyebrow">Votre mission</p><p>${esc(c.mission)}</p></div>
-    <div class="panel"><p class="eyebrow">Données du dossier</p><div class="data-list">${c.given.map(item=>`<div class="data-row"><div class="data-main">${esc(item.label)}${item.tag?`<span class="tag">${esc(item.tag)}</span>`:''}<span class="data-note">${esc(item.note||'')}</span></div>${Number.isFinite(item.amount)?`<div class="data-amount">${chf(item.amount,0)}</div>`:''}</div>`).join('')}</div></div>
-    <div class="panel legal"><strong>Base juridique et pratique</strong><br>${esc(c.legal)}<div class="source-links">${links.map(source=>`<a href="${source.url}" target="_blank" rel="noopener noreferrer">${esc(source.title)}</a>`).join('')}</div></div>
-    <div class="panel"><p class="eyebrow">Contrôles métier</p><div class="checks">${c.checks.map((item,index)=>`<div class="check"><b>${index+1}.</b><span>${esc(item)}</span></div>`).join('')}</div></div>`;
+  return `<div class="panel dossier-main">
+      ${compact?'':`<h2 class="entity">${esc(c.entity)}</h2><div class="meta">${esc(c.sector)} · ${esc(c.location)} · ${esc(c.period)}</div><span class="level-pill">${esc(c.level)}</span>`}
+      <p class="eyebrow dossier-label">Votre mission</p><p class="mission-text">${esc(c.mission)}</p>
+    </div>
+    <div class="panel dossier-data"><p class="eyebrow">Données du dossier</p><div class="data-list">${c.given.map(item=>`<div class="data-row"><div class="data-main">${esc(item.label)}${item.tag?`<span class="tag">${esc(item.tag)}</span>`:''}<span class="data-note">${esc(item.note||'')}</span></div>${Number.isFinite(item.amount)?`<div class="data-amount">${chf(item.amount,0)}</div>`:''}</div>`).join('')}</div></div>
+    <details class="panel dossier-details"><summary>Références et contrôles</summary><div class="dossier-details__body"><p><strong>${esc(c.legal)}</strong></p><div class="checks">${c.checks.map((item,index)=>`<div class="check"><b>${index+1}.</b><span>${esc(item)}</span></div>`).join('')}</div><div class="source-links">${links.map(source=>`<a href="${source.url}" target="_blank" rel="noopener noreferrer">${esc(source.title)}</a>`).join('')}</div></div></details>`;
 }
 function renderSidebar(){
   const c=current();
-  const solutionButton=c.type==='free'?'':`<button class="btn" type="button" data-action="solution">Afficher la solution</button>`;
-  document.querySelector('#sidebar').innerHTML=dossierMarkup(c)+`<div class="panel actions"><button class="btn primary" type="button" data-action="validate">${c.type==='free'?'Contrôler la cohérence':'Contrôler le cas'}</button>${solutionButton}<button class="btn" type="button" data-action="summary">Bilan du parcours</button><button class="btn danger" type="button" data-action="reset-case">Réinitialiser ce cas</button></div>`;
-  document.querySelector('#mobileDossierContent').innerHTML=dossierMarkup(c,true);
-  renderMobileActions(c);
+  document.querySelector('#sidebar').innerHTML=dossierMarkup(c);
+  document.querySelector('#mobileDossierContent').innerHTML=dossierMarkup(c,true)+`<div class="mobile-dossier-actions"><button class="btn" type="button" data-action="summary">Bilan du parcours</button><button class="btn danger" type="button" data-action="reset-case">Réinitialiser ce cas</button></div>`;
+  renderActionBars(c);
 }
-function renderMobileActions(c){
-  const bar=document.querySelector('#mobileActionBar');
-  bar.querySelector('[data-action="validate"]').textContent=c.type==='free'?'Cohérence':'Contrôler';
-  bar.querySelector('[data-action="solution"]').hidden=c.type==='free';
+function renderActionBars(c){
+  for(const id of ['mobileActionBar','desktopActionBar']){
+    const bar=document.querySelector(`#${id}`);if(!bar)continue;
+    const validate=bar.querySelector('[data-action="validate"]');if(validate)validate.textContent=c.type==='free'?'Vérifier':'Contrôler';
+    const solution=bar.querySelector('[data-action="solution"]');if(solution)solution.hidden=c.type==='free';
+  }
 }
 function renderCaseHead(){
   const c=current();
@@ -67,7 +69,7 @@ function renderCaseHead(){
 }
 function renderContrast(c){return `<div class="workspace-card contrast"><div class="client"><h3>Facture client</h3><p>${esc(c.clientNote)}</p></div><div class="arrow">→</div><div class="afc"><h3>Décompte AFC</h3><p>${esc(c.afcNote)}</p></div></div>`;}
 function renderStepper(){const step=state.steps[state.current]||1;return `<div class="workspace-card stepper" role="navigation" aria-label="Étapes du cas">${[['1','Comprendre'],['2','Calcul TDFN'],['3','Décompte']].map(([number,label])=>`<button class="step-button ${Number(number)===step?'active':''}" data-step="${number}" type="button"><span>${number}</span>${label}</button>`).join('')}</div>`;}
-function learning(){return `<div class="learning-grid"><div class="learning-card"><h3>1. Déclarer le chiffre d’affaires</h3><p>Le ch. 200 reprend les contre-prestations convenues ou reçues, puis les déductions admissibles sont détaillées aux ch. 220 à 280.</p><div class="formula">ch. 299 = ch. 200 − ch. 289</div></div><div class="learning-card"><h3>2. Ouvrir «Calcul»</h3><p>À partir de 2025, les contre-prestations sont ventilées par activité et TDFN dans l’écran de calcul.</p><div class="formula">Impôt = Σ(CA brut TTC × TDFN)</div></div><div class="learning-card"><h3>3. Reporter le calcul</h3><p>La vue du prototype agrège les activités et reporte une seule ligne au ch. 323 avec le chiffre d’affaires, l’impôt et le taux moyen.</p><div class="formula">ch. 379 doit correspondre au ch. 299</div></div><div class="learning-card"><h3>4. Déterminer le solde</h3><p>Le ch. 399 précède les crédits d’impôt. Le résultat final apparaît au ch. 500 ou au ch. 510.</p><div class="formula">Solde = ch. 399 − ch. 479</div></div></div><div class="form-actions"><button class="btn primary" type="button" data-step="2">Ouvrir le calcul TDFN →</button></div>`;}
+function learning(){return `<div class="learning-card learning-focus"><p class="eyebrow">Étape 1 · Comprendre</p><h3>Préparez les trois contrôles avant de saisir la déclaration</h3><div class="learning-points"><div><b>1</b><span>Déterminer le ch. 200 et les déductions admises: <strong>ch. 299 = ch. 200 − ch. 289</strong>.</span></div><div><b>2</b><span>Ventiler le chiffre d’affaires brut TTC par activité et TDFN confirmé.</span></div><div><b>3</b><span>Reporter le calcul au ch. 323 et vérifier que <strong>ch. 379 = ch. 299</strong>.</span></div></div><p class="learning-note">Le solde final se calcule ensuite par ch. 399 − ch. 479, au ch. 500 ou 510.</p></div><div class="form-actions"><button class="btn primary" type="button" data-step="2">Passer au calcul TDFN →</button></div>`;}
 
 function inputValue(key){return answers()[key]??'';}
 function amountInput(key,label=''){return `<input class="amount-input" data-key="${key}" inputmode="decimal" autocomplete="off" value="${esc(inputValue(key))}" aria-label="${esc(label)}">`;}
@@ -85,17 +87,17 @@ function calculatorMarkup(c,{dialog=false}={}){
     <td>${isFree?`<input class="text-input activity-name" data-free-label="${index}" value="${esc(freeConfig().activities[index]?.label||'')}" aria-label="Libellé de l’activité ${index+1}">`:`<strong>${esc(rate.label)}</strong>`}</td>
     <td>${isFree?`<select class="rate-select" data-free-rate="${index}" aria-label="TDFN de l’activité ${index+1}">${rateOptions.map(value=>`<option value="${value}" ${Number(rate.rate)===value?'selected':''}>${fmt(value,1)} %</option>`).join('')}</select>`:`${fmt(rate.rate,1)} %`}</td>
     <td>${amountInput(rateKey('base',index),`Contre-prestations ${rate.label}`)}</td>
-    <td class="computed-money" data-calc-tax="${index}">${chf(calc.lines[index]?.tax||0,2)}</td>
+    <td class="computed-money" data-calc-tax="${index}">${chf(calc.lines[index]?.rawTax??calc.lines[index]?.tax??0,4)}</td>
     ${isFree?`<td><button class="icon-button compact" type="button" data-action="remove-activity" data-index="${index}" aria-label="Supprimer l’activité ${index+1}">×</button></td>`:''}
   </tr>`).join('');
   return `<div class="calculator-shell ${dialog?'calculator-dialog-body':''}">
     <div class="calculator-title"><div><p class="eyebrow">Calcul pédagogique basé sur le prototype AFC</p><h3>Ventilation des contre-prestations par activité</h3><p>Les montants sont bruts, TVA comprise. Le résultat agrégé est reporté au ch. 323.</p></div><span class="transfer-state ${currentReport?'ok':'pending'}">${currentReport?'Calcul reporté':'À reporter'}</span></div>
-    <div class="old-period-note"><strong>Période modélisée:</strong> à partir du 01.01.2025. ${isFree?'Le TDFN sélectionné doit correspondre à une autorisation réelle de l’AFC.':'Les blocs d’anciens taux ne sont pas utilisés dans ce cas.'}</div>
+    <div class="old-period-note"><strong>Période modélisée:</strong> à partir du 01.01.2025. ${isFree?'Saisissez uniquement les activités et TDFN déjà confirmés dans le courrier ou le profil AFC de l’entreprise.':'Les blocs d’anciens taux ne sont pas utilisés dans ce cas.'}</div>
     ${isFree?'<div class="free-toolbar"><button class="btn" type="button" data-action="add-activity">+ Nouvelle activité</button><span>Maximum pédagogique: 8 activités.</span></div>':''}
-    <div class="calculator-table-wrap"><table class="calculator-table"><thead><tr><th>Activité</th><th>TDFN</th><th>Contre-prestations CHF</th><th>Total de l’impôt CHF</th>${isFree?'<th>Action</th>':''}</tr></thead><tbody>${rows||'<tr><td colspan="5">Ajoutez au moins une activité.</td></tr>'}</tbody></table></div>
+    <div class="calculator-table-wrap"><table class="calculator-table"><thead><tr><th>Activité</th><th>TDFN</th><th>Contre-prestations CHF</th><th>Impôt brut CHF</th>${isFree?'<th>Action</th>':''}</tr></thead><tbody>${rows||'<tr><td colspan="5">Ajoutez au moins une activité.</td></tr>'}</tbody></table></div>
     <div class="calculator-summary"><div><span>Taux moyen</span><strong data-calc-average>${fmt(calc.averageRate,4)} %</strong></div><div><span>Contre-prestations</span><strong data-calc-base>${chf(calc.base,2)}</strong></div><div><span>Total de l’impôt</span><strong data-calc-total>${chf(calc.tax,2)}</strong></div></div>
-    <fieldset class="rounding-options"><legend>Options d’arrondi visibles dans le prototype</legend><label><input type="radio" checked disabled> Sans arrondi — calcul validé à 0,01 CHF</label><label class="unsupported"><input type="radio" disabled> Arrondi par activité <small>non simulé: algorithme public non spécifié</small></label><label class="unsupported"><input type="radio" disabled> Arrondi du total de l’impôt <small>non simulé: algorithme public non spécifié</small></label></fieldset>
-    <div class="calculator-note">Le prototype public affiche trois choix, mais ne publie pas leur algorithme de production. Afin de ne pas enseigner une règle inventée, cet outil calcule uniquement le parcours transparent «sans arrondi».</div>
+    <fieldset class="rounding-options"><legend>Options d’arrondi visibles dans le prototype</legend><label><input type="radio" checked disabled> Calcul pédagogique sans arrondi intermédiaire</label><label class="unsupported"><input type="radio" disabled> Arrondi par activité <small>non simulé: algorithme public non spécifié</small></label><label class="unsupported"><input type="radio" disabled> Arrondi du total de l’impôt <small>non simulé: algorithme public non spécifié</small></label></fieldset>
+    <div class="calculator-note">Le prototype public affiche trois choix, mais ne publie pas leur algorithme de production. Afin de ne pas enseigner une règle inventée, les montants par activité sont affichés à quatre décimales et additionnés sans arrondi intermédiaire; seul le total affiché est arrondi à CHF 0.01. Il ne s’agit pas d’une reproduction certifiée de l’algorithme du Portail AFC.</div>
     <div class="form-actions">${dialog?'<button class="btn" type="button" data-action="close-calc">Annuler</button>':'<button class="btn" type="button" data-step="1">← Revoir le principe</button>'}<button class="btn primary" type="button" data-action="report-calc">Reporter le calcul</button></div>
   </div>`;
 }
@@ -135,11 +137,11 @@ function declarationMarkup(c){
       ${portalRow({code:'910',label:'Dons, dividendes, dédommagements, etc.',valueKey:'ch910'})}
     </tbody></table></div></section>
     <div class="concordance-box" data-concordance></div>
-    <div class="portal-actions"><button class="btn" type="button" data-action="back-list">Retour à «Mes décomptes TVA»</button><button class="btn danger" type="button" data-action="reset-case">Vider le formulaire</button><button class="btn" type="button" data-action="temporary-save">Enregistrer temporairement</button><button class="btn" type="button" data-action="preview">Aperçu</button><button class="btn primary" type="button" data-action="validate">Continuer</button></div>
+    <div class="portal-actions"><button class="btn danger" type="button" data-action="reset-case">Vider</button><button class="btn" type="button" data-action="temporary-save">Enregistrer</button><button class="btn" type="button" data-action="preview">Aperçu</button><button class="btn primary" type="button" data-action="validate">Contrôler</button></div>
   </div>`;
 }
 
-function quizMarkup(c){const qa=quizAnswers();return `<div class="quiz-card">${c.questions.map((question,index)=>`<fieldset class="question"><legend>${index+1}. ${esc(question.q)}</legend>${question.options.map((option,optionIndex)=>`<label><input type="radio" name="q-${state.current}-${index}" data-question="${index}" value="${optionIndex}" ${Number(qa[index])===optionIndex?'checked':''}> <span>${esc(option)}</span></label>`).join('')}</fieldset>`).join('')}<div class="form-actions"><button class="btn primary" type="button" data-action="validate">Vérifier les réponses</button><button class="btn" type="button" data-action="solution">Afficher la solution</button></div></div>`;}
+function quizMarkup(c){const qa=quizAnswers();return `${c.conceptualNote?`<div class="callout warning conceptual-note"><strong>Cas conceptuel:</strong> ${esc(c.conceptualNote)}</div>`:''}<div class="quiz-card">${c.questions.map((question,index)=>`<fieldset class="question"><legend>${index+1}. ${esc(question.q)}</legend>${question.options.map((option,optionIndex)=>`<label><input type="radio" name="q-${state.current}-${index}" data-question="${index}" value="${optionIndex}" ${Number(qa[index])===optionIndex?'checked':''}> <span>${esc(option)}</span></label>`).join('')}</fieldset>`).join('')}<div class="form-actions"><button class="btn primary" type="button" data-action="validate">Vérifier les réponses</button><button class="btn" type="button" data-action="solution">Afficher la solution</button></div></div>`;}
 
 function renderWork(){
   const c=current();
@@ -157,7 +159,7 @@ function updateComputed(){
   const c=current();
   if(c.type==='quiz') return;
   const calc=calcSnapshot(c);
-  document.querySelectorAll('[data-calc-tax]').forEach(node=>{const line=calc.lines[Number(node.dataset.calcTax)];node.textContent=chf(line?.tax||0,2);});
+  document.querySelectorAll('[data-calc-tax]').forEach(node=>{const line=calc.lines[Number(node.dataset.calcTax)];node.textContent=chf(line?.rawTax??line?.tax??0,4);});
   document.querySelectorAll('[data-calc-average]').forEach(node=>node.textContent=`${fmt(calc.averageRate,4)} %`);
   document.querySelectorAll('[data-calc-base]').forEach(node=>node.textContent=chf(calc.base,2));
   document.querySelectorAll('[data-calc-total]').forEach(node=>node.textContent=chf(calc.tax,2));
@@ -211,7 +213,7 @@ function validateFree(){
   const universal=universalChecks(c,answers(),report,{reportCurrent:reportedCurrent(c),acquisitionRate:acquisitionRate()});
   const declaration=universal.declaration;
   state.attempts[state.current]=(state.attempts[state.current]||0)+1;save();
-  document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score ${universal.allGood?'good':'bad'}">${universal.correct}/${universal.total}</div><div><h3>${universal.allGood?'Cohérence interne validée':'Incohérences à corriger'}</h3><p>Atelier libre · contrôle arithmétique et structurel, sans validation juridique du TDFN</p></div></div><div class="feedback">${checksMarkup(universal.rows)}</div><div class="lesson"><strong>Résultat calculé:</strong> ch. 299 ${chf(declaration.ch299,2)} · ch. 399 ${chf(declaration.ch399,2)} · ch. 479 ${chf(declaration.ch479,2)} · ch. 500 ${chf(declaration.ch500,2)} · ch. 510 ${chf(declaration.ch510,2)}.<br><strong>Limite:</strong> ce contrôle ne confirme ni la qualification de l’activité, ni l’autorisation du TDFN, ni l’exhaustivité des justificatifs.</div></div>`;
+  document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score ${universal.allGood?'good':'bad'}">${universal.correct}/${universal.total}</div><div><h3>${universal.allGood?'Cohérence arithmétique vérifiée':'Incohérences à corriger'}</h3><p>Atelier libre · contrôle arithmétique et structurel uniquement</p></div></div><div class="feedback">${checksMarkup(universal.rows)}</div><div class="lesson"><strong>Résultat calculé:</strong> ch. 299 ${chf(declaration.ch299,2)} · ch. 399 ${chf(declaration.ch399,2)} · ch. 479 ${chf(declaration.ch479,2)} · ch. 500 ${chf(declaration.ch500,2)} · ch. 510 ${chf(declaration.ch510,2)}.<br><strong>Limite:</strong> ce contrôle suppose que le paramétrage AFC est déjà confirmé; il ne valide ni la qualification de l’activité ni l’exhaustivité des justificatifs.</div></div>`;
   document.querySelector('#resultArea').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -264,7 +266,7 @@ function addActivity(){const cfg=freeConfig();if((cfg.activities||[]).length>=8)
 function removeActivity(index){const cfg=freeConfig();if(cfg.activities.length<=1){showToast('Conservez au moins une activité.','error');return;}const values=cfg.activities.map((_,i)=>answers()[rateKey('base',i)]??'');cfg.activities.splice(index,1);values.splice(index,1);Object.keys(answers()).filter(key=>/^r\d+base$/.test(key)).forEach(key=>delete answers()[key]);values.forEach((value,i)=>{if(value!=='')answers()[rateKey('base',i)]=value;});delete state.reported[state.current];save();refreshCalculatorViews();}
 
 function handleAction(action,button){
-  if(action==='validate')current().type==='quiz'?validateQuiz():validateForm();
+  if(action==='validate')current().type==='quiz'?validateQuiz():validateForm();if(action==='previous')selectCase((state.current-1+CASES.length)%CASES.length);
   if(action==='solution')showSolution();if(action==='summary')summary();if(action==='reset-case')resetCase();if(action==='restart-no-help')resetCase(true);if(action==='next')selectCase((state.current+1)%CASES.length);if(action==='print')window.print();if(action==='open-calc')openCalculator();if(action==='close-calc')document.querySelector('#calcDialog').close();if(action==='report-calc')reportCalculation();if(action==='preview')preview();if(action==='close-preview')document.querySelector('#previewDialog').close();if(action==='temporary-save')showToast('Progression enregistrée localement dans ce navigateur.','success');if(action==='back-list')showToast('Entraînement local: aucune liste «Mes décomptes TVA» n’est disponible.','info');if(action==='attachment-info')showToast('Dans le service AFC, le justificatif est joint à la procédure de déclaration.','info');if(action==='add-activity')addActivity();if(action==='remove-activity')removeActivity(Number(button?.dataset.index));
   if(action==='reset-all'&&confirm('Effacer toute la progression de l’entraînement?')){localStorage.removeItem(STORAGE_KEY);state=structuredClone(DEFAULT);renderAll();document.querySelector('#resultArea').innerHTML='';}
 }
