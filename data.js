@@ -22,7 +22,7 @@ export const DEDUCTIONS = [
 const baseSources = ['afc-main','otva','rates','prototype'];
 export const CASES = [
   {
-    id:'A',tab:'A · Base TTC',title:'Architecte — appliquer le TDFN au montant TTC',entity:'Atelier Horizon Sàrl',sector:'Architecture',location:'Lausanne',period:'S1 2026',level:'Fondamentaux',risk:'low',
+    id:'A',tab:'A · Base TTC',title:'Architecte — appliquer le TDFN au montant TTC',entity:'Atelier Horizon Sàrl',sector:'Architecture',location:'Lausanne',period:'S1 2026',level:'Fondamentaux',risk:'low',accountingBasis:'Contre-prestations reçues',
     description:'Le premier réflexe consiste à partir du chiffre d’affaires brut TVA comprise.',mission:'Saisissez le chiffre d’affaires au ch. 200, reportez la base imposable au premier TDFN et calculez la dette à 6,2 %.',
     clientNote:'Les factures d’honoraires indiquent le taux légal de 8,1 %.',afcNote:'Le décompte applique le TDFN de 6,2 % au chiffre d’affaires brut TTC.',
     given:[{label:'Honoraires encaissés, TVA comprise',amount:400000,note:'Montant brut du semestre.',tag:'TTC'},{label:'TDFN autorisé dans le cas',note:'Exemple officiel AFC pour un architecte.',tag:'6,2 %'}],
@@ -31,10 +31,10 @@ export const CASES = [
     explanations:{ch200:'Le ch. 200 reprend CHF 400’000 de contre-prestations.',r0base:'La base TTC est reportée au premier TDFN.',r0tax:'CHF 400’000 × 6,2 % = CHF 24’800.'},lesson:'Le TDFN sert au décompte avec l’AFC; le taux légal reste celui de la facture client.',diagnostics:{r0base:{100000:'Vous avez probablement utilisé un montant hors taxe au lieu du chiffre d’affaires TTC.'}}
   },
   {
-    id:'B',tab:'B · HT/TTC',title:'Agence web — reconstruire la base TTC',entity:'Pixel Léman Sàrl',sector:'Webdesign et services internet',location:'Renens',period:'S1 2026',level:'Fondamentaux',risk:'medium',
+    id:'B',tab:'B · HT/TTC',title:'Agence web — reconstruire la base TTC',entity:'Pixel Léman Sàrl',sector:'Webdesign et services internet',location:'Renens',period:'S1 2026',level:'Fondamentaux',risk:'medium',accountingBasis:'Contre-prestations convenues',
     description:'Une multiplication correcte donne un mauvais décompte si la base reste hors taxe.',mission:'Reconstituez le total TTC, puis utilisez-le au ch. 200 et au premier TDFN.',
-    clientNote:'CHF 100’000 HT + TVA légale de 8,1 % = CHF 108’100 TTC.',afcNote:'Le cas suppose que le TDFN de 6,2 % a été attribué à l’activité décrite.',
-    given:[{label:'Honoraires facturés hors taxe',amount:100000,note:'Prestations au taux légal normal.',tag:'HT'},{label:'TVA facturée',amount:8100,note:'8,1 % de CHF 100’000.',tag:'TVA'},{label:'Total facturé',amount:108100,note:'Base de calcul TDFN.',tag:'TTC'}],
+    clientNote:'Les honoraires sont facturés hors taxe au taux légal de 8,1 %. Reconstituez vous-même le total TTC.',afcNote:'Le cas suppose que le TDFN de 6,2 % a été attribué à l’activité décrite.',
+    given:[{label:'Honoraires facturés hors taxe',amount:100000,note:'Prestations au taux légal normal.',tag:'HT'},{label:'Taux légal applicable',note:'À appliquer aux honoraires HT pour reconstituer le TTC.',tag:'8,1 %'}],
     checks:['CHF 100’000 HT n’est pas la base TDFN.','Le TDFN ne remplace pas 8,1 % sur les factures.','La qualification exacte de l’activité reste à contrôler.'],legal:'Art. 37, al. 2, LTVA · ordonnance AFC sur les TDFN',sourceIds:baseSources,
     rates:[{label:'Services internet / webdesign — hypothèse du cas',rate:6.2,base:108100,tax:6702.2}],fields:{ch200:108100},deductions:{},
     explanations:{ch200:'CHF 100’000 + CHF 8’100 = CHF 108’100 TTC.',r0base:'La base du premier TDFN est CHF 108’100.',r0tax:'CHF 108’100 × 6,2 % = CHF 6’702.20.'},lesson:'Séparer la construction de la facture et le calcul simplifié de la dette fiscale.',diagnostics:{ch200:{100000:'Le montant saisi correspond au chiffre d’affaires HT; le ch. 200 doit reprendre le total TTC.'},r0base:{100000:'La base TDFN doit être TTC.'}}
@@ -149,5 +149,6 @@ CASES.push({
 });
 
 for (const c of CASES) {
+  if (!c.accountingBasis && c.type !== 'quiz') c.accountingBasis = 'Contre-prestations convenues';
   if (c.type !== 'quiz' && c.type !== 'free' && !c.sourceIds.includes('prototype')) c.sourceIds.push('prototype');
 }

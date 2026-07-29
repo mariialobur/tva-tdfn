@@ -1,45 +1,61 @@
-# Audit professionnel — version 6
+# Audit professionnel — version 6.1
 
 ## Décision de positionnement
 
 Le produit reste un **entraînement pédagogique inspiré du prototype AFC**, et non une copie du Portail AFC. Le service en production et les décisions de l’AFC restent déterminants.
 
-## Corrections intégrées
+## Corrections métier intégrées
 
-### 1. Hypothèse commune
+### 1. Contre-prestations convenues ou reçues
 
-L’assujettissement, la méthode TDFN et les taux utilisés dans les cas sont supposés déjà confirmés par écrit par l’AFC. Les cas simplifiés indiquent que la qualification ou le montant complexe est fourni comme hypothèse.
+Le dossier affiche désormais le mode de décompte retenu. Le cas A utilise les contre-prestations reçues, conformément à sa donnée d’honoraires encaissés. Les autres cas chiffrés utilisent par défaut les contre-prestations convenues, sauf indication contraire.
 
-### 2. Atelier libre
+La rubrique ch. 200 conserve la formulation officielle «convenues ou reçues», tout en rappelant le mode retenu pour le cas.
 
-L’atelier libre ne présente plus les TDFN comme un choix autonome. Il demande de reproduire uniquement les activités et taux déjà visibles dans le courrier ou le profil AFC. Le résultat est intitulé **Cohérence arithmétique vérifiée**.
+### 2. Cas B
 
-### 3. Arrondi
+Le total TTC de CHF 108’100 n’est plus affiché dans les données de départ. Le participant reçoit uniquement:
 
-Aucun arrondi n’est effectué par activité dans le moteur. Les montants bruts sont additionnés, les lignes sont affichées à quatre décimales et seul le total affiché est arrondi à CHF 0.01.
+- CHF 100’000 HT;
+- le taux légal de 8,1 %.
 
-Cette méthode est explicitement présentée comme un calcul pédagogique transparent, et non comme la reproduction certifiée de l’algorithme du Portail AFC.
+Il doit reconstruire lui-même le montant TTC avant de remplir le ch. 200 et le calcul TDFN.
 
-### 4. Changement de méthode
+### 3. Hiérarchie pédagogique
 
-Le cas K distingue désormais clairement deux décomptes:
+Le parcours guidé suit maintenant l’ordre:
 
-- effective → TDFN: correction au ch. 415 du dernier décompte avant le passage;
-- TDFN → effective: déduction au ch. 410 du premier décompte selon la méthode effective.
+1. étape;
+2. contenu de l’étape;
+3. action contextuelle.
 
-Le ch. 410 est explicitement signalé comme absent du formulaire TDFN montré dans les autres cas.
+Le bloc facture client / décompte AFC n’est affiché qu’à l’étape «Comprendre».
 
-### 5. Interface
+### 4. Décompte compact
 
-- largeur maximale ramenée à 1180 px;
-- zone principale limitée à environ 820 px;
-- sélection des cas par modules dans un seul menu;
-- navigation précédent/suivant;
-- dossier latéral raccourci;
-- références et contrôles repliables;
-- actions rapprochées de la zone de saisie;
-- barre mobile ramenée à trois actions;
-- première étape condensée.
+L’étape 3 n’affiche que les rubriques utiles au cas. Les rubriques non concernées restent accessibles dans la vue séparée inspirée du prototype AFC.
+
+Cette décision évite de transformer chaque exercice simple en une longue table administrative et supprime la navigation horizontale du parcours guidé.
+
+### 5. Dossier contextuel
+
+Le dossier latéral reste ouvert pendant l’analyse, puis se masque pendant le calcul et le remplissage. Une commande permet de l’afficher à nouveau. La zone de travail atteint ainsi une largeur suffisante pour le calcul et la vue complète.
+
+### 6. Actions
+
+Une seule action principale est affichée:
+
+- étape 1: continuer vers le calcul;
+- étape 2: reporter au décompte;
+- étape 3: contrôler le décompte;
+- quiz: vérifier les réponses;
+- atelier libre: vérifier la cohérence.
+
+La solution, le bilan et la réinitialisation sont regroupés dans un menu secondaire.
+
+### 7. Cache
+
+Les ressources CSS et JavaScript sont appelées avec `v=6.1.0`. Cette mesure évite la coexistence visuelle d’une ancienne feuille de styles et d’un nouveau fichier HTML après une mise à jour GitHub Pages.
 
 ## Contrôles conservés
 

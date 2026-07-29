@@ -1,15 +1,14 @@
-import {CASES,DEDUCTIONS,OFFICIAL_SOURCES} from './data.js';
-import {rateKey,parseAmount,expectedInputMap,computeCalculator,calculatorSignature,computeDeclaration,validateCase,allActivityBasesEntered,universalChecks,roundToCent} from './logic.js';
+import {CASES,DEDUCTIONS,OFFICIAL_SOURCES} from './data.js?v=6.1.0';
+import {rateKey,parseAmount,expectedInputMap,computeCalculator,calculatorSignature,computeDeclaration,validateCase,allActivityBasesEntered,universalChecks,roundToCent} from './logic.js?v=6.1.0';
 
-const STORAGE_KEY='tva_tdfn_v6_state';
-const DEFAULT={version:6,current:0,mode:'guided',steps:{},answers:{},quiz:{},scores:{},assisted:{},attempts:{},reported:{},finalRound:{},acquisitionRate:{},free:{activities:[{label:'Activité 1',rate:6.2}]}};
+const STORAGE_KEY='tva_tdfn_v61_state';
+const DEFAULT={version:61,current:0,mode:'guided',steps:{},answers:{},quiz:{},scores:{},assisted:{},attempts:{},reported:{},finalRound:{},acquisitionRate:{},dossierOpen:{},free:{activities:[{label:'Activité 1',rate:6.2}]}};
 let state=loadState();
 
 function loadState(){
   try{
     const raw=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
-    if(raw?.version===6) return {...structuredClone(DEFAULT),...raw,free:{...structuredClone(DEFAULT.free),...(raw.free||{})}};
-    if([4,5].includes(raw?.version)) return {...structuredClone(DEFAULT),...raw,version:6,free:{...structuredClone(DEFAULT.free),...(raw.free||{})}};
+    if(raw?.version===61) return {...structuredClone(DEFAULT),...raw,dossierOpen:{...(raw.dossierOpen||{})},free:{...structuredClone(DEFAULT.free),...(raw.free||{})}};
   }catch{}
   return structuredClone(DEFAULT);
 }
@@ -32,14 +31,24 @@ const esc=value=>String(value??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt
 const scoredCases=()=>CASES.filter(c=>!c.excludeFromProgress);
 function masteredCount(){return CASES.filter((c,index)=>!c.excludeFromProgress&&state.scores[index]===100&&!state.assisted[index]).length;}
 function caseStatus(index){const c=CASES[index];if(c.excludeFromProgress)return ['libre','free'];if(state.assisted[index])return ['assisté','assisted'];if(state.scores[index]===100)return ['maîtrisé','mastered'];if(Number.isFinite(state.scores[index]))return [`${state.scores[index]}%`,'partial'];return null;}
-function renderHeader(){const count=masteredCount(),total=scoredCases().length;document.querySelector('#progressText').textContent=`${count} / ${total}`;document.querySelector('#progressBar').style.width=`${total?count/total*100:0}%`;}
+function renderHeader(){
+  const c=current();
+  const module=moduleFor(c);
+  const moduleCases=CASES.map((item,index)=>({item,index})).filter(({item})=>moduleFor(item)===module&&!item.excludeFromProgress);
+  const mastered=moduleCases.filter(({index})=>state.scores[index]===100&&!state.assisted[index]).length;
+  const total=moduleCases.length;
+  document.querySelector('#moduleProgressLabel').textContent=module.replace(/^\d+ · /,'');
+  document.querySelector('#progressText').textContent=total?`${mastered} / ${total}`:'libre';
+  document.querySelector('#progressBar').style.width=total?`${mastered/total*100}%`:'0%';
+}
 function moduleFor(c){if('ABC'.includes(c.id))return '1 · Fondamentaux';if('DEF'.includes(c.id))return '2 · Plusieurs activités';if('GHI'.includes(c.id))return '3 · International';if('JKLM'.includes(c.id))return '4 · Cas avancés';return '5 · Atelier libre';}
 function renderTabs(){document.querySelector('#caseTabs').innerHTML=CASES.map((c,index)=>{const status=caseStatus(index);return `<button class="case-tab" id="tab-${c.id}" role="tab" aria-selected="${index===state.current}" tabindex="${index===state.current?0:-1}" data-case="${index}">${esc(c.tab)}${status?`<span class="status ${status[1]}">${status[0]}</span>`:''}</button>`;}).join('');const groups=new Map();CASES.forEach((c,index)=>{const module=moduleFor(c);if(!groups.has(module))groups.set(module,[]);groups.get(module).push({c,index});});document.querySelector('#caseSelect').innerHTML=[...groups].map(([label,items])=>`<optgroup label="${esc(label)}">${items.map(({c,index})=>`<option value="${index}" ${index===state.current?'selected':''}>${esc(c.tab)} — ${esc(c.title)}</option>`).join('')}</optgroup>`).join('');}
 
 function dossierMarkup(c,compact=false){
   const links=(c.sourceIds||[]).map(sourceById).filter(Boolean);
+  const basis=c.accountingBasis?`<div class="accounting-basis"><span>Mode de décompte</span><strong>${esc(c.accountingBasis)}</strong></div>`:'';
   return `<div class="panel dossier-main">
-      ${compact?'':`<h2 class="entity">${esc(c.entity)}</h2><div class="meta">${esc(c.sector)} · ${esc(c.location)} · ${esc(c.period)}</div><span class="level-pill">${esc(c.level)}</span>`}
+      ${compact?`<div class="mobile-case-meta"><strong>${esc(c.entity)}</strong><span>${esc(c.period)}</span></div>${basis}`:`<h2 class="entity">${esc(c.entity)}</h2><div class="meta">${esc(c.sector)} · ${esc(c.location)} · ${esc(c.period)}</div>${basis}<span class="level-pill">${esc(c.level)}</span>`}
       <p class="eyebrow dossier-label">Votre mission</p><p class="mission-text">${esc(c.mission)}</p>
     </div>
     <div class="panel dossier-data"><p class="eyebrow">Données du dossier</p><div class="data-list">${c.given.map(item=>`<div class="data-row"><div class="data-main">${esc(item.label)}${item.tag?`<span class="tag">${esc(item.tag)}</span>`:''}<span class="data-note">${esc(item.note||'')}</span></div>${Number.isFinite(item.amount)?`<div class="data-amount">${chf(item.amount,0)}</div>`:''}</div>`).join('')}</div></div>
@@ -52,24 +61,45 @@ function renderSidebar(){
   renderActionBars(c);
 }
 function renderActionBars(c){
+  const step=state.steps[state.current]||1;
+  let config={label:'Contrôler',action:'validate'};
+  if(c.type==='quiz') config={label:'Vérifier les réponses',action:'validate'};
+  else if(state.mode==='portal') config={label:c.type==='free'?'Vérifier la cohérence':'Contrôler le décompte',action:'validate'};
+  else if(step===1) config={label:'Continuer vers le calcul →',step:'2'};
+  else if(step===2) config={label:'Reporter au décompte →',action:'report-calc'};
+  else config={label:c.type==='free'?'Vérifier la cohérence':'Contrôler le décompte',action:'validate'};
   for(const id of ['mobileActionBar','desktopActionBar']){
     const bar=document.querySelector(`#${id}`);if(!bar)continue;
-    const validate=bar.querySelector('[data-action="validate"]');if(validate)validate.textContent=c.type==='free'?'Vérifier':'Contrôler';
-    const solution=bar.querySelector('[data-action="solution"]');if(solution)solution.hidden=c.type==='free';
+    const primary=bar.querySelector('[data-context-primary]');
+    if(primary){primary.textContent=config.label;delete primary.dataset.action;delete primary.dataset.step;if(config.action)primary.dataset.action=config.action;if(config.step)primary.dataset.step=config.step;}
+    bar.querySelectorAll('[data-action="solution"]').forEach(button=>button.hidden=c.type==='free');
   }
 }
 function renderCaseHead(){
   const c=current();
+  const step=state.steps[state.current]||1;
   document.querySelector('#caseLevel').textContent=c.level;
   document.querySelector('#caseTitle').textContent=c.title;
   document.querySelector('#caseDescription').textContent=c.description;
   const switcher=document.querySelector('#modeSwitch');
   switcher.classList.toggle('hidden',c.type==='quiz');
   switcher.querySelectorAll('button').forEach(button=>button.classList.toggle('active',button.dataset.mode===state.mode));
+  const focusEligible=c.type!=='quiz'&&(state.mode==='portal'||step>1);
+  const dossierOpen=Boolean(state.dossierOpen[state.current]);
+  const layout=document.querySelector('#workspace');
+  layout.classList.toggle('focus-mode',focusEligible&&!dossierOpen);
+  const toggle=document.querySelector('#toggleDossier');
+  toggle.hidden=!focusEligible;
+  toggle.textContent=dossierOpen?'Masquer le dossier':'Afficher le dossier';
 }
 function renderContrast(c){return `<div class="workspace-card contrast"><div class="client"><h3>Facture client</h3><p>${esc(c.clientNote)}</p></div><div class="arrow">→</div><div class="afc"><h3>Décompte AFC</h3><p>${esc(c.afcNote)}</p></div></div>`;}
-function renderStepper(){const step=state.steps[state.current]||1;return `<div class="workspace-card stepper" role="navigation" aria-label="Étapes du cas">${[['1','Comprendre'],['2','Calcul TDFN'],['3','Décompte']].map(([number,label])=>`<button class="step-button ${Number(number)===step?'active':''}" data-step="${number}" type="button"><span>${number}</span>${label}</button>`).join('')}</div>`;}
-function learning(){return `<div class="learning-card learning-focus"><p class="eyebrow">Étape 1 · Comprendre</p><h3>Préparez les trois contrôles avant de saisir la déclaration</h3><div class="learning-points"><div><b>1</b><span>Déterminer le ch. 200 et les déductions admises: <strong>ch. 299 = ch. 200 − ch. 289</strong>.</span></div><div><b>2</b><span>Ventiler le chiffre d’affaires brut TTC par activité et TDFN confirmé.</span></div><div><b>3</b><span>Reporter le calcul au ch. 323 et vérifier que <strong>ch. 379 = ch. 299</strong>.</span></div></div><p class="learning-note">Le solde final se calcule ensuite par ch. 399 − ch. 479, au ch. 500 ou 510.</p></div><div class="form-actions"><button class="btn primary" type="button" data-step="2">Passer au calcul TDFN →</button></div>`;}
+function renderStepper(){
+  const c=current();
+  const step=state.steps[state.current]||1;
+  const canOpenDeclaration=Boolean(state.reported[state.current]);
+  return `<div class="workspace-card stepper" role="navigation" aria-label="Étapes du cas">${[['1','Comprendre'],['2','Calcul TDFN'],['3','Décompte']].map(([number,label])=>{const disabled=Number(number)===3&&!canOpenDeclaration&&c.type!=='free';return `<button class="step-button ${Number(number)===step?'active':''}" data-step="${number}" type="button" ${disabled?'disabled':''}><span>${number}</span>${label}</button>`;}).join('')}</div>`;
+}
+function learning(){return `<div class="learning-card learning-focus"><p class="eyebrow">Étape 1 · Comprendre</p><h3>Préparez trois contrôles avant de saisir le décompte</h3><div class="learning-points"><div><b>1</b><span>Déterminer le ch. 200 selon le mode de décompte du dossier et calculer <strong>ch. 299 = ch. 200 − ch. 289</strong>.</span></div><div><b>2</b><span>Ventiler le chiffre d’affaires brut TTC par activité et TDFN confirmé.</span></div><div><b>3</b><span>Reporter le calcul au ch. 323 et vérifier que <strong>ch. 379 = ch. 299</strong>.</span></div></div><p class="learning-note">Le solde final se calcule ensuite par ch. 399 − ch. 479, au ch. 500 ou 510.</p></div>`;}
 
 function inputValue(key){return answers()[key]??'';}
 function amountInput(key,label=''){return `<input class="amount-input" data-key="${key}" inputmode="decimal" autocomplete="off" value="${esc(inputValue(key))}" aria-label="${esc(label)}">`;}
@@ -98,7 +128,7 @@ function calculatorMarkup(c,{dialog=false}={}){
     <div class="calculator-summary"><div><span>Taux moyen</span><strong data-calc-average>${fmt(calc.averageRate,4)} %</strong></div><div><span>Contre-prestations</span><strong data-calc-base>${chf(calc.base,2)}</strong></div><div><span>Total de l’impôt</span><strong data-calc-total>${chf(calc.tax,2)}</strong></div></div>
     <fieldset class="rounding-options"><legend>Options d’arrondi visibles dans le prototype</legend><label><input type="radio" checked disabled> Calcul pédagogique sans arrondi intermédiaire</label><label class="unsupported"><input type="radio" disabled> Arrondi par activité <small>non simulé: algorithme public non spécifié</small></label><label class="unsupported"><input type="radio" disabled> Arrondi du total de l’impôt <small>non simulé: algorithme public non spécifié</small></label></fieldset>
     <div class="calculator-note">Le prototype public affiche trois choix, mais ne publie pas leur algorithme de production. Afin de ne pas enseigner une règle inventée, les montants par activité sont affichés à quatre décimales et additionnés sans arrondi intermédiaire; seul le total affiché est arrondi à CHF 0.01. Il ne s’agit pas d’une reproduction certifiée de l’algorithme du Portail AFC.</div>
-    <div class="form-actions">${dialog?'<button class="btn" type="button" data-action="close-calc">Annuler</button>':'<button class="btn" type="button" data-step="1">← Revoir le principe</button>'}<button class="btn primary" type="button" data-action="report-calc">Reporter le calcul</button></div>
+    <div class="form-actions">${dialog?'<button class="btn" type="button" data-action="close-calc">Annuler</button><button class="btn primary" type="button" data-action="report-calc">Reporter le calcul</button>':'<button class="btn" type="button" data-step="1">← Revoir le principe</button>'}</div>
   </div>`;
 }
 function portalRow({code,label,sub='',valueKey,computedKey,secondComputed,rateValue,extra='',highlight=false}){
@@ -112,7 +142,7 @@ function declarationMarkup(c){
   return `<div class="afc-form-card">
     <div class="afc-form-header"><div><p class="eyebrow">Vue pédagogique inspirée du prototype AFC</p><h3>Décompte d’entraînement — méthode TDFN</h3></div><span class="simulation-badge">Exercice · aucune transmission</span></div>
     <section class="afc-section"><h4>I. Chiffre d’affaires</h4><div class="subsection-title">Contre-prestations</div><div class="afc-table-wrap"><table class="afc-table"><thead><tr><th>Contre-prestations</th><th>Chiffre</th><th>Chiffre d’affaires CHF</th><th></th><th></th></tr></thead><tbody>
-      ${portalRow({code:'200',label:'Total des contre-prestations convenues ou reçues',sub:'Y compris prestations imposées par option, transferts par procédure de déclaration et prestations à l’étranger',valueKey:'ch200',highlight:true})}
+      ${portalRow({code:'200',label:'Total des contre-prestations convenues ou reçues',sub:`Mode du cas: ${c.accountingBasis||'contre-prestations convenues'} · y compris prestations imposées par option, transferts par procédure de déclaration et prestations à l’étranger`,valueKey:'ch200',highlight:true})}
       ${portalRow({code:'205',label:'Contre-prestations déclarées sous ch. 200 provenant de prestations exclues du champ de l’impôt pour lesquelles il a été opté',sub:'Rubrique informative; le montant reste compris au ch. 200',valueKey:'ch205'})}
       <tr class="section-row"><td colspan="5">Déductions</td></tr>${deductionRows}
       ${portalRow({code:'289',label:'Total des déductions',computedKey:'ch289',highlight:true})}
@@ -137,22 +167,70 @@ function declarationMarkup(c){
       ${portalRow({code:'910',label:'Dons, dividendes, dédommagements, etc.',valueKey:'ch910'})}
     </tbody></table></div></section>
     <div class="concordance-box" data-concordance></div>
-    <div class="portal-actions"><button class="btn danger" type="button" data-action="reset-case">Vider</button><button class="btn" type="button" data-action="temporary-save">Enregistrer</button><button class="btn" type="button" data-action="preview">Aperçu</button><button class="btn primary" type="button" data-action="validate">Contrôler</button></div>
+    <div class="portal-actions"><button class="btn danger" type="button" data-action="reset-case">Vider</button><button class="btn" type="button" data-action="temporary-save">Enregistrer</button><button class="btn" type="button" data-action="preview">Aperçu</button></div>
   </div>`;
 }
 
-function quizMarkup(c){const qa=quizAnswers();return `${c.conceptualNote?`<div class="callout warning conceptual-note"><strong>Cas conceptuel:</strong> ${esc(c.conceptualNote)}</div>`:''}<div class="quiz-card">${c.questions.map((question,index)=>`<fieldset class="question"><legend>${index+1}. ${esc(question.q)}</legend>${question.options.map((option,optionIndex)=>`<label><input type="radio" name="q-${state.current}-${index}" data-question="${index}" value="${optionIndex}" ${Number(qa[index])===optionIndex?'checked':''}> <span>${esc(option)}</span></label>`).join('')}</fieldset>`).join('')}<div class="form-actions"><button class="btn primary" type="button" data-action="validate">Vérifier les réponses</button><button class="btn" type="button" data-action="solution">Afficher la solution</button></div></div>`;}
+
+function compactFieldRow({code,label,sub='',valueKey,computedKey,highlight=false,action=''}){
+  return `<div class="compact-declaration-row ${highlight?'highlight':''}"><div class="compact-declaration-label"><span class="compact-code">ch. ${esc(code)}</span><div><strong>${esc(label)}</strong>${sub?`<small>${esc(sub)}</small>`:''}${action}</div></div><div class="compact-declaration-value">${valueKey?amountInput(valueKey,`Chiffre ${code}`):computedKey?`<span class="computed" data-computed="${computedKey}">${chf(0,2)}</span>`:''}</div></div>`;
+}
+function compactDeclarationMarkup(c){
+  const report=state.reported[state.current];
+  const reportStatus=reportedCurrent(c)?'current':report?'stale':'missing';
+  const reportText=reportStatus==='current'?'Calcul reporté et à jour':reportStatus==='stale'?'Calcul modifié: report à refaire':'Aucun calcul reporté';
+  const requiredKeys=new Set(Object.entries(c.deductions||{}).filter(([,value])=>Math.abs(Number(value||0))>0.000001).map(([key])=>key));
+  Object.keys(answers()).filter(key=>DEDUCTIONS.some(item=>item.key===key)&&String(answers()[key]).trim()!=='').forEach(key=>requiredKeys.add(key));
+  const deductions=(c.type==='free'?DEDUCTIONS:DEDUCTIONS.filter(item=>requiredKeys.has(item.key))).map(item=>compactFieldRow({code:item.code,label:item.label,sub:item.help,valueKey:item.key})).join('');
+  const showAcquisition=c.type==='free'||Number(c.fields?.acqBase||0)!==0||Number(c.fields?.acqTax||0)!==0||String(inputValue('acqBase')).trim()!==''||String(inputValue('acqTax')).trim()!=='';
+  const showCredit=c.type==='free'||Number(c.fields?.ch415||0)!==0||String(inputValue('ch415')).trim()!=='';
+  const showFunds=c.type==='free'||Number(c.fields?.ch900||0)!==0||Number(c.fields?.ch910||0)!==0||String(inputValue('ch900')).trim()!==''||String(inputValue('ch910')).trim()!=='';
+  return `<div class="compact-declaration">
+    <div class="compact-declaration-head"><div><p class="eyebrow">Étape 3 · Décompte compact</p><h3>Rubriques utiles pour ce cas</h3><p>La vue complète du prototype reste disponible séparément.</p></div><button class="btn small" type="button" data-mode="portal">Voir toutes les rubriques</button></div>
+    <section class="compact-declaration-section"><h4>I. Chiffre d’affaires</h4>
+      ${compactFieldRow({code:'200',label:'Total des contre-prestations',sub:c.accountingBasis||'Contre-prestations convenues',valueKey:'ch200',highlight:true})}
+      ${deductions||'<p class="compact-empty">Aucune déduction spécifique n’est attendue dans ce cas.</p>'}
+      ${compactFieldRow({code:'289',label:'Total des déductions',computedKey:'ch289'})}
+      ${compactFieldRow({code:'299',label:'Chiffre d’affaires imposable',sub:'ch. 200 − ch. 289',computedKey:'ch299',highlight:true})}
+    </section>
+    <section class="compact-declaration-section"><h4>II. Calcul de l’impôt</h4>
+      ${compactFieldRow({code:'323',label:'Prestations selon le calcul TDFN',sub:reportText,computedKey:'ch323Base',highlight:true,action:`<button class="mini-link" type="button" data-action="open-calc">Ouvrir Calcul</button><span class="report-status ${reportStatus}">${reportText}</span>`})}
+      <div class="compact-tax-summary"><span>Impôt au ch. 323</span><strong data-computed="ch323Tax">${chf(0,2)}</strong><span>Taux moyen</span><strong data-computed-rate>0,0000 %</strong></div>
+      ${compactFieldRow({code:'379',label:'Total du chiffre d’affaires imposable',sub:'Doit correspondre au ch. 299',computedKey:'ch379',highlight:true})}
+      <div class="concordance-box pending" data-concordance></div>
+      ${showAcquisition?`<div class="compact-subsection"><h5>Impôt sur les acquisitions</h5><div class="compact-acquisition"><label>Base nette ch. 383 ${amountInput('acqBase','Base impôt sur les acquisitions')}</label><label>Impôt ch. 383 ${amountInput('acqTax','Impôt sur les acquisitions')}</label><label>Taux légal <select class="rate-select compact-select" data-acq-rate aria-label="Taux légal de l’impôt sur les acquisitions">${[8.1,2.6,3.8].map(value=>`<option value="${value}" ${acquisitionRate()===value?'selected':''}>${fmt(value,1)} %</option>`).join('')}</select></label><div class="suggested-tax" data-acq-suggested></div></div></div>`:''}
+      ${compactFieldRow({code:'399',label:'Total de l’impôt dû',computedKey:'ch399',highlight:true})}
+      ${showCredit?`${compactFieldRow({code:'415',label:'Correction documentée',valueKey:'ch415'})}${compactFieldRow({code:'479',label:'Total du crédit d’impôt',computedKey:'ch479'})}`:''}
+      <div class="compact-balance"><div><span>ch. 500 · Montant à payer</span><strong data-computed="ch500">${chf(0,2)}</strong></div><div><span>ch. 510 · Solde en faveur</span><strong data-computed="ch510">${chf(0,2)}</strong></div></div>
+    </section>
+    ${showFunds?`<section class="compact-declaration-section"><h4>III. Autres mouvements de fonds</h4>${compactFieldRow({code:'900',label:'Subventions et contributions',valueKey:'ch900'})}${compactFieldRow({code:'910',label:'Autres mouvements de fonds',valueKey:'ch910'})}</section>`:''}
+  </div>`;
+}
+
+function quizMarkup(c){const qa=quizAnswers();return `${c.conceptualNote?`<div class="callout warning conceptual-note"><strong>Cas conceptuel:</strong> ${esc(c.conceptualNote)}</div>`:''}<div class="quiz-card">${c.questions.map((question,index)=>`<fieldset class="question"><legend>${index+1}. ${esc(question.q)}</legend>${question.options.map((option,optionIndex)=>`<label><input type="radio" name="q-${state.current}-${index}" data-question="${index}" value="${optionIndex}" ${Number(qa[index])===optionIndex?'checked':''}> <span>${esc(option)}</span></label>`).join('')}</fieldset>`).join('')}</div>`;}
 
 function renderWork(){
   const c=current();
-  if(c.type==='quiz'){document.querySelector('#workArea').innerHTML=renderContrast(c)+quizMarkup(c);return;}
-  if(state.mode==='portal'){document.querySelector('#workArea').innerHTML=renderContrast(c)+declarationMarkup(c);updateComputed();return;}
+  const stepperSlot=document.querySelector('#stepperSlot');
+  if(c.type==='quiz'){
+    stepperSlot.innerHTML='';
+    document.querySelector('#workArea').innerHTML=renderContrast(c)+quizMarkup(c);
+    renderActionBars(c);
+    return;
+  }
+  if(state.mode==='portal'){
+    stepperSlot.innerHTML='';
+    document.querySelector('#workArea').innerHTML=declarationMarkup(c);
+    renderActionBars(c);updateComputed();return;
+  }
   const step=state.steps[state.current]||1;
+  stepperSlot.innerHTML=renderStepper();
   let content=learning(c);
+  if(step===1) content=renderContrast(c)+content;
   if(step===2) content=calculatorMarkup(c);
-  if(step===3) content=declarationMarkup(c);
-  document.querySelector('#workArea').innerHTML=renderContrast(c)+renderStepper()+content;
-  updateComputed();
+  if(step===3) content=compactDeclarationMarkup(c);
+  document.querySelector('#workArea').innerHTML=content;
+  renderActionBars(c);updateComputed();
 }
 
 function updateComputed(){
@@ -182,13 +260,14 @@ function updateComputed(){
 
 function reportCalculation(){
   const c=current();
-  if(!allActivityBasesEntered(c,answers())){showToast('Ajoutez au moins une activité et saisissez une contre-prestation pour chacune, même si le montant est zéro.','error');return;}
+  if(!allActivityBasesEntered(c,answers())){showToast('Saisissez une contre-prestation pour chaque activité, même si le montant est zéro.','error');return;}
   const calc=calcSnapshot(c);
   state.reported[state.current]={...calc,signature:calculatorSignature(c,answers()),reportedAt:new Date().toISOString()};
   state.steps[state.current]=3;
+  state.dossierOpen[state.current]=false;
   save();
   const dialog=document.querySelector('#calcDialog');if(dialog?.open)dialog.close();
-  renderWork();showToast(`Calcul reporté au ch. 323: ${chf(calc.base,2)} et ${chf(calc.tax,2)} d’impôt.`,'success');
+  renderAll();showToast(`Calcul reporté au ch. 323: ${chf(calc.base,2)} et ${chf(calc.tax,2)} d’impôt.`,'success');
 }
 
 function openCalculator(){const dialog=document.querySelector('#calcDialog');dialog.querySelector('#calcDialogContent').innerHTML=calculatorMarkup(current(),{dialog:true});dialog.showModal();updateComputed();}
@@ -268,10 +347,11 @@ function removeActivity(index){const cfg=freeConfig();if(cfg.activities.length<=
 function handleAction(action,button){
   if(action==='validate')current().type==='quiz'?validateQuiz():validateForm();if(action==='previous')selectCase((state.current-1+CASES.length)%CASES.length);
   if(action==='solution')showSolution();if(action==='summary')summary();if(action==='reset-case')resetCase();if(action==='restart-no-help')resetCase(true);if(action==='next')selectCase((state.current+1)%CASES.length);if(action==='print')window.print();if(action==='open-calc')openCalculator();if(action==='close-calc')document.querySelector('#calcDialog').close();if(action==='report-calc')reportCalculation();if(action==='preview')preview();if(action==='close-preview')document.querySelector('#previewDialog').close();if(action==='temporary-save')showToast('Progression enregistrée localement dans ce navigateur.','success');if(action==='back-list')showToast('Entraînement local: aucune liste «Mes décomptes TVA» n’est disponible.','info');if(action==='attachment-info')showToast('Dans le service AFC, le justificatif est joint à la procédure de déclaration.','info');if(action==='add-activity')addActivity();if(action==='remove-activity')removeActivity(Number(button?.dataset.index));
+  if(action==='toggle-dossier'){state.dossierOpen[state.current]=!state.dossierOpen[state.current];save();renderAll();}
   if(action==='reset-all'&&confirm('Effacer toute la progression de l’entraînement?')){localStorage.removeItem(STORAGE_KEY);state=structuredClone(DEFAULT);renderAll();document.querySelector('#resultArea').innerHTML='';}
 }
 
-document.addEventListener('click',event=>{const button=event.target.closest('button');if(!button)return;if(button.dataset.case!==undefined){selectCase(Number(button.dataset.case));return;}if(button.dataset.mode){state.mode=button.dataset.mode;save();renderAll();return;}if(button.dataset.step){state.steps[state.current]=Number(button.dataset.step);save();renderWork();return;}if(button.dataset.action)handleAction(button.dataset.action,button);});
+document.addEventListener('click',event=>{const button=event.target.closest('button');if(!button)return;if(button.dataset.case!==undefined){selectCase(Number(button.dataset.case));return;}if(button.dataset.mode){state.mode=button.dataset.mode;save();renderAll();return;}if(button.dataset.step){state.steps[state.current]=Number(button.dataset.step);if(Number(button.dataset.step)>1)state.dossierOpen[state.current]=false;save();renderAll();return;}if(button.dataset.action)handleAction(button.dataset.action,button);});
 document.addEventListener('input',event=>{
   const freeLabel=event.target.closest('[data-free-label]');if(freeLabel){freeConfig().activities[Number(freeLabel.dataset.freeLabel)].label=freeLabel.value;delete state.reported[state.current];save();updateComputed();return;}
   const input=event.target.closest('[data-key],[data-text-key]');if(!input)return;const key=input.dataset.key||input.dataset.textKey;answers()[key]=input.value;input.classList.remove('ok','error','blank');input.removeAttribute('aria-invalid');save();updateComputed();

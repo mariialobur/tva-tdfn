@@ -3,44 +3,51 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Entraînement pédagogique au décompte TVA suisse selon la méthode des taux de la dette fiscale nette (TDFN), avec cas progressifs, cas libre et contrôles métier.">
+  <meta name="description" content="Entraînement pédagogique au décompte TVA suisse selon la méthode des taux de la dette fiscale nette (TDFN), avec cas progressifs, atelier libre et contrôles métier.">
   <meta name="author" content="Mariia Lobur">
   <meta name="theme-color" content="#163f52">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_CH">
   <meta property="og:title" content="Entraînement au décompte TVA suisse — méthode TDFN">
-  <meta property="og:description" content="Treize cas progressifs, un atelier libre et une vue compacte inspirée du prototype AFC.">
+  <meta property="og:description" content="Cas progressifs, atelier libre et vue pédagogique inspirée du prototype AFC.">
   <meta property="og:url" content="https://mariialobur.github.io/tva-tdfn/">
   <meta property="og:image" content="https://mariialobur.github.io/tva-tdfn/assets/preview.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <link rel="canonical" href="https://mariialobur.github.io/tva-tdfn/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect rx=%2214%22 width=%2264%22 height=%2264%22 fill=%22%231f6078%22/><text x=%2232%22 y=%2241%22 text-anchor=%22middle%22 font-size=%2227%22 fill=%22white%22 font-family=%22Arial%22>TVA</text></svg>">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=6.1.0">
   <title>Décompte TVA suisse TDFN — entraînement pédagogique | Mariia Lobur</title>
 </head>
 <body>
 <a class="skip-link" href="#workspace">Aller au contenu principal</a>
 <header class="topbar">
   <div class="topbar__inner">
-    <div>
-      <p class="kicker">Projet pédagogique indépendant · Suisse</p>
-      <h1>Entraînement au décompte TVA — méthode TDFN</h1>
-      <p class="subtitle">Vue pédagogique inspirée du prototype AFC · règles dès le 01.01.2025 · version 6 · sources consultées le 29.07.2026</p>
+    <div class="brand-block">
+      <p class="kicker">TVA suisse · méthode TDFN</p>
+      <h1>Entraînement TDFN</h1>
+      <p class="subtitle">Cas pratiques basés sur le prototype de décompte AFC</p>
     </div>
     <div class="header-tools">
-      <button class="ghost-button" id="openSources" type="button">Référentiel officiel</button>
-      <div class="progress" aria-label="Progression du parcours">
-        <div><span>Cas maîtrisés sans aide</span><strong id="progressText">0 / 13</strong></div>
+      <button class="ghost-button" id="openSources" type="button">Sources officielles</button>
+      <button class="progress progress-button" type="button" data-action="summary" aria-label="Ouvrir le bilan du parcours">
+        <div><span id="moduleProgressLabel">Module</span><strong id="progressText">0 / 3</strong></div>
         <div class="progress__track"><span id="progressBar"></span></div>
-      </div>
+      </button>
     </div>
   </div>
 </header>
 <section class="principle" aria-label="Principe TDFN">
   <div class="principle__inner">
-    <strong>Réflexe:</strong>
-    <div class="principle__flow"><span>taux légal sur la facture</span><b>→</b><span>CA brut TTC × TDFN confirmé</span></div>
-    <small>Sans déduction séparée de l’impôt préalable réel.</small>
-    <p class="principle__assumption"><strong>Hypothèse du parcours:</strong> l’entreprise est déjà assujettie et l’AFC a confirmé par écrit la méthode TDFN ainsi que les taux indiqués. Dans les cas simplifiés, la qualification fiscale ou un montant complexe est fourni comme hypothèse; l’exercice porte alors sur son report.</p>
+    <div class="principle__main">
+      <strong>Rappel TDFN:</strong>
+      <div class="principle__flow"><span>taux légal sur la facture</span><b>→</b><span>CA brut TTC × TDFN confirmé</span></div>
+      <small>L’impôt préalable est pris en compte forfaitairement dans le TDFN; il n’est pas déduit séparément dans le décompte courant.</small>
+    </div>
+    <details class="principle__details">
+      <summary>Hypothèses du parcours</summary>
+      <p>L’entreprise est déjà assujettie et l’AFC a confirmé par écrit la méthode TDFN ainsi que les taux indiqués. Dans les cas simplifiés, la qualification fiscale ou un montant complexe est fourni comme hypothèse; l’exercice porte alors sur son report.</p>
+    </details>
   </div>
 </section>
 <nav class="case-nav" aria-label="Cas pratiques">
@@ -60,37 +67,41 @@
         <h2 id="caseTitle"></h2>
         <p id="caseDescription"></p>
       </div>
-      <div class="mode-switch" id="modeSwitch" aria-label="Mode de travail">
-        <button type="button" data-mode="guided">Parcours guidé</button>
-        <button type="button" data-mode="portal">Vue prototype AFC</button>
+      <div class="workspace-head__tools">
+        <button class="dossier-toggle" id="toggleDossier" type="button" data-action="toggle-dossier" hidden>Afficher le dossier</button>
+        <div class="mode-switch" id="modeSwitch" aria-label="Mode de travail">
+          <button type="button" data-mode="guided">Parcours guidé</button>
+          <button type="button" data-mode="portal">Vue prototype AFC</button>
+        </div>
       </div>
     </div>
     <details class="mobile-dossier" id="mobileDossier">
       <summary>Dossier, contrôles et sources du cas</summary>
       <div id="mobileDossierContent"></div>
     </details>
-    <div class="desktop-action-bar" id="desktopActionBar" aria-label="Actions du cas">
-      <button class="btn primary" type="button" data-action="validate">Contrôler</button>
-      <button class="btn" type="button" data-action="solution">Solution</button>
-      <button class="btn" type="button" data-action="next">Cas suivant</button>
-      <button class="btn" type="button" data-action="summary">Bilan</button>
+    <div id="stepperSlot"></div>
+    <div class="context-action-bar" id="desktopActionBar" aria-label="Action principale du cas">
+      <button class="btn primary" type="button" data-context-primary>Continuer</button>
+      <details class="more-actions">
+        <summary aria-label="Autres actions">⋯</summary>
+        <div class="more-actions__menu">
+          <button class="menu-action" type="button" data-action="solution">Afficher la solution</button>
+          <button class="menu-action" type="button" data-action="summary">Bilan du parcours</button>
+          <button class="menu-action danger" type="button" data-action="reset-case">Réinitialiser ce cas</button>
+        </div>
+      </details>
     </div>
     <div id="workArea"></div>
     <div id="resultArea" aria-live="polite"></div>
   </section>
 </main>
 <footer>
-  <div>
-    <strong>Mariia Lobur</strong> · Projet pédagogique indépendant, sans affiliation à l’AFC.
-  </div>
-  <div>Dans les cas guidés, l’assujettissement et les TDFN indiqués sont supposés déjà confirmés par l’AFC. Le traitement d’un cas réel doit toujours être vérifié.</div>
+  <div><strong>Mariia Lobur</strong> · Projet pédagogique indépendant, sans affiliation à l’AFC.</div>
+  <div>Version 6.1 · sources consultées le 29.07.2026. Le traitement d’un cas réel doit toujours être vérifié dans le service AFC en vigueur.</div>
 </footer>
 <dialog id="sourceDialog" class="source-dialog" aria-labelledby="sourceTitle">
   <div class="dialog-head">
-    <div>
-      <p class="eyebrow">Traçabilité documentaire</p>
-      <h2 id="sourceTitle">Référentiel officiel du simulateur</h2>
-    </div>
+    <div><p class="eyebrow">Traçabilité documentaire</p><h2 id="sourceTitle">Référentiel officiel du simulateur</h2></div>
     <button class="icon-button" type="button" id="closeSources" aria-label="Fermer">×</button>
   </div>
   <div id="sourceRegistry"></div>
@@ -99,11 +110,17 @@
 <dialog id="calcDialog" class="source-dialog calc-dialog" aria-labelledby="calcDialogTitle"><div class="dialog-head"><div><p class="eyebrow">Fenêtre auxiliaire</p><h2 id="calcDialogTitle">Calcul TDFN</h2></div><button class="icon-button" type="button" data-action="close-calc" aria-label="Fermer">×</button></div><div id="calcDialogContent"></div></dialog>
 <dialog id="previewDialog" class="source-dialog preview-dialog" aria-labelledby="previewTitle"><div class="dialog-head"><div><p class="eyebrow">Contrôle avant continuation</p><h2 id="previewTitle">Aperçu du décompte</h2></div><button class="icon-button" type="button" data-action="close-preview" aria-label="Fermer">×</button></div><div id="previewContent"></div></dialog>
 <div class="mobile-action-bar" id="mobileActionBar" aria-label="Actions du cas">
-  <button type="button" data-action="validate">Contrôler</button>
-  <button type="button" data-action="solution">Solution</button>
-  <button type="button" data-action="next">Suivant</button>
+  <button class="mobile-primary" type="button" data-context-primary>Continuer</button>
+  <details class="more-actions mobile-more-actions">
+    <summary aria-label="Autres actions">⋯</summary>
+    <div class="more-actions__menu">
+      <button class="menu-action" type="button" data-action="solution">Solution</button>
+      <button class="menu-action" type="button" data-action="summary">Bilan</button>
+      <button class="menu-action danger" type="button" data-action="reset-case">Réinitialiser</button>
+    </div>
+  </details>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script type="module" src="app.js"></script>
+<script type="module" src="app.js?v=6.1.0"></script>
 </body>
 </html>

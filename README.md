@@ -1,4 +1,4 @@
-# Entraînement au décompte TVA — méthode TDFN v6
+# Entraînement au décompte TVA — méthode TDFN v6.1
 
 Projet pédagogique indépendant conçu par Mariia Lobur.
 
@@ -6,43 +6,48 @@ Projet pédagogique indépendant conçu par Mariia Lobur.
 
 Sauf indication contraire, chaque entreprise est déjà assujettie à la TVA et a reçu une confirmation écrite de l’AFC autorisant la méthode TDFN ainsi que le ou les TDFN indiqués.
 
-Dans les cas signalés comme simplifiés, la qualification fiscale ou un montant complexe est fourni comme hypothèse. L’exercice porte alors sur son traitement et son report dans le décompte.
+Les cas précisent désormais le **mode de décompte** retenu: contre-prestations convenues ou reçues. Dans les situations signalées comme simplifiées, la qualification fiscale ou un montant complexe est fourni comme hypothèse; l’exercice porte alors sur son traitement et son report.
 
 ## Positionnement
 
 Cet outil est un **entraînement fondé sur le prototype public AFC**. Il ne reproduit pas le service AFC en production, ne confirme pas l’autorisation d’un TDFN et ne transmet aucune déclaration.
 
-La version 6 propose:
+La version 6.1 propose:
 
 - **13 cas guidés**;
 - **1 atelier libre** utilisant uniquement des activités et TDFN déjà confirmés dans le courrier ou le profil AFC de l’entreprise;
-- une vue compacte inspirée du prototype AFC;
+- un parcours guidé compact;
+- une vue complète séparée, inspirée du prototype AFC;
 - des contrôles arithmétiques et structurels.
 
 ## Logique du décompte
 
-1. saisir les contre-prestations au ch. 200;
-2. détailler les déductions des ch. 220 à 280;
-3. obtenir les totaux ch. 289 et 299;
-4. ventiler les contre-prestations brutes TTC par activité dans la fenêtre **Calcul TDFN**;
-5. reporter le résultat agrégé au ch. 323;
-6. contrôler la concordance ch. 379 = ch. 299;
-7. déterminer ch. 383, 399, 479 et le solde ch. 500 ou 510;
-8. déclarer séparément les mouvements de fonds aux ch. 900 et 910.
+1. déterminer le mode de décompte du dossier: contre-prestations convenues ou reçues;
+2. saisir les contre-prestations au ch. 200;
+3. détailler les déductions des ch. 220 à 280;
+4. obtenir les totaux ch. 289 et 299;
+5. ventiler les contre-prestations brutes TTC par activité dans la fenêtre **Calcul TDFN**;
+6. reporter le résultat agrégé au ch. 323;
+7. contrôler la concordance ch. 379 = ch. 299;
+8. déterminer ch. 383, 399, 479 et le solde ch. 500 ou 510;
+9. déclarer séparément les mouvements de fonds aux ch. 900 et 910.
 
-## Améliorations v6
+## Améliorations v6.1
 
-- interface resserrée à une largeur de travail maximale de 1180 px;
-- sélection des cas par modules dans un menu unique, avec navigation précédent/suivant;
-- dossier latéral raccourci et références regroupées dans un bloc repliable;
-- barre d’actions proche de la zone de travail;
-- étape «Comprendre» réduite à trois contrôles essentiels;
-- atelier libre reformulé comme reproduction d’un paramétrage déjà confirmé par l’AFC;
-- résultat libre renommé **Cohérence arithmétique vérifiée**;
-- cas de changement de méthode identifié comme comparaison de deux décomptes distincts;
-- ch. 410 explicitement limité au premier décompte sous méthode effective;
-- calcul TDFN sans arrondi intermédiaire: les montants bruts sont additionnés, puis le total affiché est arrondi à CHF 0.01;
-- les autres options d’arrondi restent désactivées faute d’algorithme public documenté.
+- mode de décompte visible dans le dossier;
+- cas B corrigé: le total TTC n’est plus donné avant l’exercice;
+- en-tête et rappel TDFN raccourcis;
+- hypothèses du parcours placées dans un bloc repliable;
+- progression affichée par module plutôt que sur les 13 cas;
+- stepper placé avant le contenu de l’étape;
+- une seule action principale, adaptée à l’étape en cours;
+- solution, bilan et réinitialisation regroupés dans un menu secondaire;
+- dossier latéral automatiquement masqué pendant le calcul et le décompte, avec possibilité de le rouvrir;
+- décompte guidé limité aux rubriques utiles au cas;
+- formulaire complet conservé dans la vue séparée **Prototype AFC**;
+- disparition de la barre horizontale de la déclaration dans le parcours guidé;
+- affichage mobile du calcul TDFN sous forme de cartes;
+- cache-busting des fichiers CSS et JavaScript (`v=6.1.0`).
 
 ## Structure
 
@@ -51,6 +56,7 @@ La version 6 propose:
 - `data.js` — cas et registre des sources;
 - `logic.js` — calculs et contrôles indépendants de l’interface;
 - `app.js` — interactions, progression et atelier libre;
+- `assets/preview.png` — visuel Open Graph;
 - `tests/run-tests.mjs` — tests des scénarios corrects;
 - `tests/error-cases.mjs` — tests des incohérences;
 - `AUDIT.md` — décisions métier et limites;
@@ -72,6 +78,14 @@ Ouvrir ensuite `http://localhost:8000`.
 ## Publication GitHub Pages
 
 Déposer le contenu de ce dossier à la racine du dépôt `tva-tdfn`, puis activer GitHub Pages depuis la branche principale et le dossier `/(root)`.
+
+Les fichiers portent un paramètre de version dans `index.html`. Lors d’une future mise à jour, remplacer par exemple `v=6.1.0` par `v=6.2.0` afin d’éviter l’affichage d’anciens fichiers depuis le cache du navigateur.
+
+## Sources principales
+
+- AFC — formulaires TVA: https://www.estv.admin.ch/fr/formulaires-tva
+- AFC — TDFN et taux forfaitaires: https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires
+- Prototype de décompte TVA TDFN: https://www.estv2.admin.ch/mwst/formulare/mwst-form-abr-muster-sss-fr.pdf
 
 ## Limites
 
