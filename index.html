@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr-CH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Entraînement pédagogique au décompte TVA suisse selon la méthode des taux de la dette fiscale nette (TDFN), avec cas progressifs, cas libre et contrôles métier.">
+  <meta name="author" content="Mariia Lobur">
+  <meta name="theme-color" content="#163f52">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_CH">
+  <meta property="og:title" content="Entraînement au décompte TVA suisse — méthode TDFN">
+  <meta property="og:description" content="Treize cas progressifs, un cas libre et une vue pédagogique inspirée du prototype AFC.">
+  <meta property="og:url" content="https://mariialobur.github.io/tva-tdfn/">
+  <meta property="og:image" content="https://mariialobur.github.io/tva-tdfn/assets/preview.png">
+  <link rel="canonical" href="https://mariialobur.github.io/tva-tdfn/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect rx=%2214%22 width=%2264%22 height=%2264%22 fill=%22%231f6078%22/><text x=%2232%22 y=%2241%22 text-anchor=%22middle%22 font-size=%2227%22 fill=%22white%22 font-family=%22Arial%22>TVA</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+  <title>Décompte TVA suisse TDFN — entraînement pédagogique | Mariia Lobur</title>
+</head>
+<body>
+<a class="skip-link" href="#workspace">Aller au contenu principal</a>
+<header class="topbar">
+  <div class="topbar__inner">
+    <div>
+      <p class="kicker">Projet pédagogique indépendant · Suisse</p>
+      <h1>Entraînement au décompte TVA — méthode TDFN</h1>
+      <p class="subtitle">Vue pédagogique inspirée du prototype AFC · règles dès le 01.01.2025 · sources consultées le 29.07.2026</p>
+    </div>
+    <div class="header-tools">
+      <button class="ghost-button" id="openSources" type="button">Référentiel officiel</button>
+      <div class="progress" aria-label="Progression du parcours">
+        <div><span>Cas maîtrisés sans aide</span><strong id="progressText">0 / 13</strong></div>
+        <div class="progress__track"><span id="progressBar"></span></div>
+      </div>
+    </div>
+  </div>
+</header>
+<section class="principle" aria-label="Principe TDFN">
+  <div class="principle__inner">
+    <strong>Réflexe central</strong>
+    <div class="principle__flow">
+      <span>Facture client: taux légal</span><b>→</b><span>Décompte AFC: CA brut TTC</span><b>×</b><span>TDFN autorisé</span>
+    </div>
+    <small>Pas de déduction séparée de l’impôt préalable réel.</small>
+  </div>
+</section>
+<nav class="case-nav" aria-label="Cas pratiques">
+  <div class="case-nav__inner">
+    <label class="mobile-case-picker" for="caseSelect"><span>Choisir un cas</span><select id="caseSelect" aria-label="Choisir un cas pratique"></select></label>
+    <div id="caseTabs" class="case-tabs" role="tablist" aria-label="Choisir un cas"></div>
+  </div>
+</nav>
+<main class="layout" id="workspace">
+  <aside class="sidebar" id="sidebar" aria-label="Dossier du cas"></aside>
+  <section class="workspace">
+    <div class="workspace-card workspace-head">
+      <div>
+        <p class="eyebrow" id="caseLevel"></p>
+        <h2 id="caseTitle"></h2>
+        <p id="caseDescription"></p>
+      </div>
+      <div class="mode-switch" id="modeSwitch" aria-label="Mode de travail">
+        <button type="button" data-mode="guided">Parcours guidé</button>
+        <button type="button" data-mode="portal">Vue prototype AFC</button>
+      </div>
+    </div>
+    <details class="mobile-dossier" id="mobileDossier">
+      <summary>Dossier, contrôles et sources du cas</summary>
+      <div id="mobileDossierContent"></div>
+    </details>
+    <div id="workArea"></div>
+    <div id="resultArea" aria-live="polite"></div>
+  </section>
+</main>
+<footer>
+  <div>
+    <strong>Mariia Lobur</strong> · Projet pédagogique indépendant, sans affiliation à l’AFC.
+  </div>
+  <div>Les situations sont simplifiées. La qualification de l’activité, le TDFN autorisé et le traitement d’un cas réel doivent être vérifiés.</div>
+</footer>
+<dialog id="sourceDialog" class="source-dialog" aria-labelledby="sourceTitle">
+  <div class="dialog-head">
+    <div>
+      <p class="eyebrow">Traçabilité documentaire</p>
+      <h2 id="sourceTitle">Référentiel officiel du simulateur</h2>
+    </div>
+    <button class="icon-button" type="button" id="closeSources" aria-label="Fermer">×</button>
+  </div>
+  <div id="sourceRegistry"></div>
+  <p class="dialog-note">Hiérarchie retenue: loi et ordonnances Fedlex, publications AFC, puis formulaire pédagogique inspiré des rubriques officielles. Le prototype public et le service en production peuvent différer; le service AFC en vigueur reste déterminant.</p>
+</dialog>
+<dialog id="calcDialog" class="source-dialog calc-dialog" aria-labelledby="calcDialogTitle"><div class="dialog-head"><div><p class="eyebrow">Fenêtre auxiliaire</p><h2 id="calcDialogTitle">Calcul TDFN</h2></div><button class="icon-button" type="button" data-action="close-calc" aria-label="Fermer">×</button></div><div id="calcDialogContent"></div></dialog>
+<dialog id="previewDialog" class="source-dialog preview-dialog" aria-labelledby="previewTitle"><div class="dialog-head"><div><p class="eyebrow">Contrôle avant continuation</p><h2 id="previewTitle">Aperçu du décompte</h2></div><button class="icon-button" type="button" data-action="close-preview" aria-label="Fermer">×</button></div><div id="previewContent"></div></dialog>
+<div class="mobile-action-bar" id="mobileActionBar" aria-label="Actions du cas">
+  <button type="button" data-action="validate">Contrôler</button>
+  <button type="button" data-action="solution">Solution</button>
+  <button type="button" data-action="next">Suivant</button>
+  <button type="button" data-action="summary">Bilan</button>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
