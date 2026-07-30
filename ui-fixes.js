@@ -137,12 +137,55 @@
     });
   }
 
+
+  function isCaseI() {
+    const title = document.querySelector('#caseTitle')?.textContent || '';
+    return location.hash === '#cas-I' || title.includes('Service acquis à l’étranger');
+  }
+
+  function addAcquisitionExplanation() {
+    if (!isCaseI()) return;
+
+    const workArea = document.querySelector('#workArea');
+    if (!workArea) return;
+
+    const compactAcquisition = workArea.querySelector('.compact-acquisition');
+    if (compactAcquisition && !compactAcquisition.parentElement?.querySelector('.acquisition-explanation')) {
+      const note = document.createElement('div');
+      note.className = 'acquisition-explanation';
+      note.innerHTML = '<strong>Pourquoi CHF&nbsp;10’000 ne figure pas au ch.&nbsp;200&nbsp;?</strong><p>Cet achat constitue une charge et non un chiffre d’affaires. Il n’est donc pas déclaré au ch.&nbsp;200, mais séparément au ch.&nbsp;383 au titre de l’impôt sur les acquisitions.</p><p>Le cas suppose que le fournisseur étranger n’a pas facturé de TVA suisse, que la prestation relève du lieu du destinataire et que la base CHF&nbsp;10’000 est indiquée hors TVA.</p>';
+      compactAcquisition.parentElement?.prepend(note);
+    }
+
+    const portalRows = [...workArea.querySelectorAll('.afc-table tr')];
+    const acquisitionRow = portalRows.find((row) => row.querySelector('.code')?.textContent?.trim() === '383');
+    if (acquisitionRow && !acquisitionRow.previousElementSibling?.classList.contains('acquisition-explanation-row')) {
+      const row = document.createElement('tr');
+      row.className = 'portal-option-row acquisition-explanation-row';
+      row.innerHTML = '<td colspan="5"><div class="acquisition-explanation"><strong>Pourquoi CHF&nbsp;10’000 ne figure pas au ch.&nbsp;200&nbsp;?</strong><p>Cet achat est une charge, non une contre-prestation réalisée par l’entreprise. La base est déclarée séparément au ch.&nbsp;383 et imposée au taux légal applicable.</p></div></td>';
+      acquisitionRow.before(row);
+    }
+  }
+
+  function addSummaryNavigation() {
+    const resultArea = document.querySelector('#resultArea');
+    const card = resultArea?.querySelector('.result-card');
+    if (!card || !card.querySelector('.summary-list') || card.querySelector('.summary-navigation')) return;
+
+    const actions = document.createElement('div');
+    actions.className = 'form-actions summary-navigation';
+    actions.innerHTML = '<button class="btn" type="button" data-action="close-summary">← Revenir au cas</button><button class="btn primary" type="button" data-action="next">Cas suivant →</button>';
+    card.append(actions);
+  }
+
   function applyFixes() {
     addQuizFormatNote();
     addQuizNextButton();
     addDeclarationReminder();
     enhanceCalculatorAverageRate();
     enhanceCompactAverageRate();
+    addAcquisitionExplanation();
+    addSummaryNavigation();
   }
 
   function scheduleFixes() {
@@ -153,6 +196,14 @@
       applyFixes();
     });
   }
+
+
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-action="close-summary"]');
+    if (!button) return;
+    document.querySelector('#resultArea')?.replaceChildren();
+    document.querySelector('#workArea')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 
   const observer = new MutationObserver(scheduleFixes);
   observer.observe(document.documentElement, { childList: true, subtree: true });

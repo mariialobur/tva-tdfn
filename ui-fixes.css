@@ -172,3 +172,34 @@
     justify-content: flex-start;
   }
 }
+
+
+.acquisition-explanation {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 1px solid #c9ddea;
+  border-left: 4px solid var(--brand);
+  border-radius: 10px;
+  background: #f4faff;
+  color: var(--ink);
+  font-size: .78rem;
+  line-height: 1.5;
+}
+
+.acquisition-explanation p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.acquisition-explanation-row td {
+  padding: 10px 14px !important;
+  background: #fff;
+}
+
+.acquisition-explanation-row .acquisition-explanation {
+  margin-bottom: 0;
+}
+
+.summary-navigation {
+  border-top: 1px solid var(--line);
+}
