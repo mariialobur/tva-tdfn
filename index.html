@@ -17,6 +17,7 @@
   <link rel="canonical" href="https://mariialobur.github.io/tva-tdfn/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect rx=%2214%22 width=%2264%22 height=%2264%22 fill=%22%231f6078%22/><text x=%2232%22 y=%2241%22 text-anchor=%22middle%22 font-size=%2227%22 fill=%22white%22 font-family=%22Arial%22>TVA</text></svg>">
   <link rel="stylesheet" href="styles.css?v=6.2.0">
+  <link rel="stylesheet" href="ui-fixes.css?v=2026.07.30">
   <title>Décompte TVA suisse TDFN — entraînement pédagogique | Mariia Lobur</title>
 </head>
 <body>
@@ -96,8 +97,15 @@
   </section>
 </main>
 <footer>
-  <div><strong>Mariia Lobur</strong> · Projet pédagogique indépendant, sans affiliation à l’AFC.</div>
-  <div>Version 6.1 · sources consultées le 29.07.2026. Le traitement d’un cas réel doit toujours être vérifié dans le service AFC en vigueur.</div>
+  <div class="footer-author-line">
+    <a class="footer-author-link" href="https://www.linkedin.com/in/mariia-lobur/" target="_blank" rel="noopener noreferrer"><strong>Mariia Lobur</strong> · LinkedIn</a>
+    <span> · Projet pédagogique indépendant, sans affiliation à l’AFC.</span>
+  </div>
+  <div class="footer-meta-line">
+    <span>Mise à jour: 30.07.2026.</span>
+    <a href="https://mariialobur.github.io/tva-debutant/" target="_blank" rel="noopener noreferrer">Entraînement TVA — méthode effective</a>
+    <span>Le traitement d’un cas réel doit toujours être vérifié dans le service AFC en vigueur.</span>
+  </div>
 </footer>
 <dialog id="sourceDialog" class="source-dialog" aria-labelledby="sourceTitle">
   <div class="dialog-head">
@@ -122,5 +130,6 @@
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script type="module" src="app.js?v=6.2.0"></script>
+<script src="ui-fixes.js?v=2026.07.30"></script>
 </body>
 </html>
