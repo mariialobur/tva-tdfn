@@ -1,4 +1,4 @@
-# Audit professionnel — version 6.1
+# Audit professionnel — version 6.3
 
 ## Décision de positionnement
 
@@ -55,7 +55,7 @@ La solution, le bilan et la réinitialisation sont regroupés dans un menu secon
 
 ### 7. Cache
 
-Les ressources CSS et JavaScript sont appelées avec `v=6.1.0`. Cette mesure évite la coexistence visuelle d’une ancienne feuille de styles et d’un nouveau fichier HTML après une mise à jour GitHub Pages.
+Les ressources CSS et JavaScript sont appelées avec `v=6.3.0`. Cette mesure évite la coexistence visuelle d’une ancienne feuille de styles et d’un nouveau fichier HTML après une mise à jour GitHub Pages.
 
 ## Contrôles conservés
 
@@ -73,7 +73,7 @@ Le moteur vérifie notamment:
 ## Tests exécutés
 
 - contrôle syntaxique de `data.js`, `logic.js` et `app.js`;
-- 13 cas guidés et 1 atelier libre;
+- 16 cas guidés et 1 atelier libre;
 - calculs ch. 323, 379, 383, 399, 479, 500, 510, 900 et 910;
 - test spécifique confirmant l’absence d’arrondi intermédiaire;
 - erreurs négatives, déductions excessives, report absent, ch. 383 erroné et discordance ch. 299/379.
@@ -81,3 +81,14 @@ Le moteur vérifie notamment:
 ## Limites restantes
 
 L’outil ne valide pas la qualification d’une activité, le droit d’utiliser la méthode TDFN, l’exhaustivité des justificatifs ni les particularités d’un dossier réel. Les options d’arrondi de production ne sont pas simulées faute de spécification publique complète.
+
+
+## Ajouts de la version 6.3
+
+- checklist préalable en dix points, enregistrée localement;
+- quiz de qualification sur le ch. 205 et distinction avec le ch. 230;
+- cas chiffré sur une diminution de contre-prestation au ch. 235;
+- cas chiffré produisant un solde en faveur au ch. 510;
+- bloc d’information sur la remise actuelle via «Décompte TVA pro»;
+- blocage de l’aperçu si le calcul reporté est absent, obsolète ou discordant;
+- correction de l’arrondi afin qu’une option liée au ch. 500 ne modifie pas le ch. 510.

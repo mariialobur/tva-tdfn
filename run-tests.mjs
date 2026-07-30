@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {CASES,DEDUCTIONS} from './data.js';
+import {CASES,DEDUCTIONS,OFFICIAL_SOURCES} from './data.js';
 import {parseAmount,expectedInputMap,computeCalculator,calculatorSignature,computeDeclaration,validateCase,rateKey,universalChecks} from './logic.js';
 
 assert.equal(parseAmount('108’100,50'),108100.5);
@@ -13,13 +13,15 @@ assert(Math.abs(roundingCalc.rawTax-0.01116)<1e-12);
 assert.equal(roundingCalc.tax,0.01,'Total must be rounded only after raw line taxes are summed');
 assert.equal(roundingCalc.rounding,'no-intermediate-rounding');
 
-assert.equal(CASES.length,14);
-assert.equal(CASES.filter(c=>!c.excludeFromProgress).length,13);
+assert.equal(CASES.length,17);
+assert.equal(CASES.filter(c=>!c.excludeFromProgress).length,16);
 
+const sourceIds=new Set(OFFICIAL_SOURCES.map(source=>source.id));
 const ids=new Set();
 for(const c of CASES){
   assert(!ids.has(c.id),`Duplicate case id ${c.id}`);ids.add(c.id);
   assert(c.sourceIds?.length>0,`Missing sources for ${c.id}`);
+  c.sourceIds.forEach(id=>assert(sourceIds.has(id),`Unknown source ${id} in ${c.id}`));
   if(c.type==='quiz'){
     assert(c.questions.length>=3,`Quiz ${c.id} too short`);
     c.questions.forEach(q=>assert(q.answer>=0&&q.answer<q.options.length,`Invalid quiz answer ${c.id}`));
@@ -49,7 +51,7 @@ for(const c of CASES){
 const sport=CASES.find(c=>c.id==='D');
 assert.deepEqual(sport.rates.map(r=>r.rate),[2.1,3.0,3.7,4.5]);
 const change=CASES.find(c=>c.id==='K');assert.match(change.conceptualNote,/ch\. 410.*méthode effective/i);
-const free=CASES.find(c=>c.id==='N');assert.match(free.description,/confirmation écrite|profil AFC/i);
+const free=CASES.find(c=>c.id==='Q');assert.match(free.description,/confirmation écrite|profil AFC/i);
 const established=CASES.find(c=>c.id==='F');
 assert.match(established.period,/2025–2027/);assert.match(established.period,/2028/);
 const funds=CASES.find(c=>c.id==='L');
@@ -62,4 +64,23 @@ const creditInputs=Object.fromEntries(Object.entries(expectedInputMap(credit)).f
 const creditCalc=computeCalculator(credit,creditInputs);
 const creditDecl=computeDeclaration(credit,creditInputs,{...creditCalc,signature:calculatorSignature(credit,creditInputs)},false);
 assert.equal(creditDecl.ch399,6200);assert.equal(creditDecl.ch479,1500);assert.equal(creditDecl.ch500,4700);assert.equal(creditDecl.ch510,0);
-console.log(`OK — v6 compact: 13 guided cases + 1 free workshop; calculator, ch. 323/379/383/399/479/500/510 and sections 900/910 verified.`);
+const optionCase=CASES.find(c=>c.id==='N');
+assert.equal(optionCase.type,'quiz');
+assert.match(optionCase.lesson,/ch\. 205/i);
+const optionProbe=computeDeclaration({rates:[]},{ch200:'30000',ch205:'30000'},null,false);
+assert.equal(optionProbe.ch205,30000);assert.equal(optionProbe.ch299,30000,'ch. 205 is informative and must not reduce ch. 299');
+const reduction=CASES.find(c=>c.id==='O');
+const reductionInputs=Object.fromEntries(Object.entries(expectedInputMap(reduction)).filter(([,v])=>v).map(([k,v])=>[k,String(v)]));
+const reductionCalc=computeCalculator(reduction,reductionInputs);
+const reductionDecl=computeDeclaration(reduction,reductionInputs,{...reductionCalc,signature:calculatorSignature(reduction,reductionInputs)},false);
+assert.equal(reductionDecl.ch200,108100);assert.equal(reductionDecl.ch289,8100);assert.equal(reductionDecl.ch299,100000);assert.equal(reductionDecl.ch379,100000);assert.equal(reductionDecl.ch399,6200);
+const favourable=CASES.find(c=>c.id==='P');
+const favourableInputs=Object.fromEntries(Object.entries(expectedInputMap(favourable)).filter(([,v])=>v).map(([k,v])=>[k,String(v)]));
+const favourableCalc=computeCalculator(favourable,favourableInputs);
+const favourableDecl=computeDeclaration(favourable,favourableInputs,{...favourableCalc,signature:calculatorSignature(favourable,favourableInputs)},false);
+assert.equal(favourableDecl.ch399,1240);assert.equal(favourableDecl.ch479,2000);assert.equal(favourableDecl.ch500,0);assert.equal(favourableDecl.ch510,760);
+const favourableRounded=computeDeclaration(favourable,favourableInputs,{...favourableCalc,signature:calculatorSignature(favourable,favourableInputs)},true);
+assert.equal(favourableRounded.ch510,760,'Final-round option must not alter a negative raw balance displayed at ch. 510');
+const positiveRounding=computeDeclaration({rates:[]},{ch415:'0'},{base:0,tax:100.5,averageRate:0},true);
+assert.equal(positiveRounding.ch500,101,'Positive ch. 500 may be rounded to francs when selected');
+console.log(`OK — v6.3: 16 guided/quiz cases + 1 free workshop; ch. 205, 235, 510, calculator and concordance verified.`);

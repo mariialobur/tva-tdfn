@@ -73,10 +73,10 @@ export function computeDeclaration(c,source={},reported=null,finalRound=false){
   const creditRows=[{key:'ch415',value:amountFrom(source,'ch415')}];
   const ch415=creditRows[0].value;
   const ch479=roundToCent(creditRows.reduce((sum,row)=>sum+row.value,0));
-  let balance=roundToCent(ch399-ch479);
-  if(finalRound) balance=roundToFranc(balance);
-  const ch500=balance>0?balance:0;
-  const ch510=balance<0?Math.abs(balance):0;
+  const rawBalance=roundToCent(ch399-ch479);
+  const ch500=rawBalance>0?(finalRound?roundToFranc(rawBalance):rawBalance):0;
+  const ch510=rawBalance<0?Math.abs(rawBalance):0;
+  const balance=ch500>0?ch500:ch510>0?-ch510:0;
   const ch900=amountFrom(source,'ch900');
   const ch910=amountFrom(source,'ch910');
   return {ch200,ch205,deductionRows,ch289,ch299,ch323Base,ch323Tax,ch323Rate,ch379,acqBase,acqTax,ch399,creditRows,ch415,ch479,ch500,ch510,ch900,ch910,balance,concordance:roundToCent(ch299-ch379)};

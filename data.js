@@ -7,6 +7,7 @@ export const OFFICIAL_SOURCES = [
   {id:'changes',title:'AFC — modifications des TDFN au 01.01.2025',scope:'Table de correspondance des anciennes et nouvelles activités/taux',url:'https://www.estv.admin.ch/dam/fr/sd-web/WbNBDFahZQYD/mwst-publ-sss-aenderungen-2025-1-fr.pdf',status:'Publication AFC'},
   {id:'info12',title:'Info TVA 12 — TDFN',scope:'Conditions, adhésion, changement de méthode, cas particuliers',url:'https://www.gate.estv.admin.ch/mwst-webpublikationen/public/IT/12',status:'Publication AFC'},
   {id:'forms',title:'AFC — formulaires TVA',scope:'Rubriques du décompte et dépôt dans le Portail AFC',url:'https://www.estv.admin.ch/fr/formulaires-tva',status:'Source administrative'},
+  {id:'online',title:'AFC — Décompter la TVA en ligne',scope:'Transmission électronique actuelle via «Décompte TVA pro» dans le Portail AFC',url:'https://www.estv.admin.ch/fr/decompter-la-tva-en-ligne',status:'Source administrative actuelle'},
   {id:'info12-154',title:'Info TVA 12, ch. 15.4 — règle des 10 %',scope:'Trois périodes consécutives, quatrième période et regroupement par TDFN',url:'https://www.gate.estv.admin.ch/mwst-webpublikationen/public/pages/taxInfos/cipherDisplay.xhtml?componentId=1005406&publicationId=1004992',status:'Pratique AFC publiée le 31.03.2025'}
 ];
 
@@ -135,17 +136,51 @@ CASES.push(
     clientNote:'Atelier Repris Sàrl a repris, sous procédure de déclaration au sens de l’art. 38 LTVA, des machines et du matériel affectés à une activité imposable.',afcNote:'Le dossier comporte le contrat de transfert, l’inventaire, les valeurs résiduelles, la méthode de décompte des parties et un tableau de correction validé donnant CHF 1’500.',
     given:[{label:'Prestations imposables du semestre, TVA comprise',amount:100000,note:'Base TDFN de l’activité courante.',tag:'TTC'},{label:'TDFN autorisé dans le cas',note:'Hypothèse pédagogique pour les services techniques.',tag:'6,2 %'},{label:'Correction issue du tableau de reprise',amount:1500,note:'Montant documenté à reporter au ch. 415; il n’est pas recalculé à partir du chiffre d’affaires.',tag:'415'},{label:'Pièces du dossier',note:'Contrat art. 38, inventaire, affectation, valeurs résiduelles et rapprochement comptable.',tag:'Justificatifs'}],
     checks:['Vérifier que la procédure de déclaration s’applique effectivement.','Conserver le calcul de la correction et les valeurs résiduelles.','Distinguer le ch. 399 avant crédit du solde après ch. 479.'],legal:'Art. 38 LTVA · prototype AFC, ch. 415, 479, 500 et 510 · traitement à confirmer sur dossier réel',sourceIds:['ltva','prototype','forms','info12'],
-    rates:[{label:'Services techniques — hypothèse du cas',rate:6.2,base:100000,tax:6200}],fields:{ch200:100000,ch415:1500},deductions:{},
+    rates:[{label:'Activité imposable — TDFN de 6,2 % déjà confirmé par l’AFC',rate:6.2,base:100000,tax:6200}],fields:{ch200:100000,ch415:1500},deductions:{},
     explanations:{ch200:'Le chiffre d’affaires imposable courant est CHF 100’000 TTC.',r0base:'La base TDFN du semestre est CHF 100’000.',ch415:'CHF 1’500 proviennent du tableau de correction documenté; le simulateur ne prétend pas reconstituer ce calcul juridique complexe.'},lesson:'Le ch. 415 est une rubrique de correction fondée sur des pièces et une analyse préalable, non une déduction forfaitaire liée au chiffre d’affaires.'
   }
 );
 
+CASES.push(
+  {
+    id:'N',tab:'N · Ch. 205',title:'Option — distinguer les ch. 205 et 230',entity:'Immo Formation Sàrl',sector:'Opération avec option déjà valablement exercée',location:'Suisse',period:'S1 2026',level:'Application',risk:'high',type:'quiz',
+    description:'Le ch. 205 informe sur la part du ch. 200 provenant de prestations normalement exclues pour lesquelles l’option a été exercée; il ne constitue pas une déduction.',mission:'Identifiez le traitement déclaratif d’une contre-prestation de CHF 30’000 déjà qualifiée comme valablement imposée par option.',
+    clientNote:'L’exercice suppose que les conditions de l’option sont remplies et documentées. La qualification juridique de l’opération n’est pas à refaire dans ce quiz.',afcNote:'La contre-prestation reste comprise au ch. 200, sa part est indiquée au ch. 205 et elle n’est pas déduite au ch. 230.',
+    given:[{label:'Contre-prestation avec option, TVA comprise',amount:30000,note:'Déjà comprise dans le total du ch. 200.',tag:'205'},{label:'Qualification',note:'Option valablement exercée selon l’hypothèse du cas.',tag:'Prérequis'}],
+    checks:['Le ch. 205 est une rubrique informative comprise dans le ch. 200.','Le ch. 205 ne diminue pas le ch. 299.','Le ch. 230 concerne les prestations exclues sans option dans le cas concerné.'],legal:'Art. 22 LTVA · prototype AFC, ch. 200, 205 et 230',sourceIds:['ltva','prototype','forms'],
+    questions:[
+      {q:'La contre-prestation avec option figure-t-elle au ch. 200?',options:['Oui, elle est comprise dans le total des contre-prestations','Non, elle figure uniquement au ch. 205'],answer:0,why:'Le ch. 205 détaille une partie déjà comprise dans le ch. 200.'},
+      {q:'Faut-il également indiquer CHF 30’000 au ch. 205?',options:['Oui','Non'],answer:0,why:'Le ch. 205 identifie la part des prestations normalement exclues pour lesquelles l’option a été exercée.'},
+      {q:'Faut-il déduire cette somme au ch. 230?',options:['Oui, toujours','Non, car l’opération est imposée par option dans ce cas'],answer:1,why:'Une prestation imposée par option n’est pas déduite comme prestation exclue sans option.'},
+      {q:'Le ch. 205 réduit-il le ch. 299?',options:['Oui','Non'],answer:1,why:'Le ch. 205 est informatif et ne fait pas partie du total des déductions au ch. 289.'}
+    ],lesson:'Le ch. 205 précise le contenu du ch. 200; il ne remplace ni le ch. 200 ni une déduction.'
+  },
+  {
+    id:'O',tab:'O · Ch. 235',title:'Note de crédit — diminution de la contre-prestation',entity:'Conseil Horizon Sàrl',sector:'Conseil aux entreprises',location:'Lausanne',period:'S1 2026',level:'Application',risk:'medium',accountingBasis:'Contre-prestations convenues',
+    description:'Une note de crédit documentée réduit la contre-prestation imposable et la base soumise au TDFN.',mission:'Déclarez la facturation brute au ch. 200, la diminution au ch. 235, puis reportez la base nette au calcul TDFN.',
+    clientNote:'Le dossier contient une note de crédit de CHF 8’100 TVA comprise liée à des honoraires initialement facturés.',afcNote:'Le TDFN de 6,2 % est déjà confirmé pour l’activité du cas; l’exercice porte sur le report de la diminution.',
+    given:[{label:'Honoraires facturés, TVA comprise',amount:108100,note:'Total avant la note de crédit.',tag:'200'},{label:'Note de crédit documentée, TVA comprise',amount:8100,note:'Diminution de la contre-prestation.',tag:'235'},{label:'Base nette après diminution',amount:100000,note:'Montant à ventiler au TDFN.',tag:'TTC'},{label:'TDFN confirmé',note:'Conseil aux entreprises.',tag:'6,2 %'}],
+    checks:['Le ch. 200 reprend la facturation brute du dossier.','La note de crédit est portée au ch. 235.','Le ch. 299 et le ch. 379 doivent tous deux être de CHF 100’000.'],legal:'Prototype AFC, ch. 200, 235, 289, 299, 323 et 379 · art. 37 LTVA',sourceIds:['prototype','afc-main','info12'],
+    rates:[{label:'Conseil aux entreprises',rate:6.2,base:100000,tax:6200}],fields:{ch200:108100},deductions:{ch235:8100},
+    explanations:{ch200:'Le ch. 200 reprend CHF 108’100 avant la diminution.',ch235:'La note de crédit documentée de CHF 8’100 est portée au ch. 235.',r0base:'CHF 108’100 − CHF 8’100 = CHF 100’000 de base nette.',r0tax:'CHF 100’000 × 6,2 % = CHF 6’200.'},lesson:'Une diminution documentée corrige la contre-prestation; la base TDFN doit correspondre au chiffre d’affaires imposable net.'
+  },
+  {
+    id:'P',tab:'P · Ch. 510',title:'Crédit supérieur à l’impôt — solde en faveur',entity:'Pilotage PME Sàrl',sector:'Conseil aux entreprises',location:'Vaud',period:'S1 2026',level:'Avancé',risk:'high',accountingBasis:'Contre-prestations convenues',
+    description:'Lorsque le crédit documenté au ch. 479 dépasse l’impôt dû au ch. 399, le solde apparaît au ch. 510 et non comme un montant négatif au ch. 500.',mission:'Calculez la dette TDFN sur CHF 20’000 TTC, reportez la correction documentée de CHF 2’000 au ch. 415 et contrôlez le solde en faveur.',
+    clientNote:'Le droit et le montant de la correction sont déjà établis par un dossier séparé; le simulateur teste uniquement son report dans le décompte.',afcNote:'Le résultat attendu est ch. 399 CHF 1’240, ch. 479 CHF 2’000, ch. 500 CHF 0 et ch. 510 CHF 760.',
+    given:[{label:'Honoraires imposables, TVA comprise',amount:20000,note:'Base TDFN du semestre.',tag:'TTC'},{label:'TDFN confirmé',note:'Conseil aux entreprises.',tag:'6,2 %'},{label:'Correction documentée',amount:2000,note:'Montant fourni à reporter au ch. 415.',tag:'415'}],
+    checks:['Aucun montant négatif n’est saisi dans le formulaire.','Le ch. 500 reste à zéro lorsque le crédit dépasse l’impôt.','Le solde positif en faveur de l’assujetti est affiché au ch. 510.'],legal:'Prototype AFC, ch. 399, 415, 479, 500 et 510 · traitement à confirmer sur dossier réel',sourceIds:['prototype','forms','info12'],
+    rates:[{label:'Conseil aux entreprises',rate:6.2,base:20000,tax:1240}],fields:{ch200:20000,ch415:2000},deductions:{},
+    explanations:{ch200:'Le chiffre d’affaires imposable du semestre est CHF 20’000 TTC.',r0base:'La base TDFN est CHF 20’000.',r0tax:'CHF 20’000 × 6,2 % = CHF 1’240.',ch415:'La correction documentée de CHF 2’000 est reportée au ch. 415.'},lesson:'Le formulaire sépare le montant à payer au ch. 500 du solde en faveur au ch. 510; aucun des deux champs ne reçoit un nombre négatif.'
+  }
+);
+
 CASES.push({
-  id:'N',tab:'N · Cas libre',title:'Atelier libre — contrôler un décompte déjà paramétré par l’AFC',entity:'Votre entreprise',sector:'Activités à définir',location:'Suisse',period:'Période à définir',level:'Atelier libre',risk:'high',type:'free',excludeFromProgress:true,
+  id:'Q',tab:'Q · Cas libre',title:'Atelier libre — contrôler un décompte déjà paramétré par l’AFC',entity:'Votre entreprise',sector:'Activités à définir',location:'Suisse',period:'Période à définir',level:'Atelier libre',risk:'high',type:'free',excludeFromProgress:true,
   description:'Reproduisez un décompte à partir des activités et TDFN figurant déjà dans la confirmation écrite ou le profil AFC de l’entreprise.',mission:'Saisissez uniquement les activités et TDFN déjà confirmés par l’AFC, reportez le calcul au ch. 323 et corrigez les incohérences arithmétiques signalées.',
   clientNote:'Les factures clients restent établies aux taux légaux applicables.',afcNote:'L’atelier suppose que chaque activité et chaque TDFN saisi figurent déjà dans la confirmation ou le profil AFC.',
   given:[{label:'Confirmation ou profil AFC',note:'Les activités et TDFN saisis doivent déjà y figurer.',tag:'Prérequis'},{label:'Montants',note:'Contre-prestations brutes, TVA comprise, pour le calcul TDFN.',tag:'TTC'},{label:'Résultat',note:'Contrôle arithmétique uniquement; aucune déclaration n’est transmise.',tag:'Simulation'}],
-  checks:['ch. 289 ne peut pas dépasser ch. 200.','La base reportée au ch. 323 doit correspondre au ch. 299.','La base et l’impôt du ch. 383 doivent être cohérents avec le taux légal sélectionné.'],legal:'Prototype AFC · art. 37 LTVA · art. 77 à 91 OTVA · ordonnance AFC sur les TDFN',sourceIds:['prototype','ltva','otva','rates','afc-main'],rates:[],fields:{},deductions:{},lesson:'L’atelier vérifie la cohérence arithmétique d’un paramétrage déjà confirmé par l’AFC; il ne valide ni la qualification juridique ni les pièces.'
+  checks:['ch. 289 ne peut pas dépasser ch. 200.','La base reportée au ch. 323 doit correspondre au ch. 299.','La base et l’impôt du ch. 383 doivent être cohérents avec le taux légal sélectionné.'],legal:'Prototype AFC · art. 37 LTVA · art. 77 à 91 OTVA · ordonnance AFC sur les TDFN',sourceIds:['prototype','ltva','otva','rates','afc-main','online'],rates:[],fields:{},deductions:{},lesson:'L’atelier vérifie la cohérence arithmétique d’un paramétrage déjà confirmé par l’AFC; il ne valide ni la qualification juridique ni les pièces.'
 });
 
 for (const c of CASES) {

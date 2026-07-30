@@ -1,14 +1,14 @@
-import {CASES,DEDUCTIONS,OFFICIAL_SOURCES} from './data.js?v=6.2.0';
-import {rateKey,parseAmount,expectedInputMap,computeCalculator,calculatorSignature,computeDeclaration,validateCase,allActivityBasesEntered,universalChecks,roundToCent} from './logic.js?v=6.2.0';
+import {CASES,DEDUCTIONS,OFFICIAL_SOURCES} from './data.js?v=6.3.0';
+import {rateKey,parseAmount,expectedInputMap,computeCalculator,calculatorSignature,computeDeclaration,validateCase,allActivityBasesEntered,universalChecks,roundToCent} from './logic.js?v=6.3.0';
 
-const STORAGE_KEY='tva_tdfn_v61_state';
-const DEFAULT={version:61,current:0,mode:'guided',steps:{},answers:{},quiz:{},scores:{},assisted:{},attempts:{},reported:{},finalRound:{},acquisitionRate:{},dossierOpen:{},free:{activities:[{label:'Activité 1',rate:6.2}]}};
+const STORAGE_KEY='tva_tdfn_v63_state';
+const DEFAULT={version:63,current:0,mode:'guided',steps:{},answers:{},quiz:{},scores:{},assisted:{},attempts:{},reported:{},finalRound:{},acquisitionRate:{},dossierOpen:{},precheck:{},free:{activities:[{label:'Activité 1',rate:6.2}]}};
 let state=loadState();
 
 function loadState(){
   try{
     const raw=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
-    if(raw?.version===61) return {...structuredClone(DEFAULT),...raw,dossierOpen:{...(raw.dossierOpen||{})},free:{...structuredClone(DEFAULT.free),...(raw.free||{})}};
+    if(raw?.version===63) return {...structuredClone(DEFAULT),...raw,dossierOpen:{...(raw.dossierOpen||{})},precheck:{...(raw.precheck||{})},free:{...structuredClone(DEFAULT.free),...(raw.free||{})}};
   }catch{}
   return structuredClone(DEFAULT);
 }
@@ -28,6 +28,19 @@ const fmt=(value,decimals=0)=>new Intl.NumberFormat('fr-CH',{minimumFractionDigi
 const chf=(value,decimals=2)=>`CHF\u00a0${fmt(value,decimals)}`;
 const esc=value=>String(value??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
 
+const PRECHECK_ITEMS = [
+  ['authorization','Méthode TDFN autorisée par l’AFC pour la période concernée'],
+  ['rates','Activités et TDFN concordants avec la confirmation ou le profil AFC'],
+  ['basis','Mode de décompte «convenues» ou «reçues» identifié'],
+  ['grossNet','Montants sources identifiés comme HT ou TTC'],
+  ['turnover','Exhaustivité du ch. 200 contrôlée, y compris les opérations à y déclarer'],
+  ['foreignPlace','Prestations avec lieu à l’étranger analysées'],
+  ['evidence','Exportations et autres déductions appuyées par des justificatifs'],
+  ['acquisitions','Prestations acquises à l’étranger contrôlées pour l’impôt sur les acquisitions'],
+  ['concordance','Concordance ch. 299 = ch. 379 vérifiée après le report du calcul'],
+  ['special','Subventions, dividendes, procédure de déclaration et corrections de valeur résiduelle examinés']
+];
+
 const scoredCases=()=>CASES.filter(c=>!c.excludeFromProgress);
 function masteredCount(){return CASES.filter((c,index)=>!c.excludeFromProgress&&state.scores[index]===100&&!state.assisted[index]).length;}
 function caseStatus(index){const c=CASES[index];if(c.excludeFromProgress)return ['libre','free'];if(state.assisted[index])return ['assisté','assisted'];if(state.scores[index]===100)return ['maîtrisé','mastered'];if(Number.isFinite(state.scores[index]))return [`${state.scores[index]}%`,'partial'];return null;}
@@ -41,7 +54,7 @@ function renderHeader(){
   document.querySelector('#progressText').textContent=total?`${mastered} / ${total}`:'libre';
   document.querySelector('#progressBar').style.width=total?`${mastered/total*100}%`:'0%';
 }
-function moduleFor(c){if('ABC'.includes(c.id))return '1 · Fondamentaux';if('DEF'.includes(c.id))return '2 · Plusieurs activités';if('GHI'.includes(c.id))return '3 · International';if('JKLM'.includes(c.id))return '4 · Cas avancés';return '5 · Atelier libre';}
+function moduleFor(c){if('ABC'.includes(c.id))return '1 · Fondamentaux';if('DEF'.includes(c.id))return '2 · Plusieurs activités';if('GHI'.includes(c.id))return '3 · International';if('JKLM'.includes(c.id))return '4 · Cas avancés';if('NOP'.includes(c.id))return '5 · Déclaration pratique';return '6 · Atelier libre';}
 function renderTabs(){document.querySelector('#caseTabs').innerHTML=CASES.map((c,index)=>{const status=caseStatus(index);return `<button class="case-tab" id="tab-${c.id}" role="tab" aria-selected="${index===state.current}" tabindex="${index===state.current?0:-1}" data-case="${index}">${esc(c.tab)}${status?`<span class="status ${status[1]}">${status[0]}</span>`:''}</button>`;}).join('');const groups=new Map();CASES.forEach((c,index)=>{const module=moduleFor(c);if(!groups.has(module))groups.set(module,[]);groups.get(module).push({c,index});});document.querySelector('#caseSelect').innerHTML=[...groups].map(([label,items])=>`<optgroup label="${esc(label)}">${items.map(({c,index})=>`<option value="${index}" ${index===state.current?'selected':''}>${esc(c.tab)} — ${esc(c.title)}</option>`).join('')}</optgroup>`).join('');}
 
 function dossierMarkup(c,compact=false){
@@ -100,7 +113,7 @@ function renderStepper(){
   const canOpenDeclaration=Boolean(state.reported[state.current]);
   return `<div class="workspace-card stepper" role="navigation" aria-label="Étapes du cas">${[['1','Comprendre'],['2','Calcul TDFN'],['3','Décompte']].map(([number,label])=>{const disabled=Number(number)===3&&!canOpenDeclaration&&c.type!=='free';return `<button class="step-button ${Number(number)===step?'active':''}" data-step="${number}" type="button" ${disabled?'disabled':''}><span>${number}</span>${label}</button>`;}).join('')}</div>`;
 }
-function learning(){return `<div class="learning-card learning-focus"><p class="eyebrow">Étape 1 · Comprendre</p><h3>Préparez trois contrôles avant de saisir le décompte</h3><div class="learning-points"><div><b>1</b><span>Déterminer le ch. 200 selon le mode de décompte du dossier et calculer <strong>ch. 299 = ch. 200 − ch. 289</strong>.</span></div><div><b>2</b><span>Ventiler le chiffre d’affaires brut TTC par activité et TDFN confirmé.</span></div><div><b>3</b><span>Reporter le calcul au ch. 323 et vérifier que <strong>ch. 379 = ch. 299</strong>.</span></div></div><p class="learning-note">Le solde final se calcule ensuite par ch. 399 − ch. 479, au ch. 500 ou 510.</p></div>`;}
+function learning(){return `<div class="learning-card learning-focus"><p class="eyebrow">Étape 1 · Comprendre</p><h3>Préparez trois contrôles avant de saisir le décompte</h3><div class="learning-points"><div><b>1</b><span>Déterminer le ch. 200 selon le mode de décompte du dossier et calculer <strong>ch. 299 = ch. 200 − ch. 289</strong>.</span></div><div><b>2</b><span>Ventiler le chiffre d’affaires brut TTC par activité et TDFN confirmé.</span></div><div><b>3</b><span>Reporter le calcul au ch. 323 et vérifier que <strong>ch. 379 = ch. 299</strong>.</span></div></div><p class="learning-note">Le solde final se calcule ensuite par ch. 399 − ch. 479, au ch. 500 ou 510.</p><button class="btn precheck-launch" type="button" data-action="open-precheck">Ouvrir le contrôle préalable complet</button></div>`;}
 
 function inputValue(key){return answers()[key]??'';}
 function amountInput(key,label=''){return `<input class="amount-input" data-key="${key}" inputmode="decimal" autocomplete="off" value="${esc(inputValue(key))}" aria-label="${esc(label)}">`;}
@@ -196,6 +209,7 @@ function compactDeclarationMarkup(c){
   const requiredKeys=new Set(Object.entries(c.deductions||{}).filter(([,value])=>Math.abs(Number(value||0))>0.000001).map(([key])=>key));
   Object.keys(answers()).filter(key=>DEDUCTIONS.some(item=>item.key===key)&&String(answers()[key]).trim()!=='').forEach(key=>requiredKeys.add(key));
   const deductions=(c.type==='free'?DEDUCTIONS:DEDUCTIONS.filter(item=>requiredKeys.has(item.key))).map(item=>compactFieldRow({code:item.code,label:item.label,sub:item.help,valueKey:item.key})).join('');
+  const showCh205=c.type==='free'||Number(c.fields?.ch205||0)!==0||String(inputValue('ch205')).trim()!=='';
   const showAcquisition=c.type==='free'||Number(c.fields?.acqBase||0)!==0||Number(c.fields?.acqTax||0)!==0||String(inputValue('acqBase')).trim()!==''||String(inputValue('acqTax')).trim()!=='';
   const showCredit=c.type==='free'||Number(c.fields?.ch415||0)!==0||String(inputValue('ch415')).trim()!=='';
   const showFunds=c.type==='free'||Number(c.fields?.ch900||0)!==0||Number(c.fields?.ch910||0)!==0||String(inputValue('ch900')).trim()!==''||String(inputValue('ch910')).trim()!=='';
@@ -203,6 +217,7 @@ function compactDeclarationMarkup(c){
     <div class="compact-declaration-head"><div><p class="eyebrow">Étape 3 · Décompte compact</p><h3>Rubriques utiles pour ce cas</h3><p>La vue complète du prototype reste disponible séparément.</p></div><button class="btn small" type="button" data-mode="portal">Voir toutes les rubriques</button></div>
     <section class="compact-declaration-section"><h4>I. Chiffre d’affaires</h4>
       ${compactFieldRow({code:'200',label:'Total des contre-prestations',sub:c.accountingBasis||'Contre-prestations convenues',valueKey:'ch200',highlight:true})}
+      ${showCh205?compactFieldRow({code:'205',label:'Dont prestations imposées par option',sub:'Part informative déjà comprise au ch. 200',valueKey:'ch205'}):''}
       ${deductions||'<p class="compact-empty">Aucune déduction spécifique n’est attendue dans ce cas.</p>'}
       ${compactFieldRow({code:'289',label:'Total des déductions',computedKey:'ch289'})}
       ${compactFieldRow({code:'299',label:'Chiffre d’affaires imposable',sub:'ch. 200 − ch. 289',computedKey:'ch299',highlight:true})}
@@ -349,10 +364,19 @@ function showSolution(){
 }
 function resetCase(noConfirm=false){if(!noConfirm&&!confirm('Réinitialiser les réponses et le statut de ce cas?'))return;['answers','quiz','scores','assisted','attempts','steps','reported','finalRound','acquisitionRate'].forEach(group=>delete state[group][state.current]);if(baseCurrent().type==='free')state.free=structuredClone(DEFAULT.free);save();document.querySelector('#resultArea').innerHTML='';renderAll();}
 function summary(){const mastered=masteredCount(),total=scoredCases().length;const scores=CASES.map((c,index)=>!c.excludeFromProgress&&!state.assisted[index]?state.scores[index]:undefined).filter(Number.isFinite);const average=scores.length?Math.round(scores.reduce((sum,value)=>sum+value,0)/scores.length):0;document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score good">${mastered}/${total}</div><div><h3>Bilan du parcours TDFN</h3><p>Score moyen sans solution: ${average}% · le cas libre n’entre pas dans la note</p></div></div><div class="summary-list">${CASES.map((c,index)=>{const status=caseStatus(index);return `<div class="summary-item"><div><b>${esc(c.tab)} — ${esc(c.title)}</b><span>${esc(c.level)}</span></div><div class="summary-state ${status?.[1]||''}">${status?.[0]||'non commencé'}</div></div>`;}).join('')}</div><div class="form-actions"><button class="btn" type="button" data-action="print">Imprimer</button><button class="btn danger" type="button" data-action="reset-all">Effacer toute la progression</button></div></div>`;}
-function preview(){const c=current();const declaration=computeDeclaration(c,answers(),state.reported[state.current],state.finalRound[state.current]);document.querySelector('#previewContent').innerHTML=`<div class="preview-sheet"><h3>Aperçu du décompte — ${esc(c.entity)}</h3><p>${esc(c.period)} · simulation pédagogique</p><div class="preview-grid">${[['ch. 200',declaration.ch200],['ch. 289',declaration.ch289],['ch. 299',declaration.ch299],['ch. 323 — prestations',declaration.ch323Base],['ch. 323 — impôt',declaration.ch323Tax],['ch. 379',declaration.ch379],['ch. 383',declaration.acqTax],['ch. 399',declaration.ch399],['ch. 479',declaration.ch479],['ch. 500',declaration.ch500],['ch. 510',declaration.ch510],['ch. 900',declaration.ch900],['ch. 910',declaration.ch910]].map(([label,value])=>`<div><span>${label}</span><strong>${chf(value,2)}</strong></div>`).join('')}</div></div>`;document.querySelector('#previewDialog').showModal();}
+function preview(){const c=current();const report=state.reported[state.current]||null;const checks=universalChecks(c,answers(),report,{reportCurrent:reportedCurrent(c),acquisitionRate:acquisitionRate()});if(!checks.allGood){showToast('Aperçu bloqué: le calcul doit être reporté à jour et toutes les concordances doivent être corrigées.','error');return;}const declaration=computeDeclaration(c,answers(),report,state.finalRound[state.current]);document.querySelector('#previewContent').innerHTML=`<div class="preview-sheet"><h3>Aperçu du décompte — ${esc(c.entity)}</h3><p>${esc(c.period)} · simulation pédagogique</p><div class="preview-grid">${[['ch. 200',declaration.ch200],['ch. 205',declaration.ch205],['ch. 289',declaration.ch289],['ch. 299',declaration.ch299],['ch. 323 — prestations',declaration.ch323Base],['ch. 323 — impôt',declaration.ch323Tax],['ch. 379',declaration.ch379],['ch. 383',declaration.acqTax],['ch. 399',declaration.ch399],['ch. 479',declaration.ch479],['ch. 500',declaration.ch500],['ch. 510',declaration.ch510],['ch. 900',declaration.ch900],['ch. 910',declaration.ch910]].map(([label,value])=>`<div><span>${label}</span><strong>${chf(value,2)}</strong></div>`).join('')}</div></div>`;document.querySelector('#previewDialog').showModal();}
 function selectCase(index,focus=false){state.current=Math.max(0,Math.min(CASES.length-1,index));save();history.replaceState(null,'',`#cas-${CASES[state.current].id}`);document.querySelector('#resultArea').innerHTML='';renderAll();if(focus)document.querySelector(`#tab-${CASES[state.current].id}`)?.focus();}
 function renderSources(){document.querySelector('#sourceRegistry').innerHTML=`<table class="source-table"><thead><tr><th>Source</th><th>Utilisation</th><th>Statut</th></tr></thead><tbody>${OFFICIAL_SOURCES.map(source=>`<tr><td><a href="${source.url}" target="_blank" rel="noopener noreferrer">${esc(source.title)}</a></td><td>${esc(source.scope)}</td><td>${esc(source.status)}</td></tr>`).join('')}</tbody></table>`;}
-function renderAll(){renderHeader();renderTabs();renderSidebar();renderCaseHead();renderWork();}
+function renderPrecheck(){
+  const checked=PRECHECK_ITEMS.filter(([key])=>state.precheck?.[key]).length;
+  const target=document.querySelector('#precheckContent');
+  if(!target)return;
+  target.innerHTML=`<div class="precheck-progress"><strong>${checked} / ${PRECHECK_ITEMS.length}</strong><span>contrôles marqués</span></div><div class="precheck-list">${PRECHECK_ITEMS.map(([key,label],index)=>`<label class="precheck-item"><input type="checkbox" data-precheck="${key}" ${state.precheck?.[key]?'checked':''}><span><b>${index+1}.</b> ${esc(label)}</span></label>`).join('')}</div><div class="callout warning precheck-warning"><strong>Portée du contrôle:</strong> cette liste aide à préparer le dossier. Elle ne confirme ni la qualification juridique d’une opération ni le TDFN applicable.</div>`;
+}
+function openPrecheck(){renderPrecheck();document.querySelector('#precheckDialog').showModal();}
+function resetPrecheck(){state.precheck={};save();renderPrecheck();showToast('Contrôle préalable réinitialisé.','info');}
+
+function renderAll(){renderHeader();renderTabs();renderSidebar();renderCaseHead();renderWork();renderPrecheck();}
 
 function refreshCalculatorViews(){renderWork();const dialog=document.querySelector('#calcDialog');if(dialog?.open){dialog.querySelector('#calcDialogContent').innerHTML=calculatorMarkup(current(),{dialog:true});updateComputed();}}
 function addActivity(){const cfg=freeConfig();if((cfg.activities||[]).length>=8){showToast('Maximum pédagogique: 8 activités.','error');return;}cfg.activities.push({label:`Activité ${cfg.activities.length+1}`,rate:6.2});delete state.reported[state.current];save();refreshCalculatorViews();}
@@ -360,7 +384,7 @@ function removeActivity(index){const cfg=freeConfig();if(cfg.activities.length<=
 
 function handleAction(action,button){
   if(action==='validate')current().type==='quiz'?validateQuiz():validateForm();if(action==='previous')selectCase((state.current-1+CASES.length)%CASES.length);
-  if(action==='solution')showSolution();if(action==='summary')summary();if(action==='reset-case')resetCase();if(action==='restart-no-help')resetCase(true);if(action==='next')selectCase((state.current+1)%CASES.length);if(action==='print')window.print();if(action==='open-calc')openCalculator();if(action==='close-calc')document.querySelector('#calcDialog').close();if(action==='report-calc')reportCalculation();if(action==='preview')preview();if(action==='close-preview')document.querySelector('#previewDialog').close();if(action==='temporary-save')showToast('Progression enregistrée localement dans ce navigateur.','success');if(action==='back-list')showToast('Entraînement local: aucune liste «Mes décomptes TVA» n’est disponible.','info');if(action==='attachment-info')showToast('Dans le service AFC, le justificatif est joint à la procédure de déclaration.','info');if(action==='add-activity')addActivity();if(action==='remove-activity')removeActivity(Number(button?.dataset.index));
+  if(action==='solution')showSolution();if(action==='summary')summary();if(action==='reset-case')resetCase();if(action==='restart-no-help')resetCase(true);if(action==='next')selectCase((state.current+1)%CASES.length);if(action==='print')window.print();if(action==='open-calc')openCalculator();if(action==='close-calc')document.querySelector('#calcDialog').close();if(action==='report-calc')reportCalculation();if(action==='preview')preview();if(action==='open-precheck')openPrecheck();if(action==='close-precheck')document.querySelector('#precheckDialog').close();if(action==='reset-precheck')resetPrecheck();if(action==='close-preview')document.querySelector('#previewDialog').close();if(action==='temporary-save')showToast('Progression enregistrée localement dans ce navigateur.','success');if(action==='back-list')showToast('Entraînement local: aucune liste «Mes décomptes TVA» n’est disponible.','info');if(action==='attachment-info')showToast('Dans le service AFC, le justificatif est joint à la procédure de déclaration.','info');if(action==='add-activity')addActivity();if(action==='remove-activity')removeActivity(Number(button?.dataset.index));
   if(action==='toggle-dossier'){state.dossierOpen[state.current]=!state.dossierOpen[state.current];save();renderAll();}
   if(action==='reset-all'&&confirm('Effacer toute la progression de l’entraînement?')){localStorage.removeItem(STORAGE_KEY);state=structuredClone(DEFAULT);renderAll();document.querySelector('#resultArea').innerHTML='';}
 }
@@ -371,6 +395,7 @@ document.addEventListener('input',event=>{
   const input=event.target.closest('[data-key],[data-text-key]');if(!input)return;const key=input.dataset.key||input.dataset.textKey;answers()[key]=input.value;input.classList.remove('ok','error','blank');input.removeAttribute('aria-invalid');save();updateComputed();
 });
 document.addEventListener('change',event=>{
+  const precheck=event.target.closest('[data-precheck]');if(precheck){state.precheck[precheck.dataset.precheck]=precheck.checked;save();renderPrecheck();return;}
   const question=event.target.closest('[data-question]');if(question){quizAnswers()[question.dataset.question]=Number(question.value);save();return;}
   const freeRate=event.target.closest('[data-free-rate]');if(freeRate){freeConfig().activities[Number(freeRate.dataset.freeRate)].rate=Number(freeRate.value);delete state.reported[state.current];save();updateComputed();return;}
   const acqRate=event.target.closest('[data-acq-rate]');if(acqRate){state.acquisitionRate[state.current]=Number(acqRate.value);save();updateComputed();return;}
@@ -379,6 +404,6 @@ document.addEventListener('change',event=>{
 document.querySelector('#caseSelect').addEventListener('change',event=>selectCase(Number(event.target.value)));
 document.querySelector('#caseTabs').addEventListener('keydown',event=>{if(!['ArrowRight','ArrowLeft','Home','End'].includes(event.key))return;event.preventDefault();let index=state.current;if(event.key==='ArrowRight')index=(index+1)%CASES.length;if(event.key==='ArrowLeft')index=(index-1+CASES.length)%CASES.length;if(event.key==='Home')index=0;if(event.key==='End')index=CASES.length-1;selectCase(index,true);});
 document.querySelector('#openSources').addEventListener('click',()=>document.querySelector('#sourceDialog').showModal());document.querySelector('#closeSources').addEventListener('click',()=>document.querySelector('#sourceDialog').close());
-for(const id of ['sourceDialog','calcDialog','previewDialog'])document.querySelector(`#${id}`).addEventListener('click',event=>{if(event.target===event.currentTarget)event.currentTarget.close();});
-const hashMatch=location.hash.match(/^#cas-([A-N])$/);if(hashMatch){const index=CASES.findIndex(c=>c.id===hashMatch[1]);if(index>=0)state.current=index;}
+for(const id of ['sourceDialog','calcDialog','previewDialog','precheckDialog'])document.querySelector(`#${id}`).addEventListener('click',event=>{if(event.target===event.currentTarget)event.currentTarget.close();});
+const hashMatch=location.hash.match(/^#cas-([A-Q])$/);if(hashMatch){const index=CASES.findIndex(c=>c.id===hashMatch[1]);if(index>=0)state.current=index;}
 renderSources();renderAll();

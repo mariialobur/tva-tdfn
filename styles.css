@@ -70,3 +70,20 @@ html{scroll-behavior:smooth}body{margin:0;background:var(--page);color:var(--ink
 .calculator-row-instruction{display:block;margin-top:4px;color:var(--muted);font-size:.68rem;line-height:1.35;font-weight:500}
 @media(min-width:981px){.layout:not(.focus-mode) .calculator-case-data{position:sticky;top:104px;z-index:8;box-shadow:0 7px 18px rgba(20,48,61,.08)}}
 @media(max-width:700px){.calculator-case-data{margin:10px}.calculator-case-data__head{display:grid;gap:7px}.accounting-basis-inline{justify-self:start}.calculator-case-grid{grid-template-columns:1fr}.calculator-case-item,.calculator-case-item:nth-last-child(-n+2){border-bottom:1px solid #dfe9ee}.calculator-case-item:last-child{border-bottom:0}.calculator-case-data__note{font-size:.69rem}}
+
+
+/* v6.3 — contrôle préalable et information de transmission */
+.precheck-launch{margin-top:16px}
+.precheck-dialog{max-width:760px}
+.precheck-progress{display:flex;align-items:baseline;gap:10px;margin:4px 0 18px;padding:14px 16px;border:1px solid var(--line,#d7e0e4);border-radius:14px;background:#f5f9fa}
+.precheck-progress strong{font-size:1.35rem;color:#163f52}
+.precheck-progress span{color:#52666f}
+.precheck-list{display:grid;gap:10px}
+.precheck-item{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border:1px solid var(--line,#d7e0e4);border-radius:12px;background:#fff;cursor:pointer}
+.precheck-item:hover{border-color:#6c98a8;background:#f8fbfc}
+.precheck-item input{margin-top:3px;accent-color:#1f6078}
+.precheck-item span{line-height:1.45}
+.precheck-warning{margin-top:18px}
+.submission-notice{max-width:1200px;margin:28px auto 0;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:24px;border:1px solid #b9ccd3;border-radius:16px;background:#f2f8fa;color:#173e4d}
+.submission-notice p{margin:6px 0 0;max-width:850px;line-height:1.5}
+@media (max-width:760px){.submission-notice{margin:20px 16px 0;align-items:stretch;flex-direction:column}.submission-notice .btn{width:100%;text-align:center}.precheck-item{padding:12px}}

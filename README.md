@@ -1,75 +1,58 @@
-# Entraînement au décompte TVA — méthode TDFN v6.2
+# Entraînement au décompte TVA — méthode TDFN v6.3
 
 Projet pédagogique indépendant conçu par Mariia Lobur.
 
-## Hypothèse du parcours
-
-Sauf indication contraire, chaque entreprise est déjà assujettie à la TVA et a reçu une confirmation écrite de l’AFC autorisant la méthode TDFN ainsi que le ou les TDFN indiqués.
-
-Les cas précisent désormais le **mode de décompte** retenu: contre-prestations convenues ou reçues. Dans les situations signalées comme simplifiées, la qualification fiscale ou un montant complexe est fourni comme hypothèse; l’exercice porte alors sur son traitement et son report.
-
 ## Positionnement
 
-Cet outil est un **entraînement fondé sur le prototype public AFC**. Il ne reproduit pas le service AFC en production, ne confirme pas l’autorisation d’un TDFN et ne transmet aucune déclaration.
+Cet outil aide à comprendre et à contrôler un décompte TVA suisse selon la méthode des taux de la dette fiscale nette. Il ne reproduit pas le Portail AFC, ne détermine pas le TDFN applicable à une activité, ne confirme pas une autorisation et ne transmet aucune déclaration.
 
-La version 6.1 propose:
+Chaque exercice suppose, sauf indication contraire, que l’entreprise est déjà assujettie et que l’AFC a confirmé par écrit la méthode TDFN ainsi que les taux utilisés dans le cas.
 
-- **13 cas guidés**;
-- **1 atelier libre** utilisant uniquement des activités et TDFN déjà confirmés dans le courrier ou le profil AFC de l’entreprise;
-- un parcours guidé compact;
-- une vue complète séparée, inspirée du prototype AFC;
-- des contrôles arithmétiques et structurels.
+## Contenu de la version 6.3
 
-## Logique du décompte
+- **16 cas guidés ou quiz de qualification**;
+- **1 atelier libre** pour reproduire un décompte déjà paramétré par l’AFC;
+- un **contrôle préalable avant le décompte** en 10 points, mémorisé localement;
+- des cas dédiés aux **ch. 205**, **ch. 235** et au **solde en faveur ch. 510**;
+- une vue guidée compacte et une vue complète inspirée du prototype AFC;
+- des contrôles de concordance, de report et de cohérence arithmétique;
+- une information actuelle sur la transmission par **«Décompte TVA pro»** dans le Portail AFC.
 
-1. déterminer le mode de décompte du dossier: contre-prestations convenues ou reçues;
-2. saisir les contre-prestations au ch. 200;
-3. détailler les déductions des ch. 220 à 280;
-4. obtenir les totaux ch. 289 et 299;
-5. ventiler les contre-prestations brutes TTC par activité dans la fenêtre **Calcul TDFN**;
-6. reporter le résultat agrégé au ch. 323;
-7. contrôler la concordance ch. 379 = ch. 299;
-8. déterminer ch. 383, 399, 479 et le solde ch. 500 ou 510;
-9. déclarer séparément les mouvements de fonds aux ch. 900 et 910.
+## Logique du parcours
 
-## Améliorations v6.2
+1. identifier le mode de décompte: contre-prestations convenues ou reçues;
+2. contrôler la qualification des opérations et les justificatifs;
+3. saisir les contre-prestations au ch. 200;
+4. renseigner, le cas échéant, le ch. 205 et les déductions des ch. 220 à 280;
+5. obtenir les ch. 289 et 299;
+6. ventiler les contre-prestations brutes TTC par activité et TDFN confirmé;
+7. reporter le résultat au ch. 323;
+8. vérifier la concordance ch. 379 = ch. 299;
+9. contrôler les ch. 383, 399, 479 et le solde au ch. 500 ou 510;
+10. déclarer séparément les mouvements de fonds aux ch. 900 et 910.
 
-- mode de décompte visible dans le dossier;
-- cas B corrigé: le total TTC n’est plus donné avant l’exercice;
-- en-tête et rappel TDFN raccourcis;
-- hypothèses du parcours placées dans un bloc repliable;
-- progression affichée par module plutôt que sur les 13 cas;
-- stepper placé avant le contenu de l’étape;
-- une seule action principale, adaptée à l’étape en cours;
-- solution, bilan et réinitialisation regroupés dans un menu secondaire;
-- dossier latéral automatiquement masqué pendant le calcul et le décompte, avec possibilité de le rouvrir;
-- décompte guidé limité aux rubriques utiles au cas;
-- formulaire complet conservé dans la vue séparée **Prototype AFC**;
-- disparition de la barre horizontale de la déclaration dans le parcours guidé;
-- affichage mobile du calcul TDFN sous forme de cartes;
-- cache-busting des fichiers CSS et JavaScript (`v=6.2.0`).
+## Principales corrections techniques
 
-
-## Correction UX v6.2
-
-- le dossier reste visible par défaut pendant l’étape **Calcul TDFN** sur ordinateur;
-- un bloc **Rappel du dossier** est affiché directement au-dessus des champs de saisie;
-- les montants, taux et hypothèses utiles restent accessibles sur mobile;
-- chaque activité indique clairement si le montant doit être reporté, reconstruit ou limité à la part imposable;
-- l’étape de calcul ne dépend plus de la mémoire de l’utilisateur ni d’un retour manuel à l’étape précédente.
+- état local isolé sous la version `v63`, afin de ne pas réutiliser des résultats obsolètes;
+- aperçu bloqué lorsque le calcul reporté n’est plus à jour ou que les concordances échouent;
+- arrondi final appliqué au montant positif du ch. 500 sans modifier un solde en faveur au ch. 510;
+- ch. 205 disponible dans le décompte compact lorsqu’il est utile;
+- navigation étendue aux cas A à Q;
+- registre des sources complété avec la page AFC relative à la transmission en ligne.
 
 ## Structure
 
-- `index.html` — interface;
-- `styles.css` — design responsive et impression;
+- `index.html` — interface et métadonnées;
+- `styles.css` et `ui-fixes.css` — design responsive;
 - `data.js` — cas et registre des sources;
-- `logic.js` — calculs et contrôles indépendants de l’interface;
-- `app.js` — interactions, progression et atelier libre;
+- `logic.js` — calculs et contrôles;
+- `app.js` — interactions, progression, checklist et atelier libre;
+- `ui-fixes.js` — compléments UX;
 - `preview.png` — visuel Open Graph;
-- `run-tests.mjs` — tests des scénarios corrects;
-- `error-cases.mjs` — tests des incohérences;
+- `run-tests.mjs` — scénarios corrects;
+- `error-cases.mjs` — scénarios incohérents;
 - `AUDIT.md` — décisions métier et limites;
-- `lien-vers-tdfn.html` — bloc à intégrer au parcours méthode effective.
+- `INSTALLATION-RU.md` — procédure de mise à jour.
 
 ## Tests
 
@@ -77,6 +60,7 @@ La version 6.1 propose:
 node --check data.js
 node --check logic.js
 node --check app.js
+node --check ui-fixes.js
 node run-tests.mjs
 node error-cases.mjs
 python3 -m http.server 8000
@@ -86,20 +70,26 @@ Ouvrir ensuite `http://localhost:8000`.
 
 ## Publication GitHub Pages
 
-Déposer le contenu de ce dossier à la racine du dépôt `tva-tdfn`, puis activer GitHub Pages depuis la branche principale et le dossier `/(root)`.
+Déposer tous les fichiers du paquet à la racine du dépôt `tva-tdfn`, en remplaçant les versions existantes. GitHub Pages doit publier la branche principale depuis `/(root)`.
 
-Les fichiers portent un paramètre de version dans `index.html`. Lors d’une future mise à jour, remplacer par exemple `v=6.2.0` par `v=6.2.0` afin d’éviter l’affichage d’anciens fichiers depuis le cache du navigateur.
+Les ressources utilisent le paramètre de cache `v=6.3.0`. Lors d’une future modification de ces fichiers, augmenter ce numéro, par exemple vers `v=6.3.1`.
 
 ## Sources principales
 
-- AFC — formulaires TVA: https://www.estv.admin.ch/fr/formulaires-tva
-- AFC — TDFN et taux forfaitaires: https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires
-- Prototype de décompte TVA TDFN: https://www.estv2.admin.ch/mwst/formulare/mwst-form-abr-muster-sss-fr.pdf
+- AFC — TDFN et taux forfaitaires;
+- LTVA et OTVA sur Fedlex;
+- ordonnance AFC sur la valeur des TDFN;
+- Info TVA 12 — TDFN;
+- prototype de décompte TVA TDFN;
+- AFC — Décompter la TVA en ligne.
+
+Les URL exactes sont accessibles dans le registre «Sources officielles» du simulateur.
 
 ## Limites
 
-- l’atelier libre suppose que les activités et TDFN sont déjà confirmés par l’AFC;
-- le contrôle libre vérifie la cohérence arithmétique et structurelle, pas la qualification juridique;
+- l’outil ne valide pas la qualification juridique d’une opération;
+- l’atelier libre suppose que les activités et TDFN ont déjà été confirmés par l’AFC;
+- le droit à une déduction, une correction ou une procédure particulière doit être documenté séparément;
 - l’algorithme de production des options d’arrondi du Portail AFC n’est pas reproduit;
-- les rubriques disponibles peuvent dépendre du profil, de la période et des opérations déclarées;
-- les sources ont été consultées le 29.07.2026 et doivent être revérifiées lors d’une future mise à jour.
+- les rubriques disponibles peuvent dépendre du profil et de la période;
+- le contenu a été vérifié selon le droit et les publications en vigueur au **30.07.2026**; les projets futurs ne sont pas intégrés.

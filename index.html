@@ -16,7 +16,7 @@
   <meta property="og:image:height" content="630">
   <link rel="canonical" href="https://mariialobur.github.io/tva-tdfn/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect rx=%2214%22 width=%2264%22 height=%2264%22 fill=%22%231f6078%22/><text x=%2232%22 y=%2241%22 text-anchor=%22middle%22 font-size=%2227%22 fill=%22white%22 font-family=%22Arial%22>TVA</text></svg>">
-  <link rel="stylesheet" href="styles.css?v=6.2.0">
+  <link rel="stylesheet" href="styles.css?v=6.3.0">
   <link rel="stylesheet" href="ui-fixes.css?v=2026.07.30">
   <title>Décompte TVA suisse TDFN — entraînement pédagogique | Mariia Lobur</title>
 </head>
@@ -30,6 +30,7 @@
       <p class="subtitle">Cas pratiques basés sur le prototype de décompte AFC</p>
     </div>
     <div class="header-tools">
+      <button class="ghost-button" type="button" data-action="open-precheck">Contrôle préalable</button>
       <button class="ghost-button" id="openSources" type="button">Sources officielles</button>
       <button class="progress progress-button" type="button" data-action="summary" aria-label="Ouvrir le bilan du parcours">
         <div><span id="moduleProgressLabel">Module</span><strong id="progressText">0 / 3</strong></div>
@@ -96,6 +97,13 @@
     <div id="resultArea" aria-live="polite"></div>
   </section>
 </main>
+<section class="submission-notice" aria-label="Transmission du décompte réel">
+  <div>
+    <strong>Remise du décompte réel</strong>
+    <p>Cette simulation ne transmet aucune donnée. Depuis le 11.05.2026, la remise effective des décomptes TVA s’effectue exclusivement au moyen de «Décompte TVA pro» dans le Portail AFC.</p>
+  </div>
+  <a class="btn small" href="https://www.estv.admin.ch/fr/decompter-la-tva-en-ligne" target="_blank" rel="noopener noreferrer">Information officielle AFC</a>
+</section>
 <footer>
   <div class="footer-author-line">
     <a class="footer-author-link" href="https://www.linkedin.com/in/mariia-lobur/" target="_blank" rel="noopener noreferrer"><strong>Mariia Lobur</strong> · LinkedIn</a>
@@ -104,7 +112,7 @@
   <div class="footer-meta-line">
     <span>Mise à jour: 30.07.2026.</span>
     <a href="https://mariialobur.github.io/tva-debutant/" target="_blank" rel="noopener noreferrer">Entraînement TVA — méthode effective</a>
-    <span>Le traitement d’un cas réel doit toujours être vérifié dans le service AFC en vigueur.</span>
+    <span>Droit et publications pris en compte au 30.07.2026; aucun projet futur n’est intégré.</span>
   </div>
 </footer>
 <dialog id="sourceDialog" class="source-dialog" aria-labelledby="sourceTitle">
@@ -114,6 +122,15 @@
   </div>
   <div id="sourceRegistry"></div>
   <p class="dialog-note">Hiérarchie retenue: loi et ordonnances Fedlex, publications AFC, puis formulaire pédagogique inspiré des rubriques officielles. Le prototype public et le service en production peuvent différer; le service AFC en vigueur reste déterminant.</p>
+</dialog>
+<dialog id="precheckDialog" class="source-dialog precheck-dialog" aria-labelledby="precheckTitle">
+  <div class="dialog-head">
+    <div><p class="eyebrow">Avant la saisie</p><h2 id="precheckTitle">Contrôle préalable avant le décompte</h2></div>
+    <button class="icon-button" type="button" data-action="close-precheck" aria-label="Fermer">×</button>
+  </div>
+  <p class="dialog-note">Passez en revue les dix points à partir de la comptabilité, des justificatifs et du profil AFC de l’entreprise.</p>
+  <div id="precheckContent"></div>
+  <div class="form-actions"><button class="btn" type="button" data-action="reset-precheck">Réinitialiser</button><button class="btn primary" type="button" data-action="close-precheck">Terminer</button></div>
 </dialog>
 <dialog id="calcDialog" class="source-dialog calc-dialog" aria-labelledby="calcDialogTitle"><div class="dialog-head"><div><p class="eyebrow">Fenêtre auxiliaire</p><h2 id="calcDialogTitle">Calcul TDFN</h2></div><button class="icon-button" type="button" data-action="close-calc" aria-label="Fermer">×</button></div><div id="calcDialogContent"></div></dialog>
 <dialog id="previewDialog" class="source-dialog preview-dialog" aria-labelledby="previewTitle"><div class="dialog-head"><div><p class="eyebrow">Contrôle avant continuation</p><h2 id="previewTitle">Aperçu du décompte</h2></div><button class="icon-button" type="button" data-action="close-preview" aria-label="Fermer">×</button></div><div id="previewContent"></div></dialog>
@@ -129,7 +146,7 @@
   </details>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script type="module" src="app.js?v=6.2.0"></script>
-<script src="ui-fixes.js?v=2026.07.30b"></script>
+<script type="module" src="app.js?v=6.3.0"></script>
+<script src="ui-fixes.js?v=2026.07.30c"></script>
 </body>
 </html>

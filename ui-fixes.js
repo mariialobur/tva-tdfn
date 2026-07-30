@@ -16,7 +16,7 @@
 
     const note = document.createElement('div');
     note.className = 'quiz-format-note';
-    note.innerHTML = '<strong>Format de ce cas:</strong> quiz de qualification. Aucun décompte n’est à compléter; l’objectif est d’appliquer correctement la règle des 10&nbsp;%.';
+    note.innerHTML = '<strong>Format de ce cas:</strong> quiz de qualification. Aucun décompte n’est à compléter; l’objectif est d’identifier le traitement fiscal et déclaratif correct avant la saisie.';
     quiz.before(note);
   }
 
