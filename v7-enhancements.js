@@ -1,7 +1,7 @@
 import { CASES, OFFICIAL_SOURCES } from './data.js?v=6.3.0';
 
 /*
- * Compléments pédagogiques et UX — correctif 7.2 du 03.08.2026.
+ * Compléments pédagogiques et UX — correctif 7.4 du 03.08.2026.
  * Chargé avant app.js pour rendre les sources et le cas de rectification
  * disponibles dès le premier rendu, sans déplacer les cas existants.
  */
@@ -19,6 +19,20 @@ const SOURCE_ADDITIONS = [
     title: 'AFC — Concordance annuelle TVA',
     scope: 'Art. 72 LTVA, différences à déclarer, délai de finalisation et intérêt moratoire',
     url: 'https://www.estv.admin.ch/fr/tva-concordance-annuelle',
+    status: 'Source administrative actuelle'
+  },
+  {
+    id: 'payment-interest',
+    title: 'AFC — Payer la TVA et intérêt moratoire',
+    scope: 'Échéance, retard de paiement, calcul de l’intérêt moratoire et seuil administratif de CHF 100',
+    url: 'https://www.estv.admin.ch/fr/payer-la-tva',
+    status: 'Source administrative actuelle'
+  },
+  {
+    id: 'tdfn-2025-additional-rates',
+    title: 'AFC — TDFN dès 2025: activités et taux supplémentaires',
+    scope: 'Plus de deux TDFN, règle des 10 % et déclaration directe d’un taux supplémentaire avec contrôle ultérieur de l’AFC',
+    url: 'https://www.estv.admin.ch/fr/tva-methode-des-taux-de-la-dette-fiscale-nette-2025',
     status: 'Source administrative actuelle'
   },
   {
@@ -41,39 +55,41 @@ for (const source of SOURCE_ADDITIONS) {
 const limitsCase = CASES.find((item) => item.id === 'J');
 if (limitsCase) {
   if (!limitsCase.sourceIds.includes('info12-limits')) limitsCase.sourceIds.push('info12-limits');
-  limitsCase.description = 'Les deux limites quantitatives doivent être respectées simultanément; en cas de dépassement, il faut distinguer l’admissibilité initiale du maintien d’une méthode déjà autorisée.';
+  limitsCase.description = 'Deux analyses distinctes sont réunies dans ce cas: d’abord l’admissibilité initiale au vu des montants prévus, puis le suivi d’une entreprise qui applique déjà la méthode TDFN.';
+  limitsCase.conceptualNote = 'Ne transposez pas la règle des trois périodes fiscales à une demande initiale: elle concerne le maintien d’une méthode déjà autorisée.';
+  limitsCase.mission = 'Testez les deux limites, concluez sur l’admissibilité initiale, puis appliquez séparément la règle de suivi prévue pour une entreprise déjà autorisée.';
   limitsCase.checks = [
-    'CA imposable annuel TVA comprise ≤ CHF 5’024’000.',
-    'Impôt annuel calculé avec les TDFN ≤ CHF 108’000.',
-    'Identifier s’il s’agit de la première, de la deuxième ou de la troisième période fiscale consécutive de dépassement.',
+    'Admissibilité initiale: CA imposable annuel TVA comprise ≤ CHF 5’024’000.',
+    'Admissibilité initiale: impôt annuel calculé avec les TDFN ≤ CHF 108’000.',
+    'Situation distincte — méthode déjà autorisée: documenter chaque dépassement et compter les périodes fiscales consécutives.',
     'Contrôler aussi les exclusions de l’art. 77 OTVA.'
   ];
   const extraQuestions = [
     {
-      q: 'Une entreprise déjà autorisée dépasse l’une des limites pendant une seule période fiscale. Quelle conclusion est correcte?',
+      q: 'Situation distincte — une entreprise déjà autorisée dépasse l’une des limites pendant une seule période fiscale. Quelle conclusion est correcte?',
       options: [
         'Le passage immédiat à la méthode effective est toujours obligatoire',
         'Le dépassement doit être documenté et suivi; une seule période isolée ne déclenche pas à elle seule le passage obligatoire prévu à l’art. 81, al. 3, OTVA',
         'Le dépassement n’a jamais de conséquence et ne doit pas être conservé au dossier'
       ],
       answer: 1,
-      why: 'Depuis le 1er janvier 2025, l’art. 81, al. 3, OTVA prévoit le passage obligatoire lorsque l’une ou les deux limites ont été dépassées durant trois périodes fiscales consécutives.'
+      why: 'Cette question porte sur une entreprise qui applique déjà la méthode. L’art. 81, al. 3, OTVA prévoit le passage obligatoire lorsque l’une ou les deux limites ont été dépassées durant trois périodes fiscales consécutives.'
     },
     {
-      q: 'L’une des limites est dépassée pour la troisième période fiscale consécutive. Quelle est la conséquence?',
+      q: 'Situation distincte — l’une des limites est dépassée pour la troisième période fiscale consécutive. Quelle est la conséquence?',
       options: [
         'Passage obligatoire à la méthode effective au début de la période fiscale suivante',
         'Attendre encore une quatrième période de dépassement avant d’agir',
         'Réduire le taux légal indiqué sur les factures clients'
       ],
       answer: 0,
-      why: 'L’art. 81, al. 3, OTVA impose le passage à la méthode effective au début de la période fiscale qui suit les trois périodes fiscales consécutives de dépassement.'
+      why: 'Pour une méthode déjà autorisée, l’art. 81, al. 3, OTVA impose le passage à la méthode effective au début de la période fiscale qui suit les trois périodes fiscales consécutives de dépassement.'
     }
   ];
   for (const question of extraQuestions) {
     if (!limitsCase.questions.some((item) => item.q === question.q)) limitsCase.questions.push(question);
   }
-  limitsCase.lesson = 'Contrôler les deux limites chaque année, documenter tout dépassement et compter les périodes fiscales consécutives; après la troisième, le passage à la méthode effective intervient au début de la période suivante.';
+  limitsCase.lesson = 'Première étape: vérifier immédiatement l’admissibilité au moyen des deux limites. Deuxième situation, distincte: pour une méthode déjà autorisée, documenter les dépassements et passer à la méthode effective au début de la période qui suit trois périodes fiscales consécutives de dépassement.';
 }
 
 const rectificationCase = {
@@ -128,10 +144,10 @@ const rectificationCase = {
     'Ne pas ajouter l’opération au prochain décompte ordinaire pour compenser.',
     'Utiliser le décompte rectificatif de la période concernée dans le Portail AFC.',
     'Distinguer ce rectificatif de la concordance annuelle au sens de l’art. 72 LTVA.',
-    'Contrôler le paiement complémentaire, l’intérêt moratoire éventuel et la piste d’audit.'
+    'Contrôler le paiement complémentaire et, s’il intervient après l’échéance, l’intérêt moratoire dû ainsi que la piste d’audit.'
   ],
   legal: 'Art. 72 LTVA · décompte rectificatif de la période concernée · concordance annuelle TVA',
-  sourceIds: ['rectification', 'annual-concordance', 'online', 'ltva'],
+  sourceIds: ['rectification', 'annual-concordance', 'payment-interest', 'online', 'ltva'],
   questions: [
     {
       q: 'L’erreur isolée du S1 2026 est découverte avant la concordance annuelle. Quelle démarche est correcte?',
@@ -177,11 +193,11 @@ const rectificationCase = {
       q: 'Une dette fiscale supplémentaire est payée après l’échéance initiale. Quel contrôle faut-il encore effectuer?',
       options: [
         'Aucun, une rectification supprime automatiquement tout intérêt',
-        'Vérifier un éventuel intérêt moratoire calculé depuis l’échéance concernée',
+        'Vérifier l’intérêt moratoire dû entre l’échéance et la réception du paiement tardif',
         'Appliquer soi-même une pénalité forfaitaire de 10 %'
       ],
       answer: 1,
-      why: 'Un intérêt moratoire peut être dû. L’AFC indique qu’il n’est en principe pas perçu lorsque son montant reste inférieur à CHF 100.'
+      why: 'En cas de paiement tardif, l’intérêt moratoire est dû entre l’échéance et la réception du paiement. L’AFC indique qu’il n’est en principe pas prélevé lorsque son montant reste inférieur à CHF 100.'
     },
     {
       q: 'Quelle piste d’audit est la plus professionnelle?',
@@ -209,10 +225,10 @@ const PRECHECK_DETAILS = {
     alert: 'Une préférence interne ou un calcul plus favorable ne remplace jamais l’autorisation de l’AFC.'
   },
   rates: {
-    title: 'Activités et TDFN concordants avec la confirmation ou le profil AFC',
-    verify: 'Comparer chaque activité réellement exercée avec les libellés et TDFN confirmés. Regrouper les activités au même TDFN et analyser toute nouvelle activité.',
-    documents: 'Confirmation AFC, ventilation des comptes de produits, contrats, factures et descriptifs de prestations.',
-    alert: 'Le taux ne se choisit pas par simple ressemblance avec une profession voisine.'
+    title: 'Activités et TDFN concordants avec le profil AFC ou documentés comme taux supplémentaire',
+    verify: 'Comparer chaque activité réellement exercée avec les TDFN déjà attribués. Pour une nouvelle activité dépassant le seuil pertinent, documenter la classification et le taux supplémentaire déclaré directement dans le décompte, sous réserve du contrôle ultérieur de l’AFC.',
+    documents: 'Profil AFC, ventilation des comptes de produits, contrats, factures, descriptifs de prestations et note de qualification d’un taux supplémentaire.',
+    alert: 'La déclaration directe d’un taux supplémentaire ne permet pas de le choisir par simple ressemblance avec une profession voisine; l’AFC peut contrôler et corriger la qualification.'
   },
   basis: {
     title: 'Mode de décompte «convenues» ou «reçues» identifié',
@@ -264,16 +280,78 @@ const PRECHECK_DETAILS = {
   }
 };
 
+const CASE_PRECHECK_PRIORITIES = {
+  A: ['authorization', 'grossNet'],
+  B: ['grossNet'],
+  C: ['rates', 'grossNet'],
+  D: ['rates'],
+  E: ['rates'],
+  F: ['rates'],
+  G: ['turnover', 'evidence'],
+  H: ['foreignPlace', 'turnover'],
+  I: ['acquisitions'],
+  J: ['authorization', 'rates'],
+  K: ['special'],
+  L: ['special'],
+  M: ['special'],
+  N: ['special', 'turnover'],
+  O: ['evidence', 'turnover'],
+  P: ['special'],
+  OP: ['special', 'turnover'],
+  Q: []
+};
+
 const openPrechecks = new Set();
 let pendingPrecheckFocusKey = null;
 let enhancementQueued = false;
 
+function getCurrentCase() {
+  const select = document.querySelector('#caseSelect');
+  const index = Number(select?.value);
+  return Number.isInteger(index) ? CASES[index] : null;
+}
+
+function getPublicCaseId(caseItem = getCurrentCase()) {
+  return caseItem?.publicId || caseItem?.id || '';
+}
+
+function currentPriorityKeys() {
+  const current = getCurrentCase();
+  return new Set(CASE_PRECHECK_PRIORITIES[current?.id] || CASE_PRECHECK_PRIORITIES[getPublicCaseId(current)] || []);
+}
+
+function ensurePrecheckTools(content, list) {
+  if (content.querySelector('.v73-precheck-tools')) return;
+  const priorities = [...currentPriorityKeys()];
+  const tools = document.createElement('div');
+  tools.className = 'v73-precheck-tools';
+  tools.innerHTML = `
+    <div class="v73-precheck-priority" aria-live="polite">
+      <strong>Priorités de ce cas</strong>
+      <span></span>
+    </div>
+    <div class="v73-precheck-tools__actions" aria-label="Commandes des détails">
+      <button class="btn small" type="button" data-v73-precheck-all="open">Tout ouvrir</button>
+      <button class="btn small" type="button" data-v73-precheck-all="close">Tout fermer</button>
+    </div>
+  `;
+  const priorityLabel = tools.querySelector('.v73-precheck-priority span');
+  priorityLabel.textContent = priorities.length
+    ? priorities.map((key) => PRECHECK_DETAILS[key]?.title).filter(Boolean).join(' · ')
+    : 'Contrôle transversal de l’ensemble du décompte.';
+  list.before(tools);
+}
+
 function enhancePrecheck() {
   const content = document.querySelector('#precheckContent');
   const list = content?.querySelector('.precheck-list');
-  if (!list || list.dataset.v72Enhanced === 'true') return;
+  if (!list) return;
 
-  list.dataset.v72Enhanced = 'true';
+  ensurePrecheckTools(content, list);
+  if (list.dataset.v73Enhanced === 'true') return;
+
+  list.dataset.v73Enhanced = 'true';
+  const priorities = currentPriorityKeys();
   const originalItems = [...list.querySelectorAll('.precheck-item')];
 
   for (const original of originalItems) {
@@ -285,12 +363,14 @@ function enhancePrecheck() {
 
     const number = original.querySelector('b')?.textContent?.trim() || '';
     const inputId = `precheck-${key}`;
+    const toggleId = `precheck-toggle-${key}`;
     const panelId = `precheck-panel-${key}`;
     input.id = inputId;
 
     const wrapper = document.createElement('div');
     wrapper.className = 'precheck-accordion';
     wrapper.dataset.precheckPanel = key;
+    if (priorities.has(key)) wrapper.classList.add('precheck-accordion--priority');
 
     const row = document.createElement('div');
     row.className = 'precheck-accordion__row';
@@ -304,12 +384,19 @@ function enhancePrecheck() {
     title.className = 'precheck-accordion__title';
     title.innerHTML = `<b>${number}</b><span></span>`;
     title.querySelector('span').textContent = detail.title;
+    if (priorities.has(key)) {
+      const badge = document.createElement('small');
+      badge.className = 'precheck-priority-badge';
+      badge.textContent = 'Priorité du cas';
+      title.append(badge);
+    }
     label.append(title);
 
     const toggle = document.createElement('button');
     toggle.type = 'button';
+    toggle.id = toggleId;
     toggle.className = 'precheck-accordion__toggle';
-    toggle.dataset.v72PrecheckToggle = key;
+    toggle.dataset.v73PrecheckToggle = key;
     toggle.setAttribute('aria-controls', panelId);
     toggle.setAttribute('aria-expanded', String(openPrechecks.has(key)));
     toggle.textContent = openPrechecks.has(key) ? 'Masquer' : 'Détails';
@@ -318,6 +405,8 @@ function enhancePrecheck() {
     body.className = 'precheck-accordion__body';
     body.id = panelId;
     body.hidden = !openPrechecks.has(key);
+    body.setAttribute('role', 'region');
+    body.setAttribute('aria-labelledby', toggleId);
     body.innerHTML = `
       <div class="precheck-detail-row"><strong>À vérifier</strong><p></p></div>
       <div class="precheck-detail-row"><strong>Pièces utiles</strong><p></p></div>
@@ -340,18 +429,29 @@ function enhancePrecheck() {
   }
 }
 
-function togglePrecheckPanel(key) {
+function setPrecheckPanelState(key, open) {
   const panel = document.querySelector(`[data-precheck-panel="${key}"]`);
   const body = panel?.querySelector('.precheck-accordion__body');
-  const button = panel?.querySelector('[data-v72-precheck-toggle]');
+  const button = panel?.querySelector('[data-v73-precheck-toggle]');
   if (!panel || !body || !button) return;
 
-  const willOpen = body.hidden;
-  body.hidden = !willOpen;
-  button.setAttribute('aria-expanded', String(willOpen));
-  button.textContent = willOpen ? 'Masquer' : 'Détails';
-  if (willOpen) openPrechecks.add(key);
+  body.hidden = !open;
+  button.setAttribute('aria-expanded', String(open));
+  button.textContent = open ? 'Masquer' : 'Détails';
+  if (open) openPrechecks.add(key);
   else openPrechecks.delete(key);
+}
+
+function togglePrecheckPanel(key) {
+  const body = document.querySelector(`[data-precheck-panel="${key}"] .precheck-accordion__body`);
+  if (!body) return;
+  setPrecheckPanelState(key, body.hidden);
+}
+
+function toggleAllPrechecks(open) {
+  document.querySelectorAll('[data-precheck-panel]').forEach((panel) => {
+    setPrecheckPanelState(panel.dataset.precheckPanel, open);
+  });
 }
 
 function switchToPortalView() {
@@ -411,7 +511,7 @@ function enhanceActionBars() {
         button.type = 'button';
         button.className = `btn v72-actionbar-afc ${id === 'mobileActionBar' ? 'v72-actionbar-afc--mobile' : ''}`;
         button.dataset.v72OpenPortal = '';
-        button.textContent = id === 'mobileActionBar' ? 'Vue AFC' : 'Voir la vue pédagogique AFC';
+        button.textContent = id === 'mobileActionBar' ? 'Vue pédagogique' : 'Voir la vue pédagogique AFC';
         button.setAttribute('aria-label', 'Voir la vue pédagogique non officielle inspirée du prototype AFC');
         bar.insertBefore(button, bar.firstElementChild);
       }
@@ -420,6 +520,103 @@ function enhanceActionBars() {
       button.hidden = true;
     }
   }
+}
+
+
+function enhanceAfcTerminology() {
+  document.querySelectorAll('#workArea .contrast .afc h3').forEach((heading) => {
+    if (heading.textContent.trim() === 'Décompte AFC') heading.textContent = 'Traitement dans le décompte';
+  });
+
+  document.querySelectorAll('#workArea p').forEach((paragraph) => {
+    if (paragraph.textContent.includes('La vue complète du prototype reste disponible séparément.')) {
+      paragraph.textContent = paragraph.textContent.replace(
+        'La vue complète du prototype reste disponible séparément.',
+        'La vue pédagogique complète reste disponible séparément.'
+      );
+    }
+  });
+}
+
+function normalizeAggregateRateTerminology() {
+  const pedagogicalNote = 'Rapport entre l’impôt total calculé et la base totale. Indicateur pédagogique uniquement: il ne constitue ni un TDFN autorisé ni un taux à appliquer à une activité.';
+
+  document.querySelectorAll('#workArea .calculator-summary > div').forEach((block) => {
+    const label = block.querySelector('span');
+    if (!label || !/^Taux moyen$/i.test(label.textContent.trim())) return;
+    label.textContent = 'Indicateur agrégé';
+    block.title = pedagogicalNote;
+    block.dataset.v74RateNormalized = 'true';
+  });
+
+  document.querySelectorAll('#workArea .average-rate-details').forEach((details) => {
+    const summary = details.querySelector(':scope > summary');
+    if (summary && /taux moyen/i.test(summary.textContent)) {
+      summary.textContent = 'Comprendre l’indicateur agrégé';
+    }
+
+    const valueLabel = details.querySelector('.average-rate-details__value span');
+    if (valueLabel && /taux moyen/i.test(valueLabel.textContent)) {
+      valueLabel.textContent = 'Taux effectif résultant — indicateur pédagogique';
+    }
+
+    const paragraphs = details.querySelectorAll('.average-rate-details__body p');
+    if (paragraphs[0]) paragraphs[0].textContent = pedagogicalNote;
+    if (paragraphs[1]) {
+      paragraphs[1].textContent = 'L’impôt reste calculé séparément pour chaque activité avec son TDFN. Ce rapport agrégé sert uniquement à relire le résultat global du ch. 323.';
+    }
+    details.dataset.v74RateNormalized = 'true';
+  });
+
+  document.querySelectorAll('#workArea .compact-tax-summary > span').forEach((label) => {
+    if (/^Taux moyen$/i.test(label.textContent.trim())) label.textContent = 'Indicateur agrégé';
+  });
+
+  document.querySelectorAll('#workArea .rate-cell [data-computed-rate], #workArea .compact-tax-summary [data-computed-rate]').forEach((value) => {
+    value.title = pedagogicalNote;
+    value.setAttribute('aria-label', `${value.textContent.trim()} — taux effectif résultant, indicateur pédagogique non autorisé comme TDFN`);
+    value.dataset.v74RateNormalized = 'true';
+  });
+}
+
+function enhanceRectificationResult() {
+  if (getPublicCaseId() !== 'R') return;
+  const resultArea = document.querySelector('#resultArea');
+  const resultCard = resultArea?.querySelector('.result-card');
+  if (!resultCard || resultCard.querySelector('.v73-rectification-workflow')) return;
+
+  const actions = resultCard.querySelector('.form-actions');
+  const workflow = document.createElement('section');
+  workflow.className = 'v73-rectification-workflow';
+  workflow.setAttribute('aria-labelledby', 'v73RectificationTitle');
+  workflow.innerHTML = `
+    <div class="v73-rectification-workflow__head">
+      <span>Application pratique</span>
+      <h3 id="v73RectificationTitle">Plan d’action pour corriger le S1 2026</h3>
+      <p>Lecture pédagogique du cas simplifié, sans autre correction dans la période. Les montants ci-dessous représentent les écarts à réconcilier, pas une reproduction de l’écran de saisie de Décompte TVA pro.</p>
+    </div>
+    <div class="v73-rectification-values" aria-label="Rubriques affectées dans le cas simplifié">
+      <div><small>ch. 200</small><strong>+ CHF 10’810</strong><span>Contre-prestation omise</span></div>
+      <div><small>ch. 299 et 379</small><strong>+ CHF 10’810</strong><span>Base imposable et base TDFN</span></div>
+      <div><small>ch. 323 et 399</small><strong>+ CHF 670.22</strong><span>Dette TDFN supplémentaire</span></div>
+      <div><small>ch. 500</small><strong>+ CHF 670.22</strong><span>Solde supplémentaire, dans ce cas isolé</span></div>
+    </div>
+    <ol class="v73-rectification-steps">
+      <li><strong>Rouvrir la période concernée:</strong> établir le décompte rectificatif du S1 2026 dans le Portail AFC, et non majorer silencieusement le décompte suivant.</li>
+      <li><strong>Documenter le delta:</strong> conserver la facture, la cause de l’omission, le rapprochement des rubriques et la preuve de transmission.</li>
+      <li><strong>Régler et contrôler les intérêts:</strong> si le paiement intervient après l’échéance, l’intérêt moratoire court jusqu’à la réception du paiement; il n’est en principe pas prélevé lorsque son montant reste inférieur à CHF 100.</li>
+      <li><strong>Ne pas confondre les procédures:</strong> la concordance annuelle sert aux erreurs constatées lors de la clôture et ne reprend que les différences par rapport aux décomptes déjà remis.</li>
+    </ol>
+    <div class="v73-rectification-sources">
+      <strong>Vérification officielle</strong>
+      <a href="https://www.estv.admin.ch/fr/tva-decompte-de-rectification" target="_blank" rel="noopener noreferrer">Décompte rectificatif</a>
+      <a href="https://www.estv.admin.ch/fr/tva-concordance-annuelle" target="_blank" rel="noopener noreferrer">Concordance annuelle</a>
+      <a href="https://www.estv.admin.ch/fr/payer-la-tva" target="_blank" rel="noopener noreferrer">Paiement et intérêt moratoire</a>
+    </div>
+  `;
+
+  if (actions) resultCard.insertBefore(workflow, actions);
+  else resultCard.append(workflow);
 }
 
 function normalizeRectificationHash() {
@@ -469,7 +666,10 @@ function applyEnhancements() {
   enhancementQueued = false;
   enhancePrecheck();
   enhanceModeSwitch();
+  enhanceAfcTerminology();
+  normalizeAggregateRateTerminology();
   enhanceResultArea();
+  enhanceRectificationResult();
   enhanceActionBars();
   normalizeRectificationHash();
 }
@@ -489,10 +689,17 @@ document.addEventListener('click', (event) => {
     return;
   }
 
-  const toggle = event.target.closest?.('[data-v72-precheck-toggle]');
+  const bulkToggle = event.target.closest?.('[data-v73-precheck-all]');
+  if (bulkToggle) {
+    event.preventDefault();
+    toggleAllPrechecks(bulkToggle.dataset.v73PrecheckAll === 'open');
+    return;
+  }
+
+  const toggle = event.target.closest?.('[data-v73-precheck-toggle]');
   if (toggle) {
     event.preventDefault();
-    togglePrecheckPanel(toggle.dataset.v72PrecheckToggle);
+    togglePrecheckPanel(toggle.dataset.v73PrecheckToggle);
     return;
   }
 
@@ -530,5 +737,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const stepperSlot = document.querySelector('#stepperSlot');
   if (stepperSlot) {
     new MutationObserver(queueEnhancements).observe(stepperSlot, { childList: true, subtree: true });
+  }
+
+  const workArea = document.querySelector('#workArea');
+  if (workArea) {
+    new MutationObserver(queueEnhancements).observe(workArea, { childList: true, subtree: true });
   }
 });

@@ -18,7 +18,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect rx=%2214%22 width=%2264%22 height=%2264%22 fill=%22%231f6078%22/><text x=%2232%22 y=%2241%22 text-anchor=%22middle%22 font-size=%2227%22 fill=%22white%22 font-family=%22Arial%22>TVA</text></svg>">
   <link rel="stylesheet" href="styles.css?v=6.3.0">
   <link rel="stylesheet" href="ui-fixes.css?v=2026.07.30">
-  <link rel="stylesheet" href="v7-enhancements.css?v=2026.08.03.2">
+  <link rel="stylesheet" href="v7-enhancements.css?v=2026.08.03.4">
   <title>Décompte TVA suisse TDFN — entraînement pédagogique | Mariia Lobur</title>
 </head>
 <body>
@@ -49,7 +49,7 @@
     </div>
     <details class="principle__details">
       <summary>Hypothèses du parcours</summary>
-      <p>L’entreprise est déjà assujettie et l’AFC a confirmé par écrit la méthode TDFN ainsi que les taux indiqués. Dans les cas simplifiés, la qualification fiscale ou un montant complexe est fourni comme hypothèse; l’exercice porte alors sur son report.</p>
+      <p>L’entreprise est déjà assujettie et l’AFC a confirmé la méthode TDFN. Les taux déjà attribués sont indiqués dans le dossier; lorsqu’un cas porte sur une nouvelle activité, le taux supplémentaire est une hypothèse pédagogique à documenter et à déclarer, sous réserve du contrôle ultérieur de l’AFC.</p>
     </details>
   </div>
 </section>
@@ -59,7 +59,7 @@
     <div class="method-limits__summary-head">
       <div>
         <span class="method-limits__eyebrow">Admissibilité et maintien de la méthode</span>
-        <h2 id="methodLimitsTitle">Deux limites TDFN cumulatives — à contrôler chaque année</h2>
+        <h2 id="methodLimitsTitle">Deux limites TDFN cumulatives — à contrôler pour chaque période fiscale</h2>
       </div>
     </div>
     <div class="method-limits__numbers" aria-label="Limites quantitatives TDFN">
@@ -80,6 +80,7 @@
         <strong>Le test porte toujours sur les deux conditions.</strong>
         <span>Avec plusieurs activités, additionnez l’impôt obtenu pour chaque chiffre d’affaires brut TTC au TDFN confirmé correspondant.</span>
       </div>
+      <p class="method-limits__period-note"><strong>Attention au vocabulaire:</strong> la règle des trois dépassements vise trois <em>périodes fiscales</em> consécutives, et non trois périodes de décompte mensuelles, trimestrielles ou semestrielles.</p>
 
       <div class="method-limits__grid">
         <article class="method-limits__panel">
@@ -102,7 +103,7 @@
             <li><strong>Nouvelle inscription:</strong> l’AFC autorise la méthode si le chiffre d’affaires et l’impôt escomptés durant les douze premiers mois ne dépassent aucune des deux limites.</li>
             <li><strong>Passage depuis la méthode effective:</strong> la période fiscale précédente ne doit avoir dépassé aucune des deux limites.</li>
             <li><strong>Méthode TDFN déjà autorisée:</strong> documenter chaque dépassement et compter les périodes fiscales consécutives. Après trois périodes fiscales consécutives de dépassement d’une ou des deux limites, le passage à la méthode effective est obligatoire au début de la période suivante.</li>
-            <li><strong>Préparer le changement:</strong> annoncer le passage dans le Portail AFC au plus tard 60 jours après le début de la période fiscale concernée, conserver la réconciliation des limites et analyser la déduction éventuelle de l’impôt préalable sur les valeurs résiduelles au ch. 410 du premier décompte selon la méthode effective.</li>
+            <li><strong>Préparer le changement:</strong> effectuer le changement dans le Portail AFC dans le délai applicable, vérifier le délai concret dans l’Info TVA 12, conserver la réconciliation des limites et analyser la déduction éventuelle de l’impôt préalable sur les valeurs résiduelles au ch. 410 du premier décompte selon la méthode effective.</li>
             <li><strong>Attention:</strong> un retrait rétroactif relève notamment de fausses indications ayant conduit à l’autorisation; il ne doit pas être présenté comme une conséquence automatique d’un dépassement important.</li>
           </ol>
         </article>
@@ -212,7 +213,7 @@
   </details>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script type="module" src="v7-enhancements.js?v=2026.08.03.2"></script>
+<script type="module" src="v7-enhancements.js?v=2026.08.03.4"></script>
 <script type="module" src="app.js?v=6.3.0"></script>
 <script src="ui-fixes.js?v=2026.07.30c"></script>
 </body>
