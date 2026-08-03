@@ -1,4 +1,4 @@
-/* Compléments pédagogiques et UX — correctif 7.4 du 03.08.2026 */
+/* Compléments pédagogiques et UX — version finale 7.5 du 03.08.2026 */
 
 /* ---------- Limites de la méthode: résumé visible, détail repliable ---------- */
 .method-limits {
@@ -581,7 +581,7 @@
 
 .v73-rectification-values {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
   gap: 1px;
   background: #dce7eb;
 }
@@ -601,6 +601,11 @@
 .v73-rectification-values strong {
   color: #0d506a;
   font-size: 1.05rem;
+}
+
+.v75-rectification-value--split strong {
+  font-size: 0.94rem;
+  line-height: 1.35;
 }
 
 .v73-rectification-values span {

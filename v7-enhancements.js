@@ -1,7 +1,7 @@
 import { CASES, OFFICIAL_SOURCES } from './data.js?v=6.3.0';
 
 /*
- * Compléments pédagogiques et UX — correctif 7.4 du 03.08.2026.
+ * Compléments pédagogiques et UX — version finale 7.5 du 03.08.2026.
  * Chargé avant app.js pour rendre les sources et le cas de rectification
  * disponibles dès le premier rendu, sans déplacer les cas existants.
  */
@@ -598,7 +598,8 @@ function enhanceRectificationResult() {
     <div class="v73-rectification-values" aria-label="Rubriques affectées dans le cas simplifié">
       <div><small>ch. 200</small><strong>+ CHF 10’810</strong><span>Contre-prestation omise</span></div>
       <div><small>ch. 299 et 379</small><strong>+ CHF 10’810</strong><span>Base imposable et base TDFN</span></div>
-      <div><small>ch. 323 et 399</small><strong>+ CHF 670.22</strong><span>Dette TDFN supplémentaire</span></div>
+      <div class="v75-rectification-value--split"><small>ch. 323</small><strong>Prestations: + CHF 10’810</strong><strong>Impôt: + CHF 670.22</strong><span>Base et dette calculées au TDFN</span></div>
+      <div><small>ch. 399</small><strong>+ CHF 670.22</strong><span>Total de l’impôt dû</span></div>
       <div><small>ch. 500</small><strong>+ CHF 670.22</strong><span>Solde supplémentaire, dans ce cas isolé</span></div>
     </div>
     <ol class="v73-rectification-steps">
