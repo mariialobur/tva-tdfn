@@ -13,10 +13,10 @@ const [html, app, data, store, components, transition, css, workflow, unit, e2e]
 const checks = [];
 function check(name, condition) { assert.ok(condition, name); checks.push(name); }
 
-check('index charge un seul CSS intégré v10', (html.match(/rel="stylesheet"/g) || []).length === 1 && html.includes('styles.css?v=10.0.0'));
-check('index charge un seul module applicatif v10', (html.match(/<script/g) || []).length === 1 && html.includes('app.js?v=10.0.0'));
+check('index charge un seul CSS intégré v10', (html.match(/rel="stylesheet"/g) || []).length === 1 && html.includes('styles.css?v=10.1.0'));
+check('index charge un seul module applicatif v10', (html.match(/<script/g) || []).length === 1 && html.includes('app.js?v=10.1.0'));
 check('anciens patchs absents de l’index', !/v7-enhancements|v8(?:\.\d+)?-learning-path|ui-fixes\.js/.test(html));
-check('footer public sans numéro de version technique', html.includes('Mise à jour : 06.08.2026.') && !html.includes('version intégrée'));
+check('footer public sans numéro de version technique', html.includes('Mise à jour : 06.08.2026') && !html.includes('version intégrée'));
 check('stockage unifié v100', store.includes("tva_tdfn_v100_state") && store.includes('STATE_VERSION = 100') && store.includes('worksheets') && store.includes('precheck'));
 check('migration v90/v84/v63/v61 prévue', ['tva_tdfn_v90_state','tva_tdfn_v84_transition_worksheets','tva_tdfn_v63_state','tva_tdfn_v61_state'].every((value) => store.includes(value)));
 check('ancien score K invalidé', store.includes('delete migrated.scores.K0'));
@@ -44,6 +44,10 @@ check('rectification et Décompte TVA pro présents', data.includes('Décompte d
 check('Playwright configuré avec npx', (await read('package.json')).includes('npx playwright test') && workflow.includes('playwright install'));
 check('axe présent dans les tests', e2e.includes('AxeBuilder'));
 check('tests D3, L5 et migration v100 présents', e2e.includes("#cas-D3") && e2e.includes("#cas-L5") && e2e.includes('tva_tdfn_v100_state'));
+check('limite du décompte annuel distinguée des limites TDFN', html.includes('CHF 5’005’000') && data.includes('annual-reporting'));
+check('sauvegarde export/import disponible', app.includes('exportProgress') && app.includes('importProgressFile') && store.includes('exportStateSnapshot') && store.includes('importStateSnapshot'));
+check('navigation sans boucle et boutons désactivables', app.includes('target < 0 || target >= order.length') && app.includes('updateNavigationAvailability'));
+check('tableau de transition noté par champ', transition.includes('correctFields') && transition.includes('totalFields'));
 check('styles du troisième facteur présents', css.includes('.transition-table.has-eligibility') && css.includes('.transition-formula'));
 
 for (const file of ['index.html','styles.css','data.js','logic.js','store.js','components.js','transition.js','app.js','package.json','playwright.config.mjs','tests/unit.mjs','tests/e2e.spec.mjs','.github/workflows/quality.yml']) {

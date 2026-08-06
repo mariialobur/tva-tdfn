@@ -62,3 +62,8 @@ Le site public est destiné à GitHub Pages:
 `https://mariialobur.github.io/tva-tdfn/`
 
 Dernière révision juridique et pédagogique indiquée dans l’interface: **06.08.2026**.
+
+
+## Version 10.1
+
+Cette version distingue les limites TDFN du seuil du décompte annuel, évalue les tableaux de transition par champ, ajoute l’export/import local de la progression et rend la navigation séquentielle non cyclique.

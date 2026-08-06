@@ -1,45 +1,26 @@
-TVA TDFN — integrated v10.0 test report
+TVA TDFN — version 10.1 reviewed
 Date: 2026-08-06
 
 1. JavaScript syntax
-   Result: PASS
-   Files: app.js, components.js, data.js, logic.js, store.js, transition.js,
-          smoke-test.mjs, tests/unit.mjs, tests/e2e.spec.mjs, playwright.config.mjs
+   PASS: app.js, components.js, data.js, logic.js, store.js, transition.js
 
-2. Static smoke test
-   Command: node smoke-test.mjs
-   Result: PASS — 34/34 checks
+2. Static smoke tests
+   PASS: 38/38
 
 3. Unit tests
-   Command: node tests/unit.mjs
-   Result: PASS — 35 cases, official-source references, calculations,
-           v100 migration, components and ch. 410/415 worksheets
+   PASS: 35 cases, official sources, calculations, migration v100,
+   components, ch. 410/ch. 415 worksheets, field-level scoring,
+   state export/import.
 
 4. HTML structure
-   Parser: lxml HTMLParser
-   Result: PASS — 0 structural errors
+   PASS: no duplicate static IDs; one stylesheet; one module script.
 
-5. CSS parsing
-   Parser: tinycss2
-   Result: PASS — 0 parse errors
-   Obsolete v7/v8 patch selectors: 0
+5. Legal-content controls
+   PASS: TDFN limits CHF 5'024'000 / CHF 108'000;
+   annual-reporting threshold CHF 5'005'000 explicitly distinguished;
+   multiple TDFN and >10% rule; ch. 410/ch. 415 directions;
+   Décompte TVA pro and rectification sources.
 
-6. Browser integration smoke
-   Browser: system Chromium, headless
-   Result: PASS
-   Covered:
-   - desktop and mobile rendering;
-   - in-flow limits panel;
-   - sidebar primary action;
-   - D3 calculation and 100% validation;
-   - J: 20%, 60%, first twelve months;
-   - L5 worksheet with eligibility factor;
-   - sources and precheck dialogs;
-   - no console/page errors;
-   - mobile document overflow <= 1 px.
-
-7. npm Playwright suite in current container
-   Result: NOT RUN
-   Reason: the internal package mirror returned 404 for @axe-core/playwright.
-   The project includes package.json, playwright.config.mjs and GitHub Actions
-   configuration for execution in the public GitHub environment.
+6. Browser E2E
+   NOT CONFIRMED in the container: system Chromium timed out in headless mode.
+   Manual GitHub Pages smoke-test remains required.

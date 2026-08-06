@@ -193,5 +193,27 @@ export function clearCaseState(index) {
   saveState();
 }
 
+
+export function exportStateSnapshot() {
+  saveState();
+  return {
+    schema: 'tva-tdfn-progress',
+    version: STATE_VERSION,
+    exportedAt: new Date().toISOString(),
+    state: JSON.parse(JSON.stringify(state))
+  };
+}
+
+export function importStateSnapshot(snapshot) {
+  if (!snapshot || snapshot.schema !== 'tva-tdfn-progress') throw new Error('Format de sauvegarde non reconnu.');
+  if (Number(snapshot.version) !== STATE_VERSION) throw new Error(`Version incompatible: ${snapshot.version ?? 'inconnue'}.`);
+  if (!snapshot.state || typeof snapshot.state !== 'object') throw new Error('État de progression manquant.');
+  const replacement = mergeCurrentState(snapshot.state);
+  for (const key of Object.keys(state)) delete state[key];
+  Object.assign(state, replacement);
+  saveState();
+  return state;
+}
+
 // Persiste immédiatement le schéma intégré, y compris après migration.
 saveState();

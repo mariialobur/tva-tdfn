@@ -1,6 +1,6 @@
 import { CASES, DEDUCTIONS, OFFICIAL_SOURCES } from './data.js';
 import { rateKey, parseAmount, expectedInputMap, computeCalculator, calculatorSignature, computeDeclaration, validateCase, allActivityBasesEntered, universalChecks, roundToCent } from './logic.js';
-import { state, saveState, resetAllState, clearCaseState, createDefaultState, publicCaseId } from './store.js';
+import { state, saveState, resetAllState, clearCaseState, createDefaultState, publicCaseId, exportStateSnapshot, importStateSnapshot } from './store.js';
 import { componentMarkup, CASE_PRECHECK_PRIORITIES, PRECHECK_DETAILS } from './components.js';
 import { worksheetModel, worksheetMarkup, validateWorksheet, worksheetFeedbackMarkup, updateWorksheetField, fillWorksheetSolution, clearWorksheet } from './transition.js';
 
@@ -39,8 +39,16 @@ const moduleIndexFor = (caseItem = baseCurrent()) => Math.max(0, MODULES.findInd
 const visualOrder = () => MODULES.flatMap((module) => module.ids.map(publicIndex).filter((index) => index >= 0));
 function navigateVisual(direction) {
   const order = visualOrder();
-  const position = Math.max(0, order.indexOf(state.current));
-  selectCase(order[(position + direction + order.length) % order.length]);
+  const position = order.indexOf(state.current);
+  const target = position + direction;
+  if (position < 0 || target < 0 || target >= order.length) return;
+  selectCase(order[target], true);
+}
+function updateNavigationAvailability() {
+  const order = visualOrder();
+  const position = order.indexOf(state.current);
+  document.querySelectorAll('[data-action="previous"]').forEach((button) => { button.disabled = position <= 0; });
+  document.querySelectorAll('[data-action="next"]').forEach((button) => { button.disabled = position < 0 || position >= order.length - 1; });
 }
 
 const scoredCases=()=>CASES.filter(c=>!c.excludeFromProgress);
@@ -84,6 +92,8 @@ function renderSidebar(){
           <button type="button" data-action="open-sources">Sources officielles</button>
           <button type="button" data-action="solution">Afficher la solution</button>
           <button type="button" data-action="summary">Bilan du parcours</button>
+          <button type="button" data-action="export-progress">Exporter la progression</button>
+          <button type="button" data-action="import-progress">Importer une progression</button>
           <button class="danger" type="button" data-action="reset-case">Réinitialiser ce cas</button>
         </div>
       </details>
@@ -391,10 +401,10 @@ function resetCase(noConfirm=false){if(!noConfirm&&!confirm('Réinitialiser les 
 
 function summary(){const mastered=masteredCount(),total=scoredCases().length;const scores=CASES.map((c)=>{const id=casePublicId(c);return !c.excludeFromProgress&&!state.assisted[id]?state.scores[id]:undefined;}).filter(Number.isFinite);const average=scores.length?Math.round(scores.reduce((sum,value)=>sum+value,0)/scores.length):0;document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score good">${mastered}/${total}</div><div><h3>Bilan du parcours TDFN</h3><p>Score moyen sans solution: ${average}% · le cas libre n’entre pas dans la note</p></div></div><div class="summary-list">${CASES.map((c,index)=>{const status=caseStatus(index);return `<div class="summary-item"><div><b>${esc(c.tab)} — ${esc(c.title)}</b><span>${esc(c.level)}</span></div><div class="summary-state ${status?.[1]||''}">${status?.[0]||'non commencé'}</div></div>`;}).join('')}</div><div class="form-actions"><button class="btn" type="button" data-action="print">Imprimer</button><button class="btn danger" type="button" data-action="reset-all">Effacer toute la progression</button></div></div>`;}
 function preview(){const c=current();const declaration=computeDeclaration(c,answers(),state.reported[stateKey()],state.finalRound[stateKey()]);document.querySelector('#previewContent').innerHTML=`<div class="preview-sheet"><h3>Aperçu du décompte — ${esc(c.entity)}</h3><p>${esc(c.period)} · simulation pédagogique</p><div class="preview-grid">${[['ch. 200',declaration.ch200],['ch. 289',declaration.ch289],['ch. 299',declaration.ch299],['ch. 323 — prestations',declaration.ch323Base],['ch. 323 — impôt',declaration.ch323Tax],['ch. 379',declaration.ch379],['ch. 383',declaration.acqTax],['ch. 399',declaration.ch399],['ch. 479',declaration.ch479],['ch. 500',declaration.ch500],['ch. 510',declaration.ch510],['ch. 900',declaration.ch900],['ch. 910',declaration.ch910]].map(([label,value])=>`<div><span>${label}</span><strong>${chf(value,2)}</strong></div>`).join('')}</div></div>`;document.querySelector('#previewDialog').showModal();}
-function selectCase(index,focus=false){state.current=Math.max(0,Math.min(CASES.length-1,index));state.currentId=casePublicId(CASES[state.current]);save();history.replaceState(null,'',`#cas-${casePublicId(CASES[state.current])}`);document.querySelector('#resultArea').innerHTML='';renderAll();if(focus)document.querySelector(`#tab-${casePublicId(CASES[state.current])}`)?.focus();}
+function selectCase(index,focus=false){state.current=Math.max(0,Math.min(CASES.length-1,index));state.currentId=casePublicId(CASES[state.current]);save();history.replaceState(null,'',`#cas-${casePublicId(CASES[state.current])}`);document.querySelector('#resultArea').innerHTML='';renderAll();if(focus){const title=document.querySelector('#caseTitle');title?.focus({preventScroll:true});title?.scrollIntoView({behavior:'smooth',block:'start'});}}
 function renderSources(){document.querySelector('#sourceRegistry').innerHTML=`<table class="source-table"><thead><tr><th>Source</th><th>Utilisation</th><th>Statut</th></tr></thead><tbody>${OFFICIAL_SOURCES.map(source=>`<tr><td><a href="${source.url}" target="_blank" rel="noopener noreferrer">${esc(source.title)}</a></td><td>${esc(source.scope)}</td><td>${esc(source.status)}</td></tr>`).join('')}</tbody></table>`;}
 function renderPrecheck(){const id=casePublicId(current());const priorities=CASE_PRECHECK_PRIORITIES[id]||[];document.querySelector('#precheckContent').innerHTML=componentMarkup('precheck',{checked:state.precheck[id]||{},priorities});}
-function renderAll(){renderHeader();renderTabs();renderSidebar();renderCaseHead();renderWork();}
+function renderAll(){renderHeader();renderTabs();renderSidebar();renderCaseHead();renderWork();updateNavigationAvailability();}
 
 function setMethodLimitsExpanded(expanded){
   const toggle=document.querySelector('#methodLimitsToggle');
@@ -410,11 +420,47 @@ function refreshCalculatorViews(){renderWork();const dialog=document.querySelect
 function addActivity(){const cfg=freeConfig();if((cfg.activities||[]).length>=8){showToast('Maximum pédagogique: 8 activités.','error');return;}cfg.activities.push({label:`Activité ${cfg.activities.length+1}`,rate:6.2});delete state.reported[stateKey()];save();refreshCalculatorViews();}
 function removeActivity(index){const cfg=freeConfig();if(cfg.activities.length<=1){showToast('Conservez au moins une activité.','error');return;}const values=cfg.activities.map((_,i)=>answers()[rateKey('base',i)]??'');cfg.activities.splice(index,1);values.splice(index,1);Object.keys(answers()).filter(key=>/^r\d+base$/.test(key)).forEach(key=>delete answers()[key]);values.forEach((value,i)=>{if(value!=='')answers()[rateKey('base',i)]=value;});delete state.reported[stateKey()];save();refreshCalculatorViews();}
 
+function exportProgress() {
+  const payload = JSON.stringify(exportStateSnapshot(), null, 2);
+  const blob = new Blob([payload], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `progression-tva-tdfn-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 0);
+  showToast('Progression exportée. Le fichier ne contient que vos réponses locales.', 'success');
+}
+function requestProgressImport() {
+  const input = document.querySelector('#progressImportInput');
+  if (!input) return;
+  input.value = '';
+  input.click();
+}
+async function importProgressFile(file) {
+  if (!file) return;
+  if (file.size > 2_000_000) { showToast('Fichier trop volumineux pour une sauvegarde de progression.', 'error'); return; }
+  if (!confirm('Importer cette sauvegarde remplacera la progression actuellement enregistrée dans ce navigateur. Continuer?')) return;
+  try {
+    const snapshot = JSON.parse(await file.text());
+    importStateSnapshot(snapshot);
+    renderAll();
+    document.querySelector('#resultArea').innerHTML = '';
+    showToast('Progression importée avec succès.', 'success');
+  } catch (error) {
+    showToast(error?.message || 'Import impossible.', 'error');
+  }
+}
+
 function handleAction(action,button){
   if(action==='validate')current().type==='quiz'?validateQuiz():validateForm();if(action==='previous')navigateVisual(-1);
   if(action==='solution')showSolution();if(action==='summary')summary();if(action==='reset-case')resetCase();if(action==='restart-no-help')resetCase(true);if(action==='next')navigateVisual(1);if(action==='print')window.print();if(action==='open-calc')openCalculator();if(action==='close-calc')document.querySelector('#calcDialog').close();if(action==='report-calc')reportCalculation();if(action==='preview')preview();if(action==='close-preview')document.querySelector('#previewDialog').close();if(action==='temporary-save')showToast('Progression enregistrée localement dans ce navigateur.','success');if(action==='back-list')showToast('Entraînement local: aucune liste «Mes décomptes TVA» n’est disponible.','info');if(action==='attachment-info')showToast('Dans le service AFC, le justificatif est joint à la procédure de déclaration.','info');if(action==='add-activity')addActivity();if(action==='remove-activity')removeActivity(Number(button?.dataset.index));
   if(action==='toggle-dossier'){state.dossierOpen[stateKey()]=!state.dossierOpen[stateKey()];save();renderAll();}
   if(action==='clear-worksheet'){clearWorksheet(casePublicId(current()));delete worksheetFeedback[casePublicId(current())];renderWork();}
+  if(action==='export-progress')exportProgress();
+  if(action==='import-progress')requestProgressImport();
   if(action==='open-precheck'){renderPrecheck();document.querySelector('#precheckDialog').showModal();}
   if(action==='open-sources')document.querySelector('#sourceDialog').showModal();
   if(action==='close-precheck')document.querySelector('#precheckDialog').close();
@@ -439,6 +485,7 @@ document.addEventListener('change',event=>{
   const acqRate=event.target.closest('[data-acq-rate]');if(acqRate){state.acquisitionRate[stateKey()]=Number(acqRate.value);save();updateComputed();return;}
   const finalRound=event.target.closest('[data-final-round]');if(finalRound){state.finalRound[stateKey()]=finalRound.checked;save();updateComputed();}
 });
+document.querySelector('#progressImportInput')?.addEventListener('change',event=>importProgressFile(event.target.files?.[0]));
 document.querySelector('#caseSelect').addEventListener('change',event=>selectCase(Number(event.target.value)));
 document.querySelector('#caseTabs').addEventListener('keydown',event=>{if(!['ArrowRight','ArrowLeft','Home','End'].includes(event.key))return;event.preventDefault();if(event.key==='ArrowRight')navigateVisual(1);if(event.key==='ArrowLeft')navigateVisual(-1);if(event.key==='Home')selectCase(visualOrder()[0],true);if(event.key==='End')selectCase(visualOrder().at(-1),true);});
 document.querySelector('#openSources').addEventListener('click',()=>document.querySelector('#sourceDialog').showModal());document.querySelector('#closeSources').addEventListener('click',()=>document.querySelector('#sourceDialog').close());
@@ -446,4 +493,6 @@ document.querySelector('#methodLimitsToggle')?.addEventListener('click',event=>s
 setMethodLimitsExpanded(false);
 for(const id of ['sourceDialog','precheckDialog','calcDialog','previewDialog'])document.querySelector(`#${id}`).addEventListener('click',event=>{if(event.target===event.currentTarget)event.currentTarget.close();});
 const hashMatch=location.hash.match(/^#cas-([A-Z]+\d*)$/i);if(hashMatch){const rawRequested=hashMatch[1].toUpperCase();const requested=rawRequested==='K'?'K0':rawRequested;const index=publicIndex(requested);if(index>=0){state.current=index;state.currentId=casePublicId(CASES[index]);if(rawRequested!==requested)history.replaceState(null,'',`#cas-${requested}`);}}
+window.addEventListener('error',()=>showToast('Une erreur inattendue est survenue. Rechargez la page; votre progression locale est conservée.', 'error'));
+window.addEventListener('unhandledrejection',()=>showToast('Une opération n’a pas pu être terminée. Rechargez la page si nécessaire.', 'error'));
 renderSources();renderAll();

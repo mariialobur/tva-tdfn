@@ -13,7 +13,7 @@
   <meta property="og:url" content="https://mariialobur.github.io/tva-tdfn/">
   <link rel="canonical" href="https://mariialobur.github.io/tva-tdfn/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect rx=%2214%22 width=%2264%22 height=%2264%22 fill=%22%231f6078%22/><text x=%2232%22 y=%2241%22 text-anchor=%22middle%22 font-size=%2227%22 fill=%22white%22 font-family=%22Arial%22>TVA</text></svg>">
-  <link rel="stylesheet" href="styles.css?v=10.0.0">
+  <link rel="stylesheet" href="styles.css?v=10.1.0">
   <title>Décompte TVA suisse TDFN — entraînement pédagogique | Mariia Lobur</title>
 </head>
 <body>
@@ -74,6 +74,7 @@
         <span>Avec plusieurs activités, additionnez l’impôt obtenu pour chaque chiffre d’affaires brut TTC au TDFN confirmé correspondant.</span>
       </div>
       <p class="method-limits__period-note"><strong>Attention au vocabulaire:</strong> la règle des trois dépassements vise trois <em>périodes fiscales</em> consécutives, et non trois périodes de décompte mensuelles, trimestrielles ou semestrielles.</p>
+      <p class="method-limits__period-note method-limits__period-note--info"><strong>Ne pas confondre:</strong> la limite TDFN est de CHF 5’024’000. La limite distincte permettant de demander le <em>décompte annuel</em> est de CHF 5’005’000; elle concerne la périodicité de remise, pas l’admissibilité aux TDFN.</p>
 
       <div class="method-limits__grid">
         <article class="method-limits__panel">
@@ -97,7 +98,7 @@
             <li><strong>Passage depuis la méthode effective:</strong> la période fiscale précédente ne doit avoir dépassé aucune des deux limites.</li>
             <li><strong>Dépassement jusqu’à 50 %:</strong> si l’une ou les deux limites sont dépassées pendant trois périodes fiscales consécutives, le passage à la méthode effective devient obligatoire au début de la période suivante.</li>
             <li><strong>Dépassement de plus de 50 %:</strong> une seule période fiscale suffit pour imposer le passage à la méthode effective au début de la période suivante.</li>
-            <li><strong>Douze premiers mois d’adhésion:</strong> si les limites sont déjà dépassées durant cette phase, contrôler le risque de révocation rétroactive de l’autorisation conformément à l’art. 81 OTVA.</li>
+            <li><strong>Douze premiers mois d’adhésion:</strong> si les limites sont dépassées durant cette phase, vérifier immédiatement les conditions d’autorisation et les conséquences prévues à l’art. 81 OTVA; ne pas reporter automatiquement la situation sur les règles ordinaires des trois périodes.</li>
             <li><strong>Préparer le changement:</strong> annoncer la modification dans le Portail AFC dans le délai applicable, conserver la réconciliation des limites et analyser le dégrèvement éventuel de l’impôt préalable sur les valeurs résiduelles au ch. 410 du premier décompte selon la méthode effective.</li>
             <li><strong>Autres conditions:</strong> le respect des deux limites ne suffit pas à lui seul; les exclusions prévues à l’art. 77 OTVA doivent aussi être contrôlées.</li>
           </ol>
@@ -127,7 +128,7 @@
     <div class="workspace-card workspace-head">
       <div>
         <p class="eyebrow" id="caseLevel"></p>
-        <h2 id="caseTitle"></h2>
+        <h2 id="caseTitle" tabindex="-1"></h2>
         <p id="caseDescription"></p>
       </div>
       <div class="workspace-head__tools">
@@ -150,6 +151,8 @@
         <div class="more-actions__menu">
           <button class="menu-action" type="button" data-action="solution">Afficher la solution</button>
           <button class="menu-action" type="button" data-action="summary">Bilan du parcours</button>
+          <button class="menu-action" type="button" data-action="export-progress">Exporter la progression</button>
+          <button class="menu-action" type="button" data-action="import-progress">Importer une progression</button>
           <button class="menu-action danger" type="button" data-action="reset-case">Réinitialiser ce cas</button>
         </div>
       </details>
@@ -171,7 +174,7 @@
     <span> · Projet pédagogique indépendant, sans affiliation à l’AFC.</span>
   </div>
   <div class="footer-meta-line">
-    <span>Mise à jour : 06.08.2026.</span>
+    <span>Mise à jour : 06.08.2026 · sources revues le 06.08.2026.</span>
     <a href="https://mariialobur.github.io/tva-debutant/" target="_blank" rel="noopener noreferrer">Entraînement TVA — méthode effective</a>
   </div>
 </footer>
@@ -201,11 +204,15 @@
     <div class="more-actions__menu">
       <button class="menu-action" type="button" data-action="solution">Solution</button>
       <button class="menu-action" type="button" data-action="summary">Bilan</button>
+      <button class="menu-action" type="button" data-action="export-progress">Exporter</button>
+      <button class="menu-action" type="button" data-action="import-progress">Importer</button>
       <button class="menu-action danger" type="button" data-action="reset-case">Réinitialiser</button>
     </div>
   </details>
 </div>
+<input id="progressImportInput" type="file" accept="application/json,.json" hidden>
+<noscript><div class="noscript-warning">JavaScript doit être activé pour utiliser cet entraînement interactif.</div></noscript>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script type="module" src="app.js?v=10.0.0"></script>
+<script type="module" src="app.js?v=10.1.0"></script>
 </body>
 </html>

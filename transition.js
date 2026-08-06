@@ -4,7 +4,7 @@ import { componentMarkup } from './components.js';
 
 const parse = (value) => {
   if (value === null || value === undefined || String(value).trim() === '') return null;
-  const normalized = String(value).trim().replace(/[’'\s]/g, '').replace(',', '.');
+  const normalized = String(value).trim().replace(/CHF|%/gi, '').replace(/[’'\s\u00a0\u202f]/g, '').replace(',', '.');
   const number = Number(normalized);
   return Number.isFinite(number) ? number : NaN;
 };
@@ -44,21 +44,22 @@ export function validateWorksheet(publicId) {
     const residualGood = close(residual, line.expectedResidual);
     const eligibilityGood = !model.showEligibility || close(eligibility, line.expectedEligibility);
     const correctionGood = close(correction, line.expectedCorrection);
-    const good = treatmentGood && residualGood && eligibilityGood && correctionGood;
+    const checks = [treatmentGood, residualGood, correctionGood, ...(model.showEligibility ? [eligibilityGood] : [])];
+    const correctFields = checks.filter(Boolean).length;
+    const totalFields = checks.length;
+    const good = correctFields === totalFields;
     return {
-      line, treatmentGood, residualGood, eligibilityGood, correctionGood, good,
+      line, treatmentGood, residualGood, eligibilityGood, correctionGood, good, correctFields, totalFields,
       actual: { treatment: row.treatment, residual, eligibility, correction }
     };
   });
   const feedback = Object.fromEntries(rows.map((row) => [row.line.id, row.good]));
+  const correct = rows.reduce((sum, row) => sum + row.correctFields, 0);
+  const total = rows.reduce((sum, row) => sum + row.totalFields, 0);
   return {
-    applicable: true,
-    correct: rows.filter((row) => row.good).length,
-    total: rows.length,
+    applicable: true, correct, total,
     allGood: rows.every((row) => row.good),
-    rows,
-    feedback,
-    model
+    rows, feedback, model
   };
 }
 
@@ -71,7 +72,13 @@ export function worksheetFeedbackMarkup(result, escapeHtml, formatChf) {
       : (reverse ? 'pas de déduction' : 'pas de correction');
     const eligibility = reverse ? ` · droit ${row.line.expectedEligibility}%` : '';
     const expected = `${treatment} · résiduel ${row.line.expectedResidual}%${eligibility} · ${formatChf(row.line.expectedCorrection, 2)}`;
-    return `<div class="feedback-row"><div class="feedback-name">${row.good ? '✓' : '✕'} ${escapeHtml(row.line.label)}</div><div class="feedback-explain">Attendu: ${escapeHtml(expected)}.</div></div>`;
+    const missing = [
+      !row.treatmentGood ? 'traitement' : '',
+      !row.residualGood ? 'part résiduelle' : '',
+      reverse && !row.eligibilityGood ? 'part ouvrant droit' : '',
+      !row.correctionGood ? 'montant' : ''
+    ].filter(Boolean).join(', ');
+    return `<div class="feedback-row"><div class="feedback-name">${row.good ? '✓' : '✕'} ${escapeHtml(row.line.label)}</div><div class="feedback-explain">Attendu: ${escapeHtml(expected)}.${missing ? ` À revoir: ${escapeHtml(missing)}.` : ''}</div></div>`;
   }).join('')}</div>`;
 }
 

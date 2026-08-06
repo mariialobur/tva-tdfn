@@ -1,4 +1,4 @@
-// Données intégrées — version 10.0.0
+// Données intégrées — version 10.1.0
 // Cas, sources et tableaux de transition sont réunis dans un module unique.
 
 export const OFFICIAL_SOURCES = [
@@ -119,6 +119,13 @@ export const OFFICIAL_SOURCES = [
     "title": "AFC — Décompter la TVA en ligne",
     "scope": "Remise des décomptes et rectificatifs via «Décompte TVA pro» dans le Portail AFC",
     "url": "https://www.estv.admin.ch/fr/decompter-la-tva-en-ligne",
+    "status": "Source administrative actuelle"
+  },
+  {
+    "id": "annual-reporting",
+    "title": "AFC — Décompte annuel",
+    "scope": "Limite distincte de CHF 5’005’000 pour demander la périodicité annuelle; ne pas confondre avec les limites TDFN",
+    "url": "https://www.estv.admin.ch/fr/tva-decompte-annuel-2025",
     "status": "Source administrative actuelle"
   }
 ];
