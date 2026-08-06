@@ -1,40 +1,70 @@
 import fs from 'node:fs';
+import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
-const html = fs.readFileSync(new URL('./index.html', import.meta.url), 'utf8');
-const js = fs.readFileSync(new URL('./v7-enhancements.js', import.meta.url), 'utf8');
-const css = fs.readFileSync(new URL('./v7-enhancements.css', import.meta.url), 'utf8');
+const root = path.dirname(new URL(import.meta.url).pathname);
+const read = (name) => fs.readFileSync(path.join(root, name), 'utf8');
+const html = read('index.html');
+const js = read('v8.1-learning-path.js');
+const css = read('v8.1-learning-path.css');
 
-const checks = [
-  ['HTML charge le correctif JS 7.5', html.includes('v7-enhancements.js?v=2026.08.03.5')],
-  ['HTML charge le correctif CSS 7.5', html.includes('v7-enhancements.css?v=2026.08.03.5')],
-  ['Les deux limites restent visibles dans le résumé', html.includes('CHF 5’024’000') && html.includes('CHF 108’000')],
-  ['Le résumé des limites reste sémantiquement simple', html.includes('<summary>\n      <span>Comprendre l’admissibilité') && !html.includes('<summary>\n      <div class="method-limits__summary-head"')],
-  ['Période fiscale et période de décompte sont distinguées', html.includes('trois <em>périodes fiscales</em>') && html.includes('et non trois périodes de décompte')],
-  ['Aucune ancienne règle de dépassement à 50 % ne subsiste', !html.includes('Dépassement de plus de 50 %') && !js.includes('Dépassement de plus de 50 %')],
-  ['Le cas J sépare admissibilité initiale et maintien', js.includes('Deux analyses distinctes') && js.includes('Ne transposez pas la règle des trois périodes fiscales')],
-  ['Les taux supplémentaires 2025 sont correctement nuancés', html.includes('sous réserve du contrôle ultérieur de l’AFC') && js.includes('déclaré directement dans le décompte')],
-  ['Le cas de rectification est ajouté', js.includes("publicId: 'R'") && js.includes("tab: 'R · Rectification'")],
-  ['L’intérêt moratoire est formulé comme dû en cas de retard', js.includes('En cas de paiement tardif, l’intérêt moratoire est dû')],
-  ['Le cas R affiche un plan d’action avec les rubriques affectées', js.includes('Plan d’action pour corriger le S1 2026') && js.includes('<small>ch. 323</small>') && js.includes('Prestations: + CHF 10’810') && js.includes('Impôt: + CHF 670.22') && js.includes('<small>ch. 399</small>')],
-  ['Le contrôle préalable utilise un label associé', js.includes('label.htmlFor = inputId')],
-  ['Les panneaux de détail exposent leur région accessible', js.includes("body.setAttribute('role', 'region')") && js.includes("body.setAttribute('aria-labelledby', toggleId)")],
-  ['Les commandes Tout ouvrir / Tout fermer sont présentes', js.includes('data-v73-precheck-all="open"') && js.includes('toggleAllPrechecks')],
-  ['Les priorités du cas sont explicites', js.includes('CASE_PRECHECK_PRIORITIES') && js.includes('Priorité du cas')],
-  ['Le checkbox n’est pas placé dans un summary', !js.includes("document.createElement('summary')")],
-  ['Le CTA précise le caractère pédagogique', js.includes('Voir la vue pédagogique AFC') && js.includes("'Vue pédagogique' : 'Voir la vue pédagogique AFC'")],
-  ['Les termes ambigus du prototype sont normalisés', js.includes("heading.textContent = 'Traitement dans le décompte'") && js.includes('La vue pédagogique complète reste disponible séparément.')],
-  ['Le taux moyen est renommé en indicateur pédagogique', js.includes('normalizeAggregateRateTerminology') && js.includes('Taux effectif résultant — indicateur pédagogique') && js.includes('il ne constitue ni un TDFN autorisé')],
-  ['Le rendu dynamique du calcul est observé', js.includes("document.querySelector('#workArea')") && js.includes('new MutationObserver(queueEnhancements).observe(workArea')],
-  ['Le délai de changement n’est plus affirmé sans renvoi à la règle applicable', html.includes('vérifier le délai concret dans l’Info TVA 12') && !html.includes('au plus tard 60 jours après le début de la période fiscale concernée')],
-  ['L’ancien regroupement ambigu des chiffres 323 et 399 a disparu', !js.includes('ch. 323 et 399')],
-  ['Les styles du plan de rectification sont présents', css.includes('.v73-rectification-workflow')],
-  ['Les styles mobiles sont présents', css.includes('@media (max-width: 680px)')]
-];
+const tests = [];
+const test = (name, condition) => tests.push({ name, ok: Boolean(condition) });
 
-let failed = 0;
-for (const [label, ok] of checks) {
-  console.log(`${ok ? '✓' : '✕'} ${label}`);
-  if (!ok) failed += 1;
+for (const name of ['index.html', 'v8.1-learning-path.js', 'v8.1-learning-path.css', 'INSTALLATION-RU.md', 'AUDIT-UPDATE-RU.md']) {
+  test(`Fichier présent: ${name}`, fs.existsSync(path.join(root, name)));
 }
-if (failed) process.exit(1);
-console.log(`\n${checks.length} contrôles statiques réussis.`);
+
+try {
+  execFileSync(process.execPath, ['--check', path.join(root, 'v8.1-learning-path.js')], { stdio: 'pipe' });
+  test('Syntaxe JavaScript valide', true);
+} catch {
+  test('Syntaxe JavaScript valide', false);
+}
+
+test('Index charge le CSS 8.1', html.includes('v8.1-learning-path.css?v=2026.08.06.81'));
+test('Index charge le JS 8.1', html.includes('v8.1-learning-path.js?v=2026.08.06.81'));
+test('Ancien fichier v8 non chargé', !html.includes('v8-learning-path.js') && !html.includes('v8-learning-path.css'));
+test('Version pédagogique visible', html.includes('version pédagogique 8.1'));
+
+test('K0 à K5 présents', ['K0','K1','K2','K3','K4','K5'].every((id) => js.includes(`publicId: '${id}'`) || js.includes(`'${id}'`)));
+test('L0 présent', js.includes("publicId: 'L0'"));
+test('Cas R présent', js.includes("publicId: 'R'"));
+test('Liens historiques L à Q non renommés', !js.includes('const publicRelabel') && !js.includes("L: 'M'") && !js.includes("Q: 'S'"));
+test('Seul ancien #cas-K redirige vers K0', /const LEGACY_PUBLIC_HASHES = \{\s*K: 'K0'\s*\}/m.test(js));
+test('Module des cas historiques conserve L à Q', js.includes("ids: ['L', 'M', 'N', 'O', 'P', 'R']") && js.includes("ids: ['Q']"));
+
+test('Tableaux interactifs de transition présents', js.includes('const TRANSITION_WORKSHEETS = {') && js.includes('data-v81-transition-sheet'));
+test('Tableaux couvrent K1 à K5 et L0', ['K1','K2','K3','K4','K5','L0'].every((id) => new RegExp(`\\b${id}: \\{`).test(js)));
+test('Validation du tableau bloque un score quiz trompeur', js.includes("dataset.action === 'validate'") && js.includes('validateTransitionWorksheet'));
+test('Solution remplit aussi le tableau', js.includes('fillTransitionWorksheetSolution'));
+test('Réinitialisation efface aussi le tableau', js.includes('clearTransitionWorksheet'));
+test('État des tableaux stocké séparément', js.includes('tva_tdfn_v81_transition_worksheets'));
+test('Hypothèse convenues/reçues explicitée', js.includes('les débiteurs et créanciers ne sont pas corrigés dans ces sous-cas'));
+
+test('Navigation par module et liste locale', js.includes('id="v81ModuleSelect"') && js.includes('data-v81-case-list') && js.includes('data-v81-case-index'));
+test('Ancien sélecteur miroir supprimé du JS', !js.includes('v8CaseSelect'));
+test('Aucun MutationObserver de patch susceptible de boucler', !js.includes('new MutationObserver'));
+
+test('Typographie secondaire desktop au moins 0.76rem', css.includes('.v8-navigation-sidebar .data-note{font-size:.76rem'));
+test('Navigation latérale sans scroll principal imbriqué', css.includes('.v8-navigation-sidebar{\n    position:relative;') && css.includes('max-height:none') && css.includes('overflow:visible'));
+test('Liste locale de cas stylée', css.includes('.v81-case-link'));
+test('Tableau transition responsive', css.includes('.v81-transition-row') && css.includes('@media (max-width:560px)'));
+test('Compact limits autorise le panneau déroulant', css.includes('.method-limits.is-compact{\n    position:relative;\n    overflow:visible;'));
+
+test('Montants K2 corrects', js.includes('expectedResidual: 60, expectedCorrection: 486'));
+test('Montants K3 corrects', js.includes('expectedCorrection: 3240') && js.includes('total: 6480'));
+test('Montant K4 correct', js.includes('total: 1296'));
+test('Montant K5 correct', js.includes('total: 4860'));
+test('Destination K = ch. 415 dernier effective', js.includes('Dernier décompte selon la méthode effective · ch. 415'));
+test('Destination L0 = ch. 410 premier effective', js.includes('Premier décompte selon la méthode effective · ch. 410'));
+
+test('Aucun ID HTML statique dupliqué', (() => {
+  const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+  return new Set(ids).size === ids.length;
+})());
+
+const failed = tests.filter((item) => !item.ok);
+for (const item of tests) console.log(`${item.ok ? '✓' : '✗'} ${item.name}`);
+console.log(`\n${tests.length - failed.length}/${tests.length} contrôles réussis.`);
+if (failed.length) process.exit(1);
