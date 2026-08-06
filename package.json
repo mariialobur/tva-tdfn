@@ -1,0 +1,16 @@
+{
+  "name": "tva-tdfn-trainer",
+  "version": "10.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "npm run test:smoke && npm run test:unit && npm run test:e2e",
+    "test:smoke": "node smoke-test.mjs",
+    "test:unit": "node tests/unit.mjs",
+    "test:e2e": "npx playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@playwright/test": "^1.54.0"
+  }
+}

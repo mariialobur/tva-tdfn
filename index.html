@@ -11,14 +11,9 @@
   <meta property="og:title" content="Entraînement au décompte TVA suisse — méthode TDFN">
   <meta property="og:description" content="Cas progressifs, tableau de correction des valeurs résiduelles et vue pédagogique inspirée du prototype AFC.">
   <meta property="og:url" content="https://mariialobur.github.io/tva-tdfn/">
-  <meta property="og:image" content="https://mariialobur.github.io/tva-tdfn/preview.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
   <link rel="canonical" href="https://mariialobur.github.io/tva-tdfn/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect rx=%2214%22 width=%2264%22 height=%2264%22 fill=%22%231f6078%22/><text x=%2232%22 y=%2241%22 text-anchor=%22middle%22 font-size=%2227%22 fill=%22white%22 font-family=%22Arial%22>TVA</text></svg>">
-  <link rel="stylesheet" href="styles.css?v=6.3.0">
-  <link rel="stylesheet" href="ui-fixes.css?v=2026.07.30">
-  <link rel="stylesheet" href="v8.1-learning-path.css?v=2026.08.06.81">
+  <link rel="stylesheet" href="styles.css?v=10.0.0">
   <title>Décompte TVA suisse TDFN — entraînement pédagogique | Mariia Lobur</title>
 </head>
 <body>
@@ -28,7 +23,7 @@
     <div class="brand-block">
       <p class="kicker">TVA suisse · méthode TDFN</p>
       <h1>Entraînement TDFN</h1>
-      <p class="subtitle">Cas progressifs · du décompte courant au dossier de changement de méthode</p>
+      <p class="subtitle">Cas progressifs · plusieurs TDFN · changements de méthode · rectification</p>
     </div>
     <div class="header-tools">
       <button class="ghost-button" type="button" data-action="open-precheck">Contrôle préalable</button>
@@ -55,7 +50,7 @@
 </section>
 
 <section class="method-limits is-compact" aria-labelledby="methodLimitsTitle">
-  <div class="method-limits__overview">
+  <div class="method-limits__top">
     <div class="method-limits__summary-head">
       <div>
         <span class="method-limits__eyebrow">Admissibilité et maintien de la méthode</span>
@@ -66,16 +61,14 @@
       <span class="method-limit-card"><small>CA imposable annuel, TVA comprise</small><strong>≤ CHF 5’024’000</strong></span>
       <span class="method-limit-card"><small>Impôt annuel calculé avec les TDFN</small><strong>≤ CHF 108’000</strong></span>
     </div>
+    <button class="method-limits__toggle" id="methodLimitsToggle" type="button" aria-expanded="false" aria-controls="methodLimitsDetails">
+      <span>Comprendre l’admissibilité et les actions en cas de dépassement</span>
+      <span class="method-limits__toggle-text" aria-hidden="true">Afficher</span>
+    </button>
     <p class="method-limits__summary-example"><strong>Cas à 6,2 %:</strong> CHF 1’800’000 × 6,2 % = CHF 111’600. La seconde limite est dépassée de CHF 3’600, malgré un chiffre d’affaires inférieur à CHF 5’024’000.</p>
   </div>
 
-  <details class="method-limits__details" id="methodLimitsDetails">
-    <summary>
-      <span>Comprendre l’admissibilité et les actions en cas de dépassement</span>
-      <span class="method-limits__toggle-text" aria-hidden="true">Afficher</span>
-    </summary>
-
-    <div class="method-limits__body">
+  <div class="method-limits__body" id="methodLimitsDetails" hidden>
       <div class="method-limits__rule-callout">
         <strong>Le test porte toujours sur les deux conditions.</strong>
         <span>Avec plusieurs activités, additionnez l’impôt obtenu pour chaque chiffre d’affaires brut TTC au TDFN confirmé correspondant.</span>
@@ -102,9 +95,11 @@
           <ol class="method-limits__actions">
             <li><strong>Nouvelle inscription:</strong> l’AFC autorise la méthode si le chiffre d’affaires et l’impôt escomptés durant les douze premiers mois ne dépassent aucune des deux limites.</li>
             <li><strong>Passage depuis la méthode effective:</strong> la période fiscale précédente ne doit avoir dépassé aucune des deux limites.</li>
-            <li><strong>Méthode TDFN déjà autorisée:</strong> documenter chaque dépassement et compter les périodes fiscales consécutives. Après trois périodes fiscales consécutives de dépassement d’une ou des deux limites, le passage à la méthode effective est obligatoire au début de la période suivante.</li>
-            <li><strong>Préparer le changement:</strong> effectuer le changement dans le Portail AFC dans le délai applicable, vérifier le délai concret dans l’Info TVA 12, conserver la réconciliation des limites et analyser la déduction éventuelle de l’impôt préalable sur les valeurs résiduelles au ch. 410 du premier décompte selon la méthode effective.</li>
-            <li><strong>Attention:</strong> un retrait rétroactif relève notamment de fausses indications ayant conduit à l’autorisation; il ne doit pas être présenté comme une conséquence automatique d’un dépassement important.</li>
+            <li><strong>Dépassement jusqu’à 50 %:</strong> si l’une ou les deux limites sont dépassées pendant trois périodes fiscales consécutives, le passage à la méthode effective devient obligatoire au début de la période suivante.</li>
+            <li><strong>Dépassement de plus de 50 %:</strong> une seule période fiscale suffit pour imposer le passage à la méthode effective au début de la période suivante.</li>
+            <li><strong>Douze premiers mois d’adhésion:</strong> si les limites sont déjà dépassées durant cette phase, contrôler le risque de révocation rétroactive de l’autorisation conformément à l’art. 81 OTVA.</li>
+            <li><strong>Préparer le changement:</strong> annoncer la modification dans le Portail AFC dans le délai applicable, conserver la réconciliation des limites et analyser le dégrèvement éventuel de l’impôt préalable sur les valeurs résiduelles au ch. 410 du premier décompte selon la méthode effective.</li>
+            <li><strong>Autres conditions:</strong> le respect des deux limites ne suffit pas à lui seul; les exclusions prévues à l’art. 77 OTVA doivent aussi être contrôlées.</li>
           </ol>
         </article>
       </div>
@@ -116,7 +111,6 @@
         <a href="https://www.gate.estv.admin.ch/mwst-webpublikationen/public/pages/taxInfos/cipherDisplay.xhtml?componentId=1005232&amp;publicationId=1004992" target="_blank" rel="noopener noreferrer">Info TVA 12 — changement de méthode</a>
       </div>
     </div>
-  </details>
 </section>
 
 <nav class="case-nav" aria-label="Cas pratiques">
@@ -177,7 +171,7 @@
     <span> · Projet pédagogique indépendant, sans affiliation à l’AFC.</span>
   </div>
   <div class="footer-meta-line">
-    <span>Mise à jour : 06.08.2026 · version pédagogique 8.1.</span>
+    <span>Mise à jour : 06.08.2026.</span>
     <a href="https://mariialobur.github.io/tva-debutant/" target="_blank" rel="noopener noreferrer">Entraînement TVA — méthode effective</a>
   </div>
 </footer>
@@ -212,8 +206,6 @@
   </details>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script type="module" src="v8.1-learning-path.js?v=2026.08.06.81"></script>
-<script type="module" src="app.js?v=6.3.0"></script>
-<script defer src="ui-fixes.js?v=2026.07.30c"></script>
+<script type="module" src="app.js?v=10.0.0"></script>
 </body>
 </html>

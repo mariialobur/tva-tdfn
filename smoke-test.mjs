@@ -1,70 +1,57 @@
-import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import { readFile, access } from 'node:fs/promises';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
-const root = path.dirname(new URL(import.meta.url).pathname);
-const read = (name) => fs.readFileSync(path.join(root, name), 'utf8');
-const html = read('index.html');
-const js = read('v8.1-learning-path.js');
-const css = read('v8.1-learning-path.css');
+const root = path.dirname(fileURLToPath(import.meta.url));
+const read = (name) => readFile(path.join(root, name), 'utf8');
+const [html, app, data, store, components, transition, css, workflow, unit, e2e] = await Promise.all([
+  read('index.html'), read('app.js'), read('data.js'), read('store.js'), read('components.js'), read('transition.js'), read('styles.css'),
+  read('.github/workflows/quality.yml'), read('tests/unit.mjs'), read('tests/e2e.spec.mjs')
+]);
 
-const tests = [];
-const test = (name, condition) => tests.push({ name, ok: Boolean(condition) });
+const checks = [];
+function check(name, condition) { assert.ok(condition, name); checks.push(name); }
 
-for (const name of ['index.html', 'v8.1-learning-path.js', 'v8.1-learning-path.css', 'INSTALLATION-RU.md', 'AUDIT-UPDATE-RU.md']) {
-  test(`Fichier présent: ${name}`, fs.existsSync(path.join(root, name)));
+check('index charge un seul CSS intégré v10', (html.match(/rel="stylesheet"/g) || []).length === 1 && html.includes('styles.css?v=10.0.0'));
+check('index charge un seul module applicatif v10', (html.match(/<script/g) || []).length === 1 && html.includes('app.js?v=10.0.0'));
+check('anciens patchs absents de l’index', !/v7-enhancements|v8(?:\.\d+)?-learning-path|ui-fixes\.js/.test(html));
+check('footer public sans numéro de version technique', html.includes('Mise à jour : 06.08.2026.') && !html.includes('version intégrée'));
+check('stockage unifié v100', store.includes("tva_tdfn_v100_state") && store.includes('STATE_VERSION = 100') && store.includes('worksheets') && store.includes('precheck'));
+check('migration v90/v84/v63/v61 prévue', ['tva_tdfn_v90_state','tva_tdfn_v84_transition_worksheets','tva_tdfn_v63_state','tva_tdfn_v61_state'].every((value) => store.includes(value)));
+check('ancien score K invalidé', store.includes('delete migrated.scores.K0'));
+check('données intégrées sans mutation de CASES', data.includes('export const CASES') && !data.includes('CASES.push'));
+check('35 cas intégrés', unit.includes("expectedIds = ['A','B','C','D','D1'"));
+check('cas D1–D4 intégrés', ['D1','D2','D3','D4'].every((id) => data.includes(`"id": "${id}"`)));
+check('cas L1–L7 intégrés', ['L1','L2','L3','L4','L5','L6','L7'].every((id) => data.includes(`"id": "${id}"`)));
+check('cas sportifs corrigés 2,1 / 3,0 / 5,3', /"rate": 2\.1/.test(data) && /"rate": 3(?:\.0)?[,\n]/.test(data) && /"rate": 5\.3/.test(data));
+check('art. 81 OTVA traité selon trois scénarios distincts', data.includes('dépassée de 20 %') && data.includes('dépassée de 60 %') && data.includes('douze premiers mois d’application des TDFN'));
+check('références de transition précisées', data.includes('art. 79 OTVA') && data.includes('art. 81 OTVA'));
+check('anciens sélecteurs de patch absents du CSS', !/(?:\.v7\d*[-_]|\.v8\d*[-_]|#v8\d*)/.test(css));
+check('tableaux ch. 410 avec part ouvrant droit', transition.includes('eligibilityGood') && components.includes('Part ouvrant droit'));
+check('terminologie ch. 410/ch. 415 distincte', components.includes('Tableau de dégrèvement ultérieur') && components.includes('Tableau de correction de la valeur résiduelle'));
+check('documents du dossier affichables', components.includes('transition-documents') && data.includes('"documents"'));
+check('tableau évalué avec le quiz', app.includes('validateWorksheet') && app.includes('correctQuestions+worksheet.correct'));
+check('solution remplit tous les facteurs', transition.includes('eligibility: String(line.expectedEligibility)'));
+check('un seul état dans app', !/localStorage\./.test(app) && app.includes('stateKey'));
+check('aucun MutationObserver', !/MutationObserver/.test(app + components + transition));
+check('navigation complète D1–D4 et L1–L7', app.includes("['D', 'D1', 'D2', 'D3', 'D4', 'E', 'F']") && app.includes("['L0', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7']"));
+check('action principale visible dans la barre latérale', app.includes('id=\"sidebarActionBar\"') && app.includes("['mobileActionBar','desktopActionBar','sidebarActionBar']"));
+check('sources et contrôle préalable disponibles dans la barre latérale', app.includes('data-action=\"open-precheck\"') && app.includes('data-action=\"open-sources\"'));
+check('ancien lien K normalisé', app.includes("rawRequested==='K'?'K0'"));
+check('bloc limites accessible dans le flux', html.includes('id="methodLimitsToggle"') && html.includes('aria-controls="methodLimitsDetails"') && html.includes('id="methodLimitsDetails" hidden'));
+check('rectification et Décompte TVA pro présents', data.includes('Décompte de rectification TVA') && html.includes('Décompte TVA pro'));
+check('Playwright configuré avec npx', (await read('package.json')).includes('npx playwright test') && workflow.includes('playwright install'));
+check('axe présent dans les tests', e2e.includes('AxeBuilder'));
+check('tests D3, L5 et migration v100 présents', e2e.includes("#cas-D3") && e2e.includes("#cas-L5") && e2e.includes('tva_tdfn_v100_state'));
+check('styles du troisième facteur présents', css.includes('.transition-table.has-eligibility') && css.includes('.transition-formula'));
+
+for (const file of ['index.html','styles.css','data.js','logic.js','store.js','components.js','transition.js','app.js','package.json','playwright.config.mjs','tests/unit.mjs','tests/e2e.spec.mjs','.github/workflows/quality.yml']) {
+  await access(path.join(root, file));
 }
+check('fichiers de production et qualité présents', true);
 
-try {
-  execFileSync(process.execPath, ['--check', path.join(root, 'v8.1-learning-path.js')], { stdio: 'pipe' });
-  test('Syntaxe JavaScript valide', true);
-} catch {
-  test('Syntaxe JavaScript valide', false);
-}
+const staticIds = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+check('aucun id HTML statique dupliqué', new Set(staticIds).size === staticIds.length);
 
-test('Index charge le CSS 8.1', html.includes('v8.1-learning-path.css?v=2026.08.06.81'));
-test('Index charge le JS 8.1', html.includes('v8.1-learning-path.js?v=2026.08.06.81'));
-test('Ancien fichier v8 non chargé', !html.includes('v8-learning-path.js') && !html.includes('v8-learning-path.css'));
-test('Version pédagogique visible', html.includes('version pédagogique 8.1'));
-
-test('K0 à K5 présents', ['K0','K1','K2','K3','K4','K5'].every((id) => js.includes(`publicId: '${id}'`) || js.includes(`'${id}'`)));
-test('L0 présent', js.includes("publicId: 'L0'"));
-test('Cas R présent', js.includes("publicId: 'R'"));
-test('Liens historiques L à Q non renommés', !js.includes('const publicRelabel') && !js.includes("L: 'M'") && !js.includes("Q: 'S'"));
-test('Seul ancien #cas-K redirige vers K0', /const LEGACY_PUBLIC_HASHES = \{\s*K: 'K0'\s*\}/m.test(js));
-test('Module des cas historiques conserve L à Q', js.includes("ids: ['L', 'M', 'N', 'O', 'P', 'R']") && js.includes("ids: ['Q']"));
-
-test('Tableaux interactifs de transition présents', js.includes('const TRANSITION_WORKSHEETS = {') && js.includes('data-v81-transition-sheet'));
-test('Tableaux couvrent K1 à K5 et L0', ['K1','K2','K3','K4','K5','L0'].every((id) => new RegExp(`\\b${id}: \\{`).test(js)));
-test('Validation du tableau bloque un score quiz trompeur', js.includes("dataset.action === 'validate'") && js.includes('validateTransitionWorksheet'));
-test('Solution remplit aussi le tableau', js.includes('fillTransitionWorksheetSolution'));
-test('Réinitialisation efface aussi le tableau', js.includes('clearTransitionWorksheet'));
-test('État des tableaux stocké séparément', js.includes('tva_tdfn_v81_transition_worksheets'));
-test('Hypothèse convenues/reçues explicitée', js.includes('les débiteurs et créanciers ne sont pas corrigés dans ces sous-cas'));
-
-test('Navigation par module et liste locale', js.includes('id="v81ModuleSelect"') && js.includes('data-v81-case-list') && js.includes('data-v81-case-index'));
-test('Ancien sélecteur miroir supprimé du JS', !js.includes('v8CaseSelect'));
-test('Aucun MutationObserver de patch susceptible de boucler', !js.includes('new MutationObserver'));
-
-test('Typographie secondaire desktop au moins 0.76rem', css.includes('.v8-navigation-sidebar .data-note{font-size:.76rem'));
-test('Navigation latérale sans scroll principal imbriqué', css.includes('.v8-navigation-sidebar{\n    position:relative;') && css.includes('max-height:none') && css.includes('overflow:visible'));
-test('Liste locale de cas stylée', css.includes('.v81-case-link'));
-test('Tableau transition responsive', css.includes('.v81-transition-row') && css.includes('@media (max-width:560px)'));
-test('Compact limits autorise le panneau déroulant', css.includes('.method-limits.is-compact{\n    position:relative;\n    overflow:visible;'));
-
-test('Montants K2 corrects', js.includes('expectedResidual: 60, expectedCorrection: 486'));
-test('Montants K3 corrects', js.includes('expectedCorrection: 3240') && js.includes('total: 6480'));
-test('Montant K4 correct', js.includes('total: 1296'));
-test('Montant K5 correct', js.includes('total: 4860'));
-test('Destination K = ch. 415 dernier effective', js.includes('Dernier décompte selon la méthode effective · ch. 415'));
-test('Destination L0 = ch. 410 premier effective', js.includes('Premier décompte selon la méthode effective · ch. 410'));
-
-test('Aucun ID HTML statique dupliqué', (() => {
-  const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
-  return new Set(ids).size === ids.length;
-})());
-
-const failed = tests.filter((item) => !item.ok);
-for (const item of tests) console.log(`${item.ok ? '✓' : '✗'} ${item.name}`);
-console.log(`\n${tests.length - failed.length}/${tests.length} contrôles réussis.`);
-if (failed.length) process.exit(1);
+console.log(`Smoke test: OK — ${checks.length}/${checks.length} contrôles.`);
