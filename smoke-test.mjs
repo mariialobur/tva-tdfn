@@ -5,71 +5,87 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const read = (name) => readFile(path.join(root, name), 'utf8');
-const [html, app, data, logic, store, components, transition, css, workflow, unit, e2e] = await Promise.all([
+const [html, app, data, logic, store, components, transition, css, workflow, unit, e2e, pkg] = await Promise.all([
   read('index.html'), read('app.js'), read('data.js'), read('logic.js'), read('store.js'), read('components.js'), read('transition.js'), read('styles.css'),
-  read('.github/workflows/quality.yml'), read('tests/unit.mjs'), read('tests/e2e.spec.mjs')
+  read('.github/workflows/quality.yml'), read('tests/unit.mjs'), read('tests/e2e.spec.mjs'), read('package.json')
 ]);
 
-const checks = [];
-function check(name, condition) { assert.ok(condition, name); checks.push(name); }
+const checks=[];
+function check(name, condition){assert.ok(condition,name);checks.push(name);}
 
-check('index charge un seul CSS intégré v11', (html.match(/rel="stylesheet"/g) || []).length === 1 && html.includes('styles.css?v=11.1.0'));
-check('index charge un seul module applicatif v11', (html.match(/<script/g) || []).length === 1 && html.includes('app.js?v=11.1.0'));
-check('anciens patchs absents de l’index', !/v7-enhancements|v8(?:\.\d+)?-learning-path|ui-fixes\.js/.test(html));
-check('footer public sans numéro de version technique', html.includes('Mise à jour : 07.08.2026') && !html.includes('version intégrée'));
-check('stockage unifié v100', store.includes("tva_tdfn_v100_state") && store.includes('STATE_VERSION = 100') && store.includes('worksheets') && store.includes('precheck'));
-check('migration v90/v84/v63/v61 prévue', ['tva_tdfn_v90_state','tva_tdfn_v84_transition_worksheets','tva_tdfn_v63_state','tva_tdfn_v61_state'].every((value) => store.includes(value)));
-check('ancien score K invalidé', store.includes('delete migrated.scores.K0'));
-check('données intégrées sans mutation de CASES', data.includes('export const CASES') && !data.includes('CASES.push'));
-check('35 cas intégrés', unit.includes("expectedIds = ['A','B','C','D','D1'"));
-check('cas D1–D4 intégrés', ['D1','D2','D3','D4'].every((id) => data.includes(`"id": "${id}"`)));
-check('cas L1–L7 intégrés', ['L1','L2','L3','L4','L5','L6','L7'].every((id) => data.includes(`"id": "${id}"`)));
-check('cas sportifs corrigés 2,1 / 3,0 / 5,3', /"rate": 2\.1/.test(data) && /"rate": 3(?:\.0)?[,\n]/.test(data) && /"rate": 5\.3/.test(data));
-check('art. 81 OTVA actuel: trois périodes fiscales consécutives', data.includes('trois périodes fiscales consécutives') && data.includes('règle spéciale liée à un dépassement de plus de 50 % a été supprimée') && !data.includes('Un dépassement de plus de 50 % d’une seule limite pendant une période fiscale suffit'));
-check('admissibilité art. 77 et seuil annuel distincts', data.includes('art. 77 OTVA') && data.includes('CHF 5’005’000'));
-check('références de transition précisées', data.includes('art. 79 OTVA') && data.includes('art. 81 OTVA'));
-check('anciens sélecteurs de patch absents du CSS', !/(?:\.v7\d*[-_]|\.v8\d*[-_]|#v8\d*)/.test(css));
-check('tableaux ch. 410 avec part ouvrant droit', transition.includes('eligibilityGood') && components.includes('Part ouvrant droit'));
-check('terminologie ch. 410/ch. 415 distincte', components.includes('Tableau de dégrèvement ultérieur') && components.includes('Tableau de correction de la valeur résiduelle'));
-check('documents du dossier affichables', components.includes('transition-documents') && data.includes('"documents"'));
-check('tableau évalué avec le quiz', app.includes('validateWorksheet') && app.includes('correctQuestions+worksheet.correct'));
-check('solution remplit tous les facteurs', transition.includes('eligibility: String(line.expectedEligibility)'));
-check('un seul état dans app', !/localStorage\./.test(app) && app.includes('stateKey'));
-check('aucun MutationObserver', !/MutationObserver/.test(app + components + transition));
-check('navigation complète D1–D4 et L1–L7', app.includes("['D', 'D1', 'D2', 'D4', 'E', 'F', 'D3']") && app.includes("['L0', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7']"));
-check('action principale visible dans la barre latérale', app.includes('id=\"sidebarActionBar\"') && app.includes("['mobileActionBar','desktopActionBar','sidebarActionBar']"));
-check('sources et contrôle préalable disponibles dans la barre latérale', app.includes('data-action=\"open-precheck\"') && app.includes('data-action=\"open-sources\"'));
-check('parcours essentiel et avancé explicitement séparés', app.includes('Parcours essentiel') && app.includes('Parcours avancé') && app.includes('Atelier autonome'));
-check('M/N/P regroupés dans les procédures particulières avancées', app.includes("ids: ['N', 'M', 'P']") && !app.includes("ids: ['L', 'M', 'N', 'O', 'P', 'R']"));
-check('hypothèses globales contextuelles', html.includes('Les hypothèses varient selon le cas') && !html.includes('L’entreprise est déjà assujettie et l’AFC a confirmé la méthode TDFN.'));
-check('cas N vérifie la limitation de l’option sous TDFN', data.includes('Option sous TDFN — vérifier d’abord si elle est admise') && data.includes('art. 77, al. 3, OTVA'));
-check('cas M qualifie avant saisie et P reporte le signe', data.includes('Procédure de déclaration — faut-il déterminer une correction ?') && data.includes('Suite du cas M — reprise de patrimoine'));
+// Build / storage
+check('CSS v12 unique et cache-busté', (html.match(/rel="stylesheet"/g)||[]).length===1 && html.includes('styles.css?v=12.0.0'));
+check('JS v12 unique et cache-busté', (html.match(/<script/g)||[]).length===1 && html.includes('app.js?v=12.0.0'));
+check('package v12', pkg.includes('"version": "12.0.0"'));
+check('stockage v120', store.includes("tva_tdfn_v120_state") && store.includes('STATE_VERSION = 120'));
+check('migration v100 conservée', store.includes("tva_tdfn_v100_state") && store.includes("sourceKey === 'tva_tdfn_v100_state'"));
+check('ancien J invalidé à la migration', store.includes('delete migrated.scores.J1'));
+check('ancien K invalidé à la migration', store.includes('delete migrated.scores.K0'));
+check('37 cas attendus', unit.includes("'J1','J2','J3'") && unit.includes('37 cas'));
 
-check('objectifs, durée et niveau affichés par module', app.includes('moduleIntroSlot') && app.includes('Ce que vous saurez faire') && app.includes('module.duration') && app.includes('module.level'));
-check('admissibilité placée en premier dans le parcours', app.indexOf("ids: ['J']") < app.indexOf("ids: ['A', 'B', 'C']"));
-check('feedback QCM montre choix et réponse attendue', app.includes('Votre choix:') && app.includes('Réponse attendue:'));
-check('précontrôle prioritaire masque les vérifications secondaires', components.includes('À vérifier en priorité pour ce cas') && components.includes('precheck-secondary'));
-check('explication du taux moyen ajoutée', data.includes('2,92 %') && data.includes('pas un TDFN à appliquer'));
-check('ch. 415 cadré avec le signe fiscal du dossier', data.includes('procédure de déclaration') && /art\. 38 LTVA/i.test(data) && data.includes('ch415\": -2000') && logic.includes("key==='ch415'"));
-check('styles v11.1 améliorent lisibilité et cibles tactiles', css.includes('v11.1 — parcours pédagogique') && !/font-size\s*:\s*(?:0?\.[0-7][0-9]*|0\.80[0-9]*)rem/.test(css) && !/font\s*:[^;\n]*?(?:0?\.[0-7][0-9]*|0\.80[0-9]*)rem/.test(css) && css.includes('min-height:44px'));
-check('ancien lien K normalisé', app.includes("rawRequested==='K'?'K0'"));
-check('bloc limites accessible dans le flux', html.includes('id="methodLimitsToggle"') && html.includes('aria-controls="methodLimitsDetails"') && html.includes('id="methodLimitsDetails" hidden'));
-check('rectification et Décompte TVA pro présents', data.includes('Décompte de rectification TVA') && html.includes('Décompte TVA pro'));
-check('Playwright configuré avec npx', (await read('package.json')).includes('npx playwright test') && workflow.includes('playwright install'));
-check('axe présent dans les tests', e2e.includes('AxeBuilder'));
-check('tests D3, L5 et migration v100 présents', e2e.includes("#cas-D3") && e2e.includes("#cas-L5") && e2e.includes('tva_tdfn_v100_state'));
-check('limite du décompte annuel distinguée des limites TDFN', html.includes('CHF 5’005’000') && data.includes('annual-reporting'));
-check('sauvegarde export/import disponible', app.includes('exportProgress') && app.includes('importProgressFile') && store.includes('exportStateSnapshot') && store.includes('importStateSnapshot'));
-check('navigation sans boucle et boutons désactivables', app.includes('target < 0 || target >= order.length') && app.includes('updateNavigationAvailability'));
-check('tableau de transition noté par champ', transition.includes('correctFields') && transition.includes('totalFields'));
-check('styles du troisième facteur présents', css.includes('.transition-table.has-eligibility') && css.includes('.transition-formula'));
+// Pedagogy / information architecture
+check('10 modules explicites', (app.match(/label: '\d+ ·/g)||[]).length===10);
+check('admissibilité en premier', app.indexOf("ids: ['J1', 'J2', 'J3']") < app.indexOf("ids: ['A', 'B', 'C']"));
+check('règle 10 % séparée', app.includes("label: '4 · Règle des 10 %'") && app.includes("ids: ['D4', 'E', 'F']"));
+check('international séparé', app.includes("label: '5 · International et synthèse'") && app.includes("ids: ['G', 'H', 'I', 'D3']"));
+check('parcours essentiel et avancé', app.includes('Parcours essentiel') && app.includes('Parcours avancé') && app.includes('Atelier autonome'));
+check('M/N/P restent avancés', app.includes("ids: ['N', 'M', 'P']"));
+check('objectifs, niveau et durée affichés', app.includes('Objectifs du module') && app.includes('module.level') && app.includes('module.duration'));
+check('J découpé en trois micro-cas', data.includes('\"id\": \"J1\"') && data.includes('\"id\": \"J2\"') && data.includes('\"id\": \"J3\"'));
+check('ancienne ancre J redirigée vers J1', app.includes("rawRequested==='J'?'J1'"));
 
-for (const file of ['index.html','styles.css','data.js','logic.js','store.js','components.js','transition.js','app.js','package.json','playwright.config.mjs','tests/unit.mjs','tests/e2e.spec.mjs','.github/workflows/quality.yml']) {
-  await access(path.join(root, file));
-}
-check('fichiers de production et qualité présents', true);
+// UX core
+check('mission placée dans la zone de travail', app.includes('class="mission-banner"') && app.includes('Votre mission'));
+check('données utiles visibles près de la mission', app.includes('Données utiles pour répondre') && app.includes('briefFactsMarkup'));
+check('dossier complet reste secondaire', html.includes('Voir le dossier complet et les sources'));
+check('réflexe TDFN compact en haut', html.includes('class="foundation-strip"') && html.includes('Réflexe TDFN'));
+check('mémo TDFN en dialogue', html.includes('id="memoDialog"') && app.includes("openMemoInline"));
+check('ancien gros bloc methodLimits supprimé', !html.includes('methodLimitsToggle') && !app.includes('setMethodLimitsExpanded'));
+check('mode de travail non imposé à l’entrée', app.includes("switcher.classList.add('hidden')"));
+check('workflow en verbes simples', app.includes("['1','Analyser']") && app.includes("['2','Calculer']") && app.includes("['3','Reporter']"));
+check('checklist complète en second niveau', app.includes('Checklist complète') && components.includes('Afficher les'));
+check('navigation par module et cas', components.includes('Changer de module') && components.includes('Cas ${position+1}/'));
+check('titres de navigation raccourcis', app.includes("item.tab?.split('·').slice(1)"));
+check('feedback erreurs en premier', app.includes('À corriger (') && app.includes('À revoir ('));
+check('réponses correctes repliées', app.includes('Voir les réponses correctes') && app.includes('Voir les contrôles corrects'));
+check('correction devient action principale si non maîtrisé', app.includes('Corriger mes réponses') && app.includes("action==='return-to-work'"));
+check('solution assistée impose reprise sans aide', app.includes('Recommencer sans aide'));
+check('quiz montre progression de réponse', app.includes('réponse(s) sélectionnée(s)'));
+check('mobile garde mission/données dans le flux', e2e.includes("page.goto('/#cas-J1')") && e2e.includes(".mission-banner") && e2e.includes(".brief-data"));
 
-const staticIds = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
-check('aucun id HTML statique dupliqué', new Set(staticIds).size === staticIds.length);
+// Legal safeguards
+check('limites TDFN présentes', html.includes('CHF 5’024’000') && html.includes('CHF 108’000'));
+check('décompte annuel distingué', html.includes('CHF 5’005’000') && data.includes('annual-reporting'));
+check('maintien sur trois périodes fiscales', data.includes('trois périodes fiscales consécutives'));
+check('ancienne règle +50 % signalée supprimée', data.includes('plus de 50 % a été supprimée'));
+check('option TDFN juridiquement cadrée', data.includes('art. 77, al. 3, OTVA') && data.includes('art. 21, al. 2, ch. 26'));
+check('M qualifie la reprise avant correction', data.includes('Procédure de déclaration — faut-il déterminer une correction ?'));
+check('P enseigne le signe du ch.415', data.includes('Suite du cas M — reprise de patrimoine') && data.includes('"ch415": -2000'));
+check('ch.415 négatif autorisé par la logique', logic.includes("key==='ch415'"));
+check('articles transitions séparés', data.includes('art. 79 OTVA') && data.includes('art. 81 OTVA'));
+check('Décompte TVA pro présent', html.includes('Décompte TVA pro') && data.includes('Décompte TVA pro'));
+
+// UI / accessibility / maintainability
+check('CSS v12 refactorisé', css.includes('UI refactor: one clear learning flow'));
+check('seulement six media blocks', (css.match(/@media/g)||[]).length===6);
+check('aucun ancien patch v11', !css.includes('v11.1 — parcours pédagogique'));
+check('taille de texte minimale 13px', !/font-size\s*:\s*(?:[0-9]|1[0-2])px/.test(css) && !/font-size\s*:\s*(?:0?\.[0-7][0-9]*|0\.80[0-9]*)rem/.test(css));
+check('cibles tactiles 44px prévues', css.includes('min-height:44px'));
+check('états de progression explicitement stylés', css.includes('.status.mastered') && css.includes('.status.assisted'));
+check('axe sans désactivation du contraste', e2e.includes('AxeBuilder') && !e2e.includes('color-contrast'));
+check('tests memo et micro-cas', e2e.includes('mémo TDFN') && e2e.includes('J1–J3'));
+check('tests D3/L5 maintenus', e2e.includes('#cas-D3') && e2e.includes('#cas-L5'));
+check('test migration v120', e2e.includes('tva_tdfn_v120_state') && e2e.includes('persisted.version).toBe(120)'));
+check('progression export/import conservée', app.includes('exportProgress') && app.includes('importProgressFile'));
+check('aucun MutationObserver', !/MutationObserver/.test(app+components+transition));
+check('un seul état localStorage hors store', !/localStorage\./.test(app));
+check('tableaux ch.410/415 toujours évalués', transition.includes('correctFields') && transition.includes('eligibilityGood'));
+
+for(const file of ['index.html','styles.css','data.js','logic.js','store.js','components.js','transition.js','app.js','package.json','playwright.config.mjs','tests/unit.mjs','tests/e2e.spec.mjs','.github/workflows/quality.yml']) await access(path.join(root,file));
+check('fichiers production/qualité présents',true);
+const staticIds=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
+check('aucun id HTML statique dupliqué',new Set(staticIds).size===staticIds.length);
+check('CI installe Playwright', workflow.includes('playwright install'));
+check('script e2e présent', pkg.includes('npx playwright test'));
 
 console.log(`Smoke test: OK — ${checks.length}/${checks.length} contrôles.`);

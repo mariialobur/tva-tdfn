@@ -1,9 +1,10 @@
 import { CASES } from './data.js';
 
-export const STORAGE_KEY = 'tva_tdfn_v100_state';
-export const STATE_VERSION = 100;
+export const STORAGE_KEY = 'tva_tdfn_v120_state';
+export const STATE_VERSION = 120;
 
 const LEGACY_KEYED_STATES = [
+  { key: 'tva_tdfn_v100_state', version: 100 },
   { key: 'tva_tdfn_v90_state', version: 90 }
 ];
 const LEGACY_INDEXED_STATES = [
@@ -23,8 +24,8 @@ const caseIdAtIndex = (index) => publicCaseId(CASES[Number(index)]) || 'A';
 export function createDefaultState() {
   return {
     version: STATE_VERSION,
-    current: Math.max(0, caseIndexByPublicId('J')),
-    currentId: 'J',
+    current: Math.max(0, caseIndexByPublicId('J1')),
+    currentId: 'J1',
     mode: 'guided',
     steps: {}, answers: {}, quiz: {}, scores: {}, assisted: {}, attempts: {}, reported: {},
     finalRound: {}, acquisitionRate: {}, dossierOpen: {}, worksheets: {}, precheck: {},
@@ -40,6 +41,7 @@ function safeJson(raw, fallback = null) {
 function normalizeId(id) {
   const value = String(id || '').toUpperCase();
   if (value === 'K') return 'K0';
+  if (value === 'J') return 'J1';
   return validIds.has(value) ? value : '';
 }
 
@@ -90,6 +92,7 @@ function migrateKeyedState(raw, sourceKey) {
   migrated.currentId = index >= 0 ? requestedId : migrated.currentId;
   migrated.mode = raw.mode === 'portal' ? 'portal' : 'guided';
   for (const group of STATE_GROUPS) migrated[group] = normalizeIdGroup(raw[group]);
+  if (sourceKey === 'tva_tdfn_v100_state') { delete migrated.scores.J1; delete migrated.quiz.J1; delete migrated.assisted.J1; delete migrated.attempts.J1; }
   migrated.worksheets = normalizeWorksheetGroup(raw.worksheets);
   migrated.precheck = raw.precheck && typeof raw.precheck === 'object' ? raw.precheck : {};
   migrated.ui = { ...migrated.ui, ...(raw.ui || {}) };
@@ -122,8 +125,9 @@ function migrateIndexedState(raw, legacy) {
   migrated.currentId = current >= 0 ? requestedId : migrated.currentId;
   migrated.mode = raw.mode === 'portal' ? 'portal' : 'guided';
   for (const group of STATE_GROUPS) migrated[group] = mapIndexedGroup(raw[group], ids);
-  // L’ancien cas K ne valide jamais le nouveau module K0.
+  // Les anciens cas K et J ont changé de structure: leur score ne doit pas valider K0/J1.
   delete migrated.scores.K0; delete migrated.answers.K0; delete migrated.quiz.K0; delete migrated.assisted.K0;
+  delete migrated.scores.J1; delete migrated.answers.J1; delete migrated.quiz.J1; delete migrated.assisted.J1; delete migrated.attempts.J1;
   migrated.free = { ...migrated.free, ...(raw.free || {}) };
   migrated.migrations[legacy.key] = new Date().toISOString();
   return migrated;

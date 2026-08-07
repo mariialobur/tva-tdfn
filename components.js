@@ -86,7 +86,7 @@ export const PRECHECK_DETAILS = {
 export const CASE_PRECHECK_PRIORITIES = {
   A: ['authorization', 'grossNet'], B: ['grossNet'], C: ['rates', 'grossNet'],
   D: ['rates', 'concordance'], D1: ['rates', 'concordance'], D2: ['rates', 'concordance'], D3: ['rates', 'turnover', 'evidence', 'concordance'], D4: ['rates'],
-  E: ['rates'], F: ['rates'], G: ['turnover', 'evidence'], H: ['foreignPlace', 'turnover'], I: ['acquisitions'], J: ['authorization', 'turnover', 'rates'],
+  E: ['rates'], F: ['rates'], G: ['turnover', 'evidence'], H: ['foreignPlace', 'turnover'], I: ['acquisitions'], J1: ['authorization', 'turnover', 'rates'], J2: ['authorization', 'turnover'], J3: ['authorization', 'turnover'],
   K0: ['authorization', 'special'], K1: ['special'], K2: ['special'], K3: ['special', 'evidence'], K4: ['special'], K5: ['special'],
   L0: ['authorization', 'special'], L1: ['special'], L2: ['special'], L3: ['special', 'evidence'], L4: ['special'], L5: ['special'], L6: ['special', 'evidence'], L7: ['special', 'evidence'],
   L: ['special'], M: ['special'], N: ['authorization', 'turnover'], O: ['evidence', 'turnover'], P: ['special'], Q: [], R: ['special', 'turnover']
@@ -126,10 +126,11 @@ defineComponent('precheck', ({ checked = {}, priorities = [] }) => {
 
 defineComponent('navigation' , ({ modules = [], activeModule = 0, currentId = '', statuses = {} }) => {
   const currentModule = modules[activeModule] || modules[0] || { ids: [] };
+  const position=Math.max(0,(currentModule.ids||[]).indexOf(currentId));
   return `<section class="path-panel">
-    <div class="path-panel__head"><div><span>${h(currentModule?.track || 'Parcours TDFN')}</span><strong>${h(currentModule?.label || '')}</strong></div></div>
-    <label class="module-picker"><span>Module</span><select data-module-select aria-label="Choisir un module">${modules.map((module, index) => `<option value="${index}" ${index === activeModule ? 'selected' : ''}>${h(module.track ? `${module.track} · ${module.label}` : module.label)}</option>`).join('')}</select></label>
-    <div class="current-module" aria-label="Cas du module actuel">${(currentModule?.ids || []).map((id) => `<button type="button" class="case-link ${id === currentId ? 'active' : ''}" data-public-case="${h(id)}"><span>${h(id)}</span><b>${h(statuses[id]?.title || id)}</b>${statuses[id]?.status ? `<em>${h(statuses[id].status)}</em>` : ''}</button>`).join('')}</div>
+    <div class="path-panel__head"><div><span>${h(currentModule?.track || 'Parcours TDFN')}</span><strong>${h(currentModule?.label || '')}</strong></div><small>Cas ${position+1}/${(currentModule.ids||[]).length}</small></div>
+    <label class="module-picker"><span>Changer de module</span><select data-module-select aria-label="Choisir un module">${modules.map((module, index) => `<option value="${index}" ${index === activeModule ? 'selected' : ''}>${h(module.track ? `${module.track} · ${module.label}` : module.label)}</option>`).join('')}</select></label>
+    <div class="current-module" aria-label="Cas du module actuel">${(currentModule?.ids || []).map((id) => `<button type="button" class="case-link ${id === currentId ? 'active' : ''}" data-public-case="${h(id)}" ${id===currentId?'aria-current="step"':''}><span>${h(id)}</span><b>${h(statuses[id]?.title || id)}</b>${statuses[id]?.status ? `<em>${h(statuses[id].status)}</em>` : '<em>à faire</em>'}</button>`).join('')}</div>
     <div class="case-arrows"><button type="button" data-action="previous">← Précédent</button><button type="button" data-action="next">Suivant →</button></div>
   </section>`;
 });

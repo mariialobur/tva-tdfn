@@ -1,91 +1,63 @@
-# Entraînement au décompte TVA suisse — méthode TDFN
+# Entraînement TVA suisse — méthode TDFN · v12.0
 
-Simulateur pédagogique interactif consacré au décompte TVA suisse selon la méthode des taux de la dette fiscale nette (TDFN).
+Application pédagogique autonome pour apprendre à qualifier et préparer un décompte TVA suisse selon la méthode des taux de la dette fiscale nette (TDFN).
 
-La version 11.1 conserve **35 cas** mais les organise désormais selon une progression pédagogique explicite: d’abord le travail quotidien indispensable, ensuite les changements de méthode plus techniques.
+La version 12.0 privilégie la compréhension de l’utilisateur avant la densité du formulaire: une mission claire, les données utiles au même endroit, un parcours en trois verbes («Analyser → Calculer → Reporter»), puis un feedback centré d’abord sur les erreurs à corriger.
 
-## Parcours pédagogique
+## Parcours
 
-### Parcours essentiel
+37 cas au total, dont 36 évalués et un atelier libre, répartis en 10 modules:
 
-1. **Avant de calculer — admissibilité**: limites, exclusions, maintien de la méthode et distinction avec le décompte annuel.
-2. **Comprendre la méthode TDFN**: taux légal, TDFN, bases HT/TTC et dette fiscale.
-3. **Plusieurs activités et plusieurs TDFN**: ventilation, règle des 10 %, taux moyen.
-4. **Opérations internationales**: exportations, prestations à l’étranger et impôt sur les acquisitions.
-5. **Rubriques courantes et corrections**: autres flux de fonds, diminutions de contre-prestation et rectification de la bonne période.
+1. Admissibilité TDFN — J1, J2, J3
+2. Comprendre la méthode — A, B, C
+3. Plusieurs activités — D, D1, D2
+4. Règle des 10 % — D4, E, F
+5. International et synthèse — G, H, I, D3
+6. Rubriques courantes et corrections — L, O, R
+7. Méthode effective → TDFN — K0 à K5
+8. TDFN → méthode effective — L0 à L7
+9. Procédures particulières — N, M, P
+10. Atelier libre — Q
 
-### Parcours avancé
+Les modules 1 à 6 forment le parcours essentiel. Les modules 7 à 9 sont explicitement avancés.
 
-6. **Méthode effective → TDFN**: admissibilité du changement et corrections de valeur résiduelle au ch. 415.
-7. **TDFN → méthode effective**: dégrèvement ultérieur et ch. 410.
+## Principes UX de v12.0
 
-8. **Procédures particulières — qualifier avant de saisir**: option limitée sous TDFN, art. 83 OTVA et signe du ch. 415.
+- La mission est placée dans la zone de travail, pas uniquement dans le dossier latéral.
+- Les données indispensables à la réponse restent visibles près de la question, y compris sur mobile.
+- Le grand bloc théorique permanent a été remplacé par un «Réflexe TDFN» compact et un mémo ouvrable à la demande.
+- Le mode de travail technique n’est plus demandé avant que l’utilisateur ait compris le cas.
+- Le parcours guidé suit «Analyser → Calculer → Reporter».
+- Le formulaire complet reste accessible à l’étape de report mais n’est plus imposé au débutant.
+- La checklist professionnelle est disponible comme second niveau d’aide.
+- Après validation, les erreurs sont affichées en premier; les réponses correctes sont repliées.
+- Tant que le cas n’est pas maîtrisé, «Corriger mes réponses» est l’action principale.
+- Une solution consultée marque le cas comme assisté et impose une reprise sans aide pour obtenir la maîtrise.
+- La navigation affiche le module, le numéro du cas et un intitulé court.
+- La typographie d’écran ne descend pas sous 13 px; les contrôles tactiles importants visent au moins 44 px sur mobile.
 
-### Atelier autonome
+## Points juridiques protégés dans les tests
 
-9. **Atelier libre**: entraînement sur un dossier déjà paramétré.
+Le jeu de tests vérifie notamment la séparation des seuils TDFN et du décompte annuel, la logique actuelle de maintien des TDFN sur trois périodes fiscales consécutives, l’abandon de l’ancienne règle liée au dépassement de plus de 50 %, la limitation de l’option sous TDFN, ainsi que la qualification et le signe du ch. 415 dans les cas concernés.
 
-Chaque module affiche son niveau, une durée indicative et les compétences à acquérir.
+Le site reste un outil pédagogique indépendant. Les sources AFC/ESTV intégrées au trainer restent la référence pour un dossier réel.
 
-## Positionnement
+## Qualité technique
 
-Cet outil est un projet pédagogique indépendant, sans affiliation à l’Administration fédérale des contributions (AFC). Il ne transmet aucune donnée et ne remplace ni «Décompte TVA pro», ni l’analyse fiscale d’un dossier réel.
-
-Les cas utilisent des hypothèses explicites et renvoient aux sources officielles applicables, notamment la LTVA, l’OTVA, l’Info TVA 12, les listes de TDFN et les prototypes de décompte de l’AFC.
-
-## Architecture
-
-- `data.js` — cas, sources et tableaux de transition;
-- `logic.js` — calculs et contrôles du décompte;
-- `store.js` — état unique, sauvegarde locale et migrations;
-- `components.js` — composants d’interface;
-- `transition.js` — tableaux ch. 410 et ch. 415;
-- `app.js` — parcours, navigation, rendu et interactions;
-- `styles.css` — feuille de style unique;
-- `index.html` — structure de la page.
-
-La progression est enregistrée uniquement dans le navigateur sous la clé `tva_tdfn_v100_state`. Une fonction d’export/import JSON permet de conserver une copie locale.
-
-## Utilisation locale
-
-Aucune compilation n’est nécessaire:
+Commandes locales:
 
 ```bash
-python3 -m http.server 4173
-```
-
-Puis ouvrir `http://127.0.0.1:4173/`.
-
-## Contrôles qualité
-
-```bash
-npm install
-npm run test:smoke
-npm run test:unit
+node smoke-test.mjs
+node tests/unit.mjs
 npm run test:e2e
 ```
 
-Le workflow `.github/workflows/quality.yml` exécute les contrôles automatisés sur GitHub Actions.
+- Smoke test: 62 contrôles structure/UX/juridique.
+- Unit tests: 37 cas + calculs + migration + composants + tableaux ch. 410/415.
+- Playwright + axe: prévu dans GitHub Actions pour desktop et mobile Chromium.
 
-## Publication
+Dans l’environnement de génération de cette archive, Playwright n’a pas pu être installé depuis le registre npm disponible. L’E2E navigateur doit donc être confirmé par GitHub Actions après publication.
 
-Site public:
+## Déploiement GitHub Pages
 
-`https://mariialobur.github.io/tva-tdfn/`
-
-Dernière révision juridique, pédagogique et UX indiquée dans l’interface: **07.08.2026**.
-
-## Version 11.1
-
-Principales évolutions:
-
-- admissibilité placée avant les calculs;
-- séparation claire entre parcours essentiel et avancé;
-- correction du module art. 81 OTVA selon les règles en vigueur depuis 2025;
-- contrôle explicite des exclusions de l’art. 77 OTVA;
-- distinction CHF 5’024’000 TDFN / CHF 5’005’000 décompte annuel;
-- explication du taux moyen lorsqu’il y a plusieurs TDFN;
-- ch. 415 cadré par la procédure de déclaration correspondante, avec gestion explicite du signe négatif lorsqu’une correction constitue une charge fiscale;
-- feedback QCM montrant le choix de l’utilisateur et la réponse attendue;
-- contrôles préalables prioritaires avant le checklist complet;
-- meilleure lisibilité des petits textes et cibles tactiles renforcées.
+Le projet est statique. Publier le contenu du dossier à la racine de la branche servie par GitHub Pages. Les fichiers `styles.css` et `app.js` utilisent le cache-busting `v=12.0.0`.

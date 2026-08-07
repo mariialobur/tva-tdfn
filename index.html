@@ -13,7 +13,7 @@
   <meta property="og:url" content="https://mariialobur.github.io/tva-tdfn/">
   <link rel="canonical" href="https://mariialobur.github.io/tva-tdfn/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect rx=%2214%22 width=%2264%22 height=%2264%22 fill=%22%231f6078%22/><text x=%2232%22 y=%2241%22 text-anchor=%22middle%22 font-size=%2227%22 fill=%22white%22 font-family=%22Arial%22>TVA</text></svg>">
-  <link rel="stylesheet" href="styles.css?v=11.1.0">
+  <link rel="stylesheet" href="styles.css?v=12.0.0">
   <title>Décompte TVA suisse TDFN — entraînement pédagogique | Mariia Lobur</title>
 </head>
 <body>
@@ -26,91 +26,23 @@
       <p class="subtitle">Cas progressifs · plusieurs TDFN · changements de méthode · rectification</p>
     </div>
     <div class="header-tools">
-      <button class="ghost-button" type="button" data-action="open-precheck">Contrôle préalable</button>
-      <button class="ghost-button" id="openSources" type="button">Sources officielles</button>
+      <button class="ghost-button" id="openMemo" type="button">Mémo TDFN</button>
+      <button class="ghost-button" id="openSources" type="button">Sources</button>
       <button class="progress progress-button" type="button" data-action="summary" aria-label="Ouvrir le bilan du parcours">
-        <div><span id="moduleProgressLabel">Progression globale</span><strong id="progressText">0 / 34</strong></div>
+        <div><span id="moduleProgressLabel">Cas maîtrisés</span><strong id="progressText">0 / 36</strong></div>
         <div class="progress__track"><span id="progressBar"></span></div>
       </button>
     </div>
   </div>
 </header>
-<section class="principle" aria-label="Principe TDFN">
-  <div class="principle__inner">
-    <div class="principle__main">
-      <strong>La règle à retenir</strong>
-      <div class="principle__flow"><span>Facture client: TVA au taux légal</span><b>→</b><span>Décompte AFC: CA brut TTC × TDFN confirmé</span></div>
-      <small>Le client reçoit une facture avec le taux légal applicable. Dans le décompte, l’entreprise calcule ensuite la dette fiscale en appliquant le ou les TDFN autorisés au chiffre d’affaires brut, TVA comprise. L’impôt préalable courant n’est pas déduit séparément: il est pris en compte forfaitairement dans le TDFN.</small>
-    </div>
-    <details class="principle__details">
-      <summary>Hypothèses du parcours</summary>
-      <p>Les hypothèses varient selon le cas. Lorsqu’un TDFN est présenté comme déjà attribué, il est considéré comme confirmé uniquement pour l’exercice concerné. Les cas consacrés à l’admissibilité, à une nouvelle activité ou à un changement de méthode demandent au contraire de vérifier si la méthode ou le taux peuvent être appliqués. Ne transposez jamais une hypothèse d’un cas à un autre.</p>
-    </details>
+<section class="foundation-strip" aria-label="Règle essentielle TDFN">
+  <div class="foundation-strip__inner">
+    <strong>Réflexe TDFN</strong>
+    <span><b>Facture client</b> · taux légal</span>
+    <span class="foundation-arrow">→</span>
+    <span><b>Décompte AFC</b> · CA brut TTC × TDFN confirmé</span>
+    <button type="button" id="openMemoInline">Comprendre la règle</button>
   </div>
-</section>
-
-<section class="method-limits is-compact" aria-labelledby="methodLimitsTitle">
-  <div class="method-limits__top">
-    <div class="method-limits__summary-head">
-      <div>
-        <span class="method-limits__eyebrow">Mémo avant de commencer</span>
-        <h2 id="methodLimitsTitle">Admissibilité TDFN: deux limites quantitatives + exclusions à contrôler</h2>
-      </div>
-    </div>
-    <div class="method-limits__numbers" aria-label="Limites quantitatives TDFN">
-      <span class="method-limit-card"><small>CA imposable annuel, TVA comprise</small><strong>≤ CHF 5’024’000</strong></span>
-      <span class="method-limit-card"><small>Impôt annuel calculé avec les TDFN</small><strong>≤ CHF 108’000</strong></span>
-    </div>
-    <button class="method-limits__toggle" id="methodLimitsToggle" type="button" aria-expanded="false" aria-controls="methodLimitsDetails">
-      <span>Comprendre l’admissibilité et les actions en cas de dépassement</span>
-      <span class="method-limits__toggle-text" aria-hidden="true">Afficher</span>
-    </button>
-    <p class="method-limits__summary-example"><strong>Réflexe professionnel:</strong> respecter les deux limites ne suffit pas. Avant de choisir la méthode, contrôlez aussi les exclusions de l’art. 77 OTVA et distinguez l’admissibilité TDFN de la périodicité annuelle.</p>
-  </div>
-
-  <div class="method-limits__body" id="methodLimitsDetails" hidden>
-      <div class="method-limits__rule-callout">
-        <strong>Le test porte toujours sur les deux conditions.</strong>
-        <span>Avec plusieurs activités, additionnez l’impôt obtenu pour chaque chiffre d’affaires brut TTC au TDFN confirmé correspondant.</span>
-      </div>
-      <p class="method-limits__period-note"><strong>Attention au vocabulaire:</strong> la règle des trois dépassements vise trois <em>périodes fiscales</em> consécutives, et non trois périodes de décompte mensuelles, trimestrielles ou semestrielles.</p>
-      <p class="method-limits__period-note method-limits__period-note--info"><strong>Ne pas confondre:</strong> la limite TDFN est de CHF 5’024’000. La limite distincte permettant de demander le <em>décompte annuel</em> est de CHF 5’005’000; elle concerne la périodicité de remise, pas l’admissibilité aux TDFN.</p>
-
-      <div class="method-limits__grid">
-        <article class="method-limits__panel">
-          <h3>Repères de chiffre d’affaires pour un seul TDFN</h3>
-          <dl class="method-limits__rates">
-            <div><dt>0,1 à 2,1 %</dt><dd>CHF 5’024’000</dd></div>
-            <div><dt>3,0 %</dt><dd>CHF 3’600’000</dd></div>
-            <div><dt>3,7 %</dt><dd>CHF 2’920’000</dd></div>
-            <div><dt>4,5 %</dt><dd>CHF 2’400’000</dd></div>
-            <div><dt>5,3 %</dt><dd>CHF 2’040’000</dd></div>
-            <div><dt>6,2 %</dt><dd>CHF 1’740’000</dd></div>
-            <div><dt>6,8 %</dt><dd>CHF 1’590’000</dd></div>
-          </dl>
-          <p class="method-limits__note">Ces montants sont des repères AFC pour la première année d’assujettissement ou l’année précédant un passage à la méthode TDFN. Avec plusieurs TDFN, calculez la dette totale activité par activité.</p>
-        </article>
-
-        <article class="method-limits__panel">
-          <h3>Que faire lorsqu’une limite est dépassée?</h3>
-          <ol class="method-limits__actions">
-            <li><strong>Nouvelle inscription:</strong> l’AFC autorise la méthode si le chiffre d’affaires et l’impôt escomptés durant les douze premiers mois ne dépassent aucune des deux limites.</li>
-            <li><strong>Passage depuis la méthode effective:</strong> la période fiscale précédente ne doit avoir dépassé aucune des deux limites.</li>
-            <li><strong>Après autorisation:</strong> si l’une ou les deux limites sont dépassées durant trois périodes fiscales consécutives, le passage à la méthode effective devient obligatoire au début de la période fiscale suivante.</li>
-            <li><strong>Amplitude du dépassement:</strong> depuis 2025, l’ancienne règle accélérée liée à un dépassement de plus de 50 % a été supprimée; c’est la succession de trois périodes fiscales qui est déterminante.</li>
-            <li><strong>Préparer le changement:</strong> annoncer la modification dans le Portail AFC dans le délai applicable, conserver la réconciliation des limites et analyser le dégrèvement éventuel de l’impôt préalable sur les valeurs résiduelles au ch. 410 du premier décompte selon la méthode effective.</li>
-            <li><strong>Autres conditions:</strong> le respect des deux limites ne suffit pas à lui seul; les exclusions prévues à l’art. 77 OTVA doivent aussi être contrôlées.</li>
-          </ol>
-        </article>
-      </div>
-
-      <div class="method-limits__source">
-        <span>Sources officielles:</span>
-        <a href="https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires" target="_blank" rel="noopener noreferrer">AFC — limites TDFN</a>
-        <a href="https://www.fedlex.admin.ch/eli/cc/2009/828/fr" target="_blank" rel="noopener noreferrer">OTVA, art. 78, 79 et 81</a>
-        <a href="https://www.gate.estv.admin.ch/mwst-webpublikationen/public/pages/taxInfos/cipherDisplay.xhtml?componentId=1005232&amp;publicationId=1004992" target="_blank" rel="noopener noreferrer">Info TVA 12 — changement de méthode</a>
-      </div>
-    </div>
 </section>
 
 <nav class="case-nav" aria-label="Cas pratiques">
@@ -130,17 +62,14 @@
         <h2 id="caseTitle" tabindex="-1"></h2>
         <p id="caseDescription"></p>
       </div>
-      <div class="workspace-head__tools">
+      <div class="workspace-head__tools" hidden>
         <button class="dossier-toggle" id="toggleDossier" type="button" data-action="toggle-dossier" hidden>Afficher le dossier</button>
-        <div class="mode-switch" id="modeSwitch" aria-label="Mode de travail">
-          <button type="button" data-mode="guided">Apprendre pas à pas</button>
-          <button type="button" data-mode="portal">S’entraîner sur le décompte AFC</button>
-        </div>
+        <div class="mode-switch hidden" id="modeSwitch" aria-label="Mode de travail"></div>
       </div>
     </div>
     <div id="moduleIntroSlot"></div>
     <details class="mobile-dossier" id="mobileDossier">
-      <summary>Dossier, contrôles et sources du cas</summary>
+      <summary>Voir le dossier complet et les sources</summary>
       <div id="mobileDossierContent"></div>
     </details>
     <div id="stepperSlot"></div>
@@ -178,6 +107,34 @@
     <a href="https://mariialobur.github.io/tva-debutant/" target="_blank" rel="noopener noreferrer">Entraînement TVA — méthode effective</a>
   </div>
 </footer>
+<dialog id="memoDialog" class="source-dialog memo-dialog" aria-labelledby="memoTitle">
+  <div class="dialog-head">
+    <div><p class="eyebrow">Mémo de référence</p><h2 id="memoTitle">Les règles TDFN à garder sous la main</h2></div>
+    <button class="icon-button" type="button" id="closeMemo" aria-label="Fermer">×</button>
+  </div>
+  <div class="memo-content">
+    <section class="memo-rule">
+      <h3>1. Comprendre la méthode</h3>
+      <div class="memo-flow"><span>Facture client<br><strong>TVA au taux légal</strong></span><b>→</b><span>Décompte AFC<br><strong>CA brut TTC × TDFN confirmé</strong></span></div>
+      <p>L’impôt préalable courant n’est pas déduit séparément avec la méthode TDFN: il est pris en compte forfaitairement dans le taux. Les hypothèses restent propres à chaque cas.</p>
+    </section>
+    <section class="memo-rule">
+      <h3>2. Vérifier l’admissibilité</h3>
+      <div class="memo-limits"><div><small>CA imposable annuel, TVA comprise</small><strong>≤ CHF 5’024’000</strong></div><div><small>Impôt annuel calculé avec les TDFN</small><strong>≤ CHF 108’000</strong></div></div>
+      <p>Ces deux limites sont cumulatives et ne remplacent pas le contrôle des exclusions de l’art. 77 OTVA.</p>
+    </section>
+    <section class="memo-rule">
+      <h3>3. Ne pas confondre les périodes</h3>
+      <p>Le maintien après dépassement se contrôle sur des <strong>périodes fiscales</strong>. Après trois périodes fiscales consécutives dépassant une ou les deux limites, le passage à la méthode effective devient obligatoire au début de la période fiscale suivante.</p>
+      <p>Le <strong>décompte annuel</strong> répond à un seuil distinct de chiffre d’affaires: CHF 5’005’000, ainsi qu’à ses propres conditions.</p>
+    </section>
+    <section class="memo-rule">
+      <h3>4. Réflexe de travail</h3>
+      <ol><li>Qualifier l’opération.</li><li>Identifier la rubrique.</li><li>Calculer la base et l’impôt.</li><li>Contrôler la concordance.</li><li>Conserver la preuve et la source.</li></ol>
+    </section>
+    <div class="memo-source-links"><a href="https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires" target="_blank" rel="noopener noreferrer">AFC — TDFN</a><a href="https://www.fedlex.admin.ch/eli/cc/2009/828/fr" target="_blank" rel="noopener noreferrer">OTVA</a><a href="https://www.estv.admin.ch/fr/tva-decompte-annuel-2025" target="_blank" rel="noopener noreferrer">AFC — décompte annuel</a></div>
+  </div>
+</dialog>
 <dialog id="sourceDialog" class="source-dialog" aria-labelledby="sourceTitle">
   <div class="dialog-head">
     <div><p class="eyebrow">Traçabilité documentaire</p><h2 id="sourceTitle">Référentiel officiel du simulateur</h2></div>
@@ -188,10 +145,10 @@
 </dialog>
 <dialog id="precheckDialog" class="source-dialog precheck-dialog" aria-labelledby="precheckTitle">
   <div class="dialog-head">
-    <div><p class="eyebrow">Avant la saisie</p><h2 id="precheckTitle">Contrôle préalable avant le décompte</h2></div>
+    <div><p class="eyebrow">Avant la saisie</p><h2 id="precheckTitle">Checklist professionnelle du dossier</h2></div>
     <button class="icon-button" type="button" data-action="close-precheck" aria-label="Fermer">×</button>
   </div>
-  <p class="dialog-note">Cochez les contrôles et ouvrez chaque rubrique pour voir les vérifications, les pièces utiles et les signaux d’alerte.</p>
+  <p class="dialog-note">Utilisez cette checklist comme aide de travail. Seuls les points prioritaires du cas sont affichés en premier; les autres restent disponibles si nécessaire.</p>
   <div id="precheckContent"></div>
   <div class="form-actions"><button class="btn" type="button" data-action="reset-precheck">Réinitialiser</button><button class="btn primary" type="button" data-action="close-precheck">Terminer</button></div>
 </dialog>
@@ -213,6 +170,6 @@
 <input id="progressImportInput" type="file" accept="application/json,.json" hidden>
 <noscript><div class="noscript-warning">JavaScript doit être activé pour utiliser cet entraînement interactif.</div></noscript>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script type="module" src="app.js?v=11.1.0"></script>
+<script type="module" src="app.js?v=12.0.0"></script>
 </body>
 </html>

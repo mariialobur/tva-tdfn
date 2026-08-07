@@ -1,4 +1,4 @@
-// Données intégrées — version 11.1.0
+// Données intégrées — version 12.0.0
 // Cas, sources et tableaux de transition sont réunis dans un module unique.
 
 export const OFFICIAL_SOURCES = [
@@ -1265,20 +1265,20 @@ export const CASES = [
     "accountingBasis": "Contre-prestations convenues"
   },
   {
-    "id": "J",
-    "tab": "J · Admissibilité",
-    "title": "L’entreprise peut-elle appliquer les TDFN?",
+    "id": "J1",
+    "tab": "J1 · Accès TDFN",
+    "title": "Accès initial — vérifier les limites et les exclusions",
     "entity": "Conseil Expansion SA",
     "sector": "Conseil",
     "location": "Bâle",
     "period": "Prévision annuelle 2026",
-    "level": "Fondamentaux · qualification",
+    "level": "Débutant · qualification",
     "risk": "high",
     "type": "quiz",
-    "description": "Avant tout calcul, vérifiez si la méthode TDFN peut être utilisée. Ce cas distingue les deux limites quantitatives, les exclusions de l’art. 77 OTVA, le maintien après autorisation et la périodicité annuelle.",
-    "mission": "Commencez par les deux limites cumulatives, contrôlez ensuite les exclusions de l’art. 77 OTVA, puis distinguez les règles de maintien et la limite séparée du décompte annuel.",
-    "clientNote": "Le choix de la méthode intervient avant le paramétrage du décompte.",
-    "afcNote": "Les deux limites quantitatives sont cumulatives, mais elles ne suffisent pas à elles seules: les exclusions de l’art. 77 OTVA doivent aussi être vérifiées. La limite du décompte annuel (CHF 5’005’000) est distincte de la limite TDFN (CHF 5’024’000).",
+    "description": "Première étape: déterminer si l’entreprise peut demander la méthode TDFN avant de paramétrer le moindre décompte.",
+    "mission": "Calculez la dette fiscale prévisible, contrôlez les deux limites cumulatives, puis vérifiez qu’aucune exclusion de l’art. 77 OTVA ne bloque la méthode.",
+    "clientNote": "L’entreprise envisage la méthode TDFN pour la première fois. Le choix de la méthode intervient avant le paramétrage du décompte.",
+    "afcNote": "L’accès initial exige le respect simultané des limites de chiffre d’affaires et de dette fiscale. Le respect des limites ne neutralise pas les exclusions prévues par l’art. 77 OTVA.",
     "given": [
       {
         "label": "CA imposable annuel prévu, TVA comprise",
@@ -1302,83 +1302,222 @@ export const CASES = [
       "Accès initial: CA imposable annuel TVA comprise ≤ CHF 5’024’000.",
       "Accès initial: impôt annuel calculé avec les TDFN ≤ CHF 108’000.",
       "Nouvel assujetti: les chiffres escomptés des douze premiers mois doivent respecter les deux limites.",
-      "Maintien après autorisation: le dépassement d’une ou des deux limites doit être observé durant trois périodes fiscales consécutives avant le passage obligatoire à la méthode effective.",
-      "Depuis 2025, l’ampleur du dépassement ne crée plus de règle accélérée à +50 %.",
-      "Contrôler aussi les exclusions de l’art. 77 OTVA.",
-      "Ne pas confondre la limite TDFN de CHF 5’024’000 avec la limite distincte du décompte annuel de CHF 5’005’000."
+      "Contrôler aussi les exclusions de l’art. 77 OTVA."
     ],
-    "legal": "Art. 37 LTVA · art. 77, 78 et 81 OTVA · limites publiées par l’AFC",
+    "legal": "Art. 37 LTVA · art. 77 et 78 OTVA · limites publiées par l’AFC",
     "sourceIds": [
       "afc-main",
       "otva",
-      "info12",
-      "info12-limits",
-      "annual-reporting"
+      "info12"
     ],
     "questions": [
       {
         "q": "Quel est l’impôt annuel prévisible?",
-        "options": ["CHF 108’000", "CHF 111’600", "CHF 116’100", "CHF 180’000"],
+        "options": [
+          "CHF 108’000",
+          "CHF 111’600",
+          "CHF 116’100",
+          "CHF 180’000"
+        ],
         "answer": 1,
         "why": "CHF 1’800’000 × 6,2 % = CHF 111’600."
       },
       {
         "q": "La limite annuelle de CHF 108’000 est-elle respectée?",
-        "options": ["Oui", "Non"],
+        "options": [
+          "Oui",
+          "Non"
+        ],
         "answer": 1,
         "why": "CHF 111’600 dépasse CHF 108’000."
       },
       {
         "q": "Quelle conclusion est correcte pour la demande initiale?",
-        "options": ["Admissible car le CA reste sous CHF 5,024 mio.", "Non admissible dans ce scénario", "Il suffit de réduire le taux des factures"],
+        "options": [
+          "Admissible car le CA reste sous CHF 5,024 mio.",
+          "Non admissible dans ce scénario",
+          "Il suffit de réduire le taux des factures"
+        ],
         "answer": 1,
         "why": "Les conditions sont cumulatives; la limite de dette fiscale n’est pas respectée."
       },
       {
-        "q": "Si le CA est exactement de CHF 5’024’000 et la dette fiscale exactement de CHF 108’000, que peut-on conclure sur les deux limites quantitatives?",
-        "options": ["Elles sont respectées, sous réserve des autres conditions et exclusions", "Elles sont dépassées car les montants doivent être strictement inférieurs", "Seule la limite de chiffre d’affaires est respectée"],
-        "answer": 0,
-        "why": "Les limites sont formulées comme des maxima. Les atteindre exactement ne constitue pas, à lui seul, un dépassement; les autres conditions doivent néanmoins être contrôlées."
-      },
-      {
-        "q": "Entreprise déjà autorisée — une limite est dépassée pendant une seule période fiscale. Quelle conclusion est correcte?",
-        "options": ["Le passage immédiat à la méthode effective est obligatoire", "Le dépassement doit être documenté et suivi; cette seule période ne suffit pas encore à imposer le changement", "Le dépassement peut être ignoré"],
-        "answer": 1,
-        "why": "Depuis 2025, le passage obligatoire intervient si l’une ou les deux limites sont dépassées durant trois périodes fiscales consécutives."
-      },
-      {
-        "q": "Entreprise déjà autorisée — une limite est dépassée de 60 % pendant une seule période fiscale. La seule ampleur du dépassement impose-t-elle un passage immédiat?",
-        "options": ["Oui, car tout dépassement supérieur à 50 % accélère automatiquement le changement", "Non; depuis 2025, l’ampleur du dépassement ne crée plus cette règle accélérée", "Oui, mais seulement si le chiffre d’affaires est concerné"],
-        "answer": 1,
-        "why": "La règle spéciale liée à un dépassement de plus de 50 % a été supprimée. Le critère de maintien est désormais le dépassement durant trois périodes fiscales consécutives."
-      },
-      {
-        "q": "Entreprise déjà autorisée — l’une des limites est dépassée durant trois périodes fiscales consécutives. Quelle est la conséquence?",
-        "options": ["Passage obligatoire à la méthode effective au début de la période fiscale suivante", "Attendre une quatrième période de dépassement puis changer à la cinquième", "Modifier le taux légal indiqué sur les factures"],
-        "answer": 0,
-        "why": "L’art. 81, al. 3, OTVA impose le passage à la méthode effective au début de la période fiscale qui suit les trois périodes fiscales consécutives de dépassement."
-      },
-      {
         "q": "Nouvel assujetti — les chiffres d’affaires et l’impôt escomptés pour les douze premiers mois dépassent déjà les limites de l’art. 37 LTVA. L’AFC peut-elle autoriser l’application initiale des TDFN sur cette base?",
-        "options": ["Oui, puis elle attend trois périodes fiscales", "Non, les chiffres escomptés des douze premiers mois doivent respecter les limites pour l’autorisation initiale", "Oui, si l’entreprise n’utilise qu’un seul TDFN"],
+        "options": [
+          "Oui, puis elle attend trois périodes fiscales",
+          "Non, les chiffres escomptés des douze premiers mois doivent respecter les limites pour l’autorisation initiale",
+          "Oui, si l’entreprise n’utilise qu’un seul TDFN"
+        ],
         "answer": 1,
         "why": "Pour un nouvel assujetti, l’art. 78 OTVA exige que le chiffre d’affaires et l’impôt escomptés des douze premiers mois ne dépassent pas les limites de l’art. 37, al. 1, LTVA."
       },
       {
         "q": "Une entreprise respecte les deux limites mais applique l’imposition de groupe au sens de l’art. 13 LTVA. Peut-elle choisir les TDFN?",
-        "options": ["Oui, car seules les deux limites quantitatives comptent", "Non, l’imposition de groupe fait partie des exclusions de l’art. 77 OTVA", "Oui, mais uniquement avec un seul TDFN"],
+        "options": [
+          "Oui, car seules les deux limites quantitatives comptent",
+          "Non, l’imposition de groupe fait partie des exclusions de l’art. 77 OTVA",
+          "Oui, mais uniquement avec un seul TDFN"
+        ],
         "answer": 1,
         "why": "Le respect des limites ne suffit pas. L’art. 77 OTVA exclut notamment les assujettis qui appliquent l’imposition de groupe."
+      }
+    ],
+    "lesson": "Pour une demande initiale, raisonnez toujours dans cet ordre: dette fiscale prévisible → deux limites cumulatives → exclusions de l’art. 77 OTVA.",
+    "conceptualNote": "Question professionnelle à se poser: «L’entreprise peut-elle utiliser la méthode?» avant «Comment remplir le décompte?». "
+  },
+  {
+    "id": "J2",
+    "tab": "J2 · Maintien",
+    "title": "Maintien des TDFN — suivre trois périodes fiscales",
+    "entity": "Conseil Expansion SA",
+    "sector": "Conseil",
+    "location": "Bâle",
+    "period": "Entreprise déjà autorisée",
+    "level": "Débutant · maintien",
+    "risk": "high",
+    "type": "quiz",
+    "description": "Une entreprise déjà autorisée dépasse une limite. Il faut distinguer un dépassement ponctuel d’une obligation de changer de méthode.",
+    "mission": "Décidez à quel moment le dépassement impose réellement le passage à la méthode effective et écartez l’ancienne règle du dépassement de plus de 50 %.",
+    "clientNote": "La société utilise déjà les TDFN. Un contrôle interne montre des dépassements au cours de certaines périodes fiscales.",
+    "afcNote": "Depuis 2025, le passage obligatoire est lié au dépassement d’une ou des deux limites durant trois périodes fiscales consécutives; l’ancienne règle accélérée fondée sur un dépassement de plus de 50 % a été supprimée.",
+    "given": [
+      {
+        "label": "Situation de départ",
+        "note": "Méthode TDFN déjà autorisée.",
+        "tag": "TDFN"
+      },
+      {
+        "label": "Unité de temps à suivre",
+        "note": "Périodes fiscales, pas périodes de décompte.",
+        "tag": "Important"
+      },
+      {
+        "label": "Règle de maintien",
+        "note": "Observer la succession des dépassements.",
+        "tag": "3 périodes"
+      }
+    ],
+    "checks": [
+      "Maintien après autorisation: le dépassement d’une ou des deux limites doit être observé durant trois périodes fiscales consécutives avant le passage obligatoire à la méthode effective.",
+      "Depuis 2025, l’ampleur du dépassement ne crée plus de règle accélérée à +50 %."
+    ],
+    "legal": "Art. 81 OTVA · Info TVA 12 — changement de méthode",
+    "sourceIds": [
+      "info12",
+      "info12-limits",
+      "otva"
+    ],
+    "questions": [
+      {
+        "q": "Entreprise déjà autorisée — une limite est dépassée pendant une seule période fiscale. Quelle conclusion est correcte?",
+        "options": [
+          "Le passage immédiat à la méthode effective est obligatoire",
+          "Le dépassement doit être documenté et suivi; cette seule période ne suffit pas encore à imposer le changement",
+          "Le dépassement peut être ignoré"
+        ],
+        "answer": 1,
+        "why": "Depuis 2025, le passage obligatoire intervient si l’une ou les deux limites sont dépassées durant trois périodes fiscales consécutives."
+      },
+      {
+        "q": "Entreprise déjà autorisée — une limite est dépassée de 60 % pendant une seule période fiscale. La seule ampleur du dépassement impose-t-elle un passage immédiat?",
+        "options": [
+          "Oui, car tout dépassement supérieur à 50 % accélère automatiquement le changement",
+          "Non; depuis 2025, l’ampleur du dépassement ne crée plus cette règle accélérée",
+          "Oui, mais seulement si le chiffre d’affaires est concerné"
+        ],
+        "answer": 1,
+        "why": "La règle spéciale liée à un dépassement de plus de 50 % a été supprimée. Le critère de maintien est désormais le dépassement durant trois périodes fiscales consécutives."
+      },
+      {
+        "q": "Entreprise déjà autorisée — l’une des limites est dépassée durant trois périodes fiscales consécutives. Quelle est la conséquence?",
+        "options": [
+          "Passage obligatoire à la méthode effective au début de la période fiscale suivante",
+          "Attendre une quatrième période de dépassement puis changer à la cinquième",
+          "Modifier le taux légal indiqué sur les factures"
+        ],
+        "answer": 0,
+        "why": "L’art. 81, al. 3, OTVA impose le passage à la méthode effective au début de la période fiscale qui suit les trois périodes fiscales consécutives de dépassement."
+      }
+    ],
+    "lesson": "Un dépassement isolé ne déclenche pas à lui seul le changement. Le réflexe est de documenter chaque période fiscale et de suivre la séquence de trois dépassements consécutifs.",
+    "conceptualNote": "Ne confondez pas période fiscale et période de décompte. Le suivi se fait sur les périodes fiscales."
+  },
+  {
+    "id": "J3",
+    "tab": "J3 · TDFN vs annuel",
+    "title": "TDFN et décompte annuel — ne pas confondre les seuils",
+    "entity": "Gestion Horizon SA",
+    "sector": "Services",
+    "location": "Vaud",
+    "period": "Choix des modalités 2026",
+    "level": "Débutant · distinction",
+    "risk": "medium",
+    "type": "quiz",
+    "description": "La limite d’accès aux TDFN et la limite permettant de demander un décompte annuel sont proches, mais juridiquement différentes.",
+    "mission": "Distinguez le seuil TDFN de CHF 5’024’000 du seuil distinct de CHF 5’005’000 applicable au décompte annuel.",
+    "clientNote": "L’entreprise envisage les TDFN et souhaite aussi savoir si elle peut remettre la TVA une seule fois par année.",
+    "afcNote": "L’admissibilité TDFN et la périodicité annuelle répondent à des conditions distinctes. Une entreprise peut satisfaire au seuil TDFN tout en dépassant le seuil du décompte annuel.",
+    "given": [
+      {
+        "label": "CA annuel, TVA comprise",
+        "amount": 5015000,
+        "note": "Sous le seuil TDFN, mais au-dessus du seuil du décompte annuel.",
+        "tag": "CHF 5’015’000"
+      },
+      {
+        "label": "Dette fiscale annuelle",
+        "amount": 100000,
+        "note": "Sous le maximum TDFN de CHF 108’000.",
+        "tag": "CHF 100’000"
+      },
+      {
+        "label": "Seuil du décompte annuel",
+        "amount": 5005000,
+        "note": "Condition distincte liée à la périodicité.",
+        "tag": "CHF 5’005’000"
+      }
+    ],
+    "checks": [
+      "Ne pas confondre la limite TDFN de CHF 5’024’000 avec la limite distincte du décompte annuel de CHF 5’005’000."
+    ],
+    "legal": "Art. 37 LTVA · règles AFC sur le décompte annuel",
+    "sourceIds": [
+      "afc-main",
+      "annual-reporting"
+    ],
+    "questions": [
+      {
+        "q": "Si le CA est exactement de CHF 5’024’000 et la dette fiscale exactement de CHF 108’000, que peut-on conclure sur les deux limites quantitatives?",
+        "options": [
+          "Elles sont respectées, sous réserve des autres conditions et exclusions",
+          "Elles sont dépassées car les montants doivent être strictement inférieurs",
+          "Seule la limite de chiffre d’affaires est respectée"
+        ],
+        "answer": 0,
+        "why": "Les limites sont formulées comme des maxima. Les atteindre exactement ne constitue pas, à lui seul, un dépassement; les autres conditions doivent néanmoins être contrôlées."
+      },
+      {
+        "q": "Avec un CA de CHF 5’015’000 et une dette fiscale de CHF 100’000, les deux limites quantitatives TDFN sont-elles respectées?",
+        "options": [
+          "Oui, sous réserve des autres conditions et exclusions",
+          "Non, car CHF 5’015’000 dépasse la limite TDFN"
+        ],
+        "answer": 0,
+        "why": "CHF 5’015’000 reste inférieur à CHF 5’024’000 et CHF 100’000 reste inférieur à CHF 108’000. Les autres conditions doivent néanmoins être contrôlées."
       },
       {
         "q": "Une entreprise remplit les conditions TDFN avec un CA de CHF 5’015’000 et une dette fiscale de CHF 100’000. Peut-elle demander le décompte annuel uniquement sur cette base?",
-        "options": ["Oui, car elle reste sous la limite TDFN de CHF 5’024’000", "Non, la limite distincte du décompte annuel est de CHF 5’005’000", "Oui, car la dette fiscale reste sous CHF 108’000"],
+        "options": [
+          "Oui, car elle reste sous la limite TDFN de CHF 5’024’000",
+          "Non, la limite distincte du décompte annuel est de CHF 5’005’000",
+          "Oui, car la dette fiscale reste sous CHF 108’000"
+        ],
         "answer": 1,
-        "why": "L’admissibilité aux TDFN et la périodicité annuelle répondent à deux limites de chiffre d’affaires différentes. CHF 5’015’000 reste sous la limite TDFN mais dépasse la limite du décompte annuel."
+        "why": "L’admissibilité aux TDFN et la périodicité annuelle répondent à deux limites de chiffre d’affaires différentes. CHF 5’015’000 reste sous la limite TDFN mais dépasse la limite distincte du décompte annuel de CHF 5’005’000."
       }
     ],
-    "lesson": "Le bon ordre est: 1) deux limites quantitatives, 2) exclusions de l’art. 77 OTVA, 3) règles de maintien de l’art. 81 OTVA, 4) périodicité de remise. La limite du décompte annuel ne remplace jamais le test d’admissibilité TDFN.",
-    "conceptualNote": "Travaillez dans cet ordre: admissibilité quantitative → exclusions → maintien → périodicité. Une réponse correcte sur les limites ne dispense jamais du contrôle juridique de l’art. 77 OTVA."
+    "lesson": "Deux questions différentes appellent deux seuils différents: «Puis-je utiliser les TDFN?» et «Puis-je remettre un décompte annuel?». Ne les fusionnez jamais.",
+    "conceptualNote": "Retenez le couple: TDFN = CHF 5’024’000 / CHF 108’000; décompte annuel = seuil de CA CHF 5’005’000 + autres conditions propres à cette périodicité."
   },
   {
     "id": "K0",

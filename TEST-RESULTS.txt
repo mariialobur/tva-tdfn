@@ -1,42 +1,41 @@
-TVA TDFN — version 11.1
-Date: 2026-08-07
+TVA TDFN — version 12.0
+Build review date: 2026-08-07
 
 1. JavaScript syntax
-   PASS: app.js, components.js, data.js, logic.js, store.js, transition.js,
-   smoke-test.mjs, tests/unit.mjs, tests/e2e.spec.mjs, playwright.config.mjs.
+   PASS: app.js, data.js, store.js, components.js, tests.
 
-2. Static smoke tests
-   PASS: 51/51.
-   Coverage includes v11.1 cache-busting, 35-case dataset, current art. 81 logic,
-   art. 77 / annual-reporting distinction, essential/advanced paths, module objectives,
-   contextual global hypotheses, N/M/P advanced regrouping, option limitation under TDFN,
-   qualification-before-entry for art. 83, signed ch. 415 handling, average-rate wording,
-   and mobile readability/touch-target safeguards.
+2. Smoke test
+   Command: node smoke-test.mjs
+   PASS: 62/62 controls.
+   Coverage includes build/cache version, v120 storage and migrations, 37-case dataset,
+   10-module learning architecture, J1/J2/J3 micro-cases, mission/facts placement,
+   errors-first feedback, memo/progressive disclosure, current legal guardrails,
+   CSS cleanup, mobile UX assertions and quality files.
 
 3. Unit tests
-   PASS: 35 cases.
-   Includes official-source resolution, calculations, multiple TDFN, migration v100,
-   components, ch. 410/ch. 415 worksheets, state export/import and v11.1 legal/pedagogical
-   invariants for cases N, M and P.
+   Command: node tests/unit.mjs
+   PASS: 37 cases.
+   Coverage includes sources, expected calculations, TDFN multi-activity results,
+   admissibility micro-cases, ch.410/ch.415, legal/pedagogical invariants,
+   legacy-state migration to v120, state export/import, components and worksheets.
 
-4. Legal-content controls incorporated in v11.1
-   PASS in static/unit tests:
-   - TDFN limits CHF 5’024’000 / CHF 108’000;
-   - annual-reporting threshold CHF 5’005’000 explicitly distinguished;
-   - art. 81 OTVA: three consecutive fiscal periods; obsolete >50% accelerated rule removed;
-   - art. 77 exclusions represented in admissibility;
-   - case N: option under TDFN is treated as restricted and the exercise uses the qualified
-     exception under art. 21 al. 2 ch. 26 LTVA;
-   - case M: art. 83 qualification requires methods of both parties, prior use and evidence;
-   - case P: documented tax charge is reported at ch. 415 as a negative amount;
-   - legal-rate invoice vs gross-TTC × TDFN bridge retained;
-   - Décompte TVA pro terminology retained.
+4. Typography / CSS static audit
+   PASS: no explicit font-size below 13 px in screen CSS.
+   PASS: 6 @media blocks total, including print and prefers-reduced-motion.
+   PASS: major mobile actions use 44–46 px touch targets.
 
-5. Typography / mobile safeguards
-   PASS static checks: no direct rem font-size below 0.8125rem (13 px at the default root size);
-   key mobile explanatory text is at least 0.875rem; principal touch targets are 44 px minimum.
+5. Color contrast spot-check
+   PASS for the main designed text/background pairs reviewed statically:
+   ink/white 15.70:1; muted/white 5.39:1; brand/white 6.99:1;
+   brand-dark/brand-soft 8.82:1; green/green-soft 6.19:1;
+   amber/amber-soft 6.44:1; red/red-soft 6.57:1.
 
-6. Browser E2E
-   NOT CONFIRMED in this container. Playwright devDependencies are not installed locally.
-   GitHub Actions remains configured to install Chromium and run the E2E suite.
-   A post-deployment manual check on desktop + mobile remains recommended.
+6. Browser E2E / axe
+   NOT EXECUTED in the build container.
+   Reason: the available npm registry returned 404 for Playwright / @axe-core/playwright,
+   so dependencies could not be installed. The repository keeps Playwright + axe tests
+   and GitHub Actions is configured to install Chromium and run them after deployment.
+
+7. Manual live-render QA
+   REQUIRED after publication: desktop + mobile walkthrough for J1, D3, N, M, P and L5.
+   This is intentionally not marked PASS without a functioning browser renderer.
