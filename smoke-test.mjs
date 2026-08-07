@@ -13,8 +13,8 @@ const [html, app, data, logic, store, components, transition, css, workflow, uni
 const checks = [];
 function check(name, condition) { assert.ok(condition, name); checks.push(name); }
 
-check('index charge un seul CSS intégré v11', (html.match(/rel="stylesheet"/g) || []).length === 1 && html.includes('styles.css?v=11.0.0'));
-check('index charge un seul module applicatif v11', (html.match(/<script/g) || []).length === 1 && html.includes('app.js?v=11.0.0'));
+check('index charge un seul CSS intégré v11', (html.match(/rel="stylesheet"/g) || []).length === 1 && html.includes('styles.css?v=11.1.0'));
+check('index charge un seul module applicatif v11', (html.match(/<script/g) || []).length === 1 && html.includes('app.js?v=11.1.0'));
 check('anciens patchs absents de l’index', !/v7-enhancements|v8(?:\.\d+)?-learning-path|ui-fixes\.js/.test(html));
 check('footer public sans numéro de version technique', html.includes('Mise à jour : 07.08.2026') && !html.includes('version intégrée'));
 check('stockage unifié v100', store.includes("tva_tdfn_v100_state") && store.includes('STATE_VERSION = 100') && store.includes('worksheets') && store.includes('precheck'));
@@ -40,13 +40,18 @@ check('navigation complète D1–D4 et L1–L7', app.includes("['D', 'D1', 'D2',
 check('action principale visible dans la barre latérale', app.includes('id=\"sidebarActionBar\"') && app.includes("['mobileActionBar','desktopActionBar','sidebarActionBar']"));
 check('sources et contrôle préalable disponibles dans la barre latérale', app.includes('data-action=\"open-precheck\"') && app.includes('data-action=\"open-sources\"'));
 check('parcours essentiel et avancé explicitement séparés', app.includes('Parcours essentiel') && app.includes('Parcours avancé') && app.includes('Atelier autonome'));
+check('M/N/P regroupés dans les procédures particulières avancées', app.includes("ids: ['N', 'M', 'P']") && !app.includes("ids: ['L', 'M', 'N', 'O', 'P', 'R']"));
+check('hypothèses globales contextuelles', html.includes('Les hypothèses varient selon le cas') && !html.includes('L’entreprise est déjà assujettie et l’AFC a confirmé la méthode TDFN.'));
+check('cas N vérifie la limitation de l’option sous TDFN', data.includes('Option sous TDFN — vérifier d’abord si elle est admise') && data.includes('art. 77, al. 3, OTVA'));
+check('cas M qualifie avant saisie et P reporte le signe', data.includes('Procédure de déclaration — faut-il déterminer une correction ?') && data.includes('Suite du cas M — reprise de patrimoine'));
+
 check('objectifs, durée et niveau affichés par module', app.includes('moduleIntroSlot') && app.includes('Ce que vous saurez faire') && app.includes('module.duration') && app.includes('module.level'));
 check('admissibilité placée en premier dans le parcours', app.indexOf("ids: ['J']") < app.indexOf("ids: ['A', 'B', 'C']"));
 check('feedback QCM montre choix et réponse attendue', app.includes('Votre choix:') && app.includes('Réponse attendue:'));
 check('précontrôle prioritaire masque les vérifications secondaires', components.includes('À vérifier en priorité pour ce cas') && components.includes('precheck-secondary'));
 check('explication du taux moyen ajoutée', data.includes('2,92 %') && data.includes('pas un TDFN à appliquer'));
-check('ch. 415 cadré avec le signe fiscal du dossier', data.includes('procédure de déclaration') && data.includes('art. 38 LTVA') && data.includes('ch415": -2000') && logic.includes("key==='ch415'"));
-check('styles v11 améliorent lisibilité et cibles tactiles', css.includes('v11.0 — parcours pédagogique') && css.includes('font-size:max(.82rem,13px)') && css.includes('min-height:44px'));
+check('ch. 415 cadré avec le signe fiscal du dossier', data.includes('procédure de déclaration') && /art\. 38 LTVA/i.test(data) && data.includes('ch415\": -2000') && logic.includes("key==='ch415'"));
+check('styles v11.1 améliorent lisibilité et cibles tactiles', css.includes('v11.1 — parcours pédagogique') && !/font-size\s*:\s*(?:0?\.[0-7][0-9]*|0\.80[0-9]*)rem/.test(css) && !/font\s*:[^;\n]*?(?:0?\.[0-7][0-9]*|0\.80[0-9]*)rem/.test(css) && css.includes('min-height:44px'));
 check('ancien lien K normalisé', app.includes("rawRequested==='K'?'K0'"));
 check('bloc limites accessible dans le flux', html.includes('id="methodLimitsToggle"') && html.includes('aria-controls="methodLimitsDetails"') && html.includes('id="methodLimitsDetails" hidden'));
 check('rectification et Décompte TVA pro présents', data.includes('Décompte de rectification TVA') && html.includes('Décompte TVA pro'));

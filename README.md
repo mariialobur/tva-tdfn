@@ -2,7 +2,7 @@
 
 Simulateur pédagogique interactif consacré au décompte TVA suisse selon la méthode des taux de la dette fiscale nette (TDFN).
 
-La version 11.0 conserve **35 cas** mais les organise désormais selon une progression pédagogique explicite: d’abord le travail quotidien indispensable, ensuite les changements de méthode plus techniques.
+La version 11.1 conserve **35 cas** mais les organise désormais selon une progression pédagogique explicite: d’abord le travail quotidien indispensable, ensuite les changements de méthode plus techniques.
 
 ## Parcours pédagogique
 
@@ -12,16 +12,18 @@ La version 11.0 conserve **35 cas** mais les organise désormais selon une progr
 2. **Comprendre la méthode TDFN**: taux légal, TDFN, bases HT/TTC et dette fiscale.
 3. **Plusieurs activités et plusieurs TDFN**: ventilation, règle des 10 %, taux moyen.
 4. **Opérations internationales**: exportations, prestations à l’étranger et impôt sur les acquisitions.
-5. **Remplir et corriger le décompte**: rubriques particulières, ch. 200/299/323/383, corrections et rectifications.
+5. **Rubriques courantes et corrections**: autres flux de fonds, diminutions de contre-prestation et rectification de la bonne période.
 
 ### Parcours avancé
 
 6. **Méthode effective → TDFN**: admissibilité du changement et corrections de valeur résiduelle au ch. 415.
 7. **TDFN → méthode effective**: dégrèvement ultérieur et ch. 410.
 
+8. **Procédures particulières — qualifier avant de saisir**: option limitée sous TDFN, art. 83 OTVA et signe du ch. 415.
+
 ### Atelier autonome
 
-8. **Atelier libre**: entraînement sur un dossier déjà paramétré.
+9. **Atelier libre**: entraînement sur un dossier déjà paramétré.
 
 Chaque module affiche son niveau, une durée indicative et les compétences à acquérir.
 
@@ -73,7 +75,7 @@ Site public:
 
 Dernière révision juridique, pédagogique et UX indiquée dans l’interface: **07.08.2026**.
 
-## Version 11.0
+## Version 11.1
 
 Principales évolutions:
 

@@ -41,8 +41,8 @@ export const MODULES = [
     objectives: ['Distinguer exportation et prestation à l’étranger', 'Utiliser correctement les ch. 220 et 221', 'Traiter séparément l’impôt sur les acquisitions au ch. 383']
   },
   {
-    label: '5 · Remplir et corriger le décompte', track: 'Parcours essentiel', level: 'Intermédiaire', duration: '30–40 min', ids: ['L', 'M', 'N', 'O', 'P', 'R'],
-    objectives: ['Reporter les rubriques particulières sans mélanger les mécanismes', 'Contrôler le solde à payer ou en faveur', 'Distinguer rectificatif et concordance annuelle']
+    label: '5 · Rubriques courantes et corrections', track: 'Parcours essentiel', level: 'Intermédiaire', duration: '20–30 min', ids: ['L', 'O', 'R'],
+    objectives: ['Séparer chiffre d’affaires et autres flux de fonds', 'Traiter une diminution de contre-prestation', 'Corriger la bonne période sans masquer une erreur dans le décompte courant']
   },
   {
     label: '6 · Passage méthode effective → TDFN', track: 'Parcours avancé', level: 'Avancé', duration: '35–45 min', ids: ['K0', 'K1', 'K2', 'K3', 'K4', 'K5'],
@@ -53,7 +53,11 @@ export const MODULES = [
     objectives: ['Identifier les éléments ouvrant un dégrèvement ultérieur', 'Tenir compte de la part résiduelle et du droit à déduction', 'Reporter correctement le ch. 410']
   },
   {
-    label: '8 · Atelier libre', track: 'Atelier autonome', level: 'Autonome', duration: 'Libre', ids: ['Q'],
+    label: '8 · Procédures particulières — qualifier avant de saisir', track: 'Parcours avancé', level: 'Avancé', duration: '25–35 min', ids: ['N', 'M', 'P'],
+    objectives: ['Vérifier si une option est admissible sous TDFN', 'Qualifier une reprise de patrimoine avant toute correction', 'Reporter une charge fiscale au ch. 415 avec le bon signe']
+  },
+  {
+    label: '9 · Atelier libre', track: 'Atelier autonome', level: 'Autonome', duration: 'Libre', ids: ['Q'],
     objectives: ['Reproduire un décompte déjà paramétré par l’AFC', 'Contrôler la cohérence arithmétique', 'Conserver une piste d’audit exploitable']
   }
 ];
@@ -218,7 +222,7 @@ function calculatorMarkup(c,{dialog=false}={}){
     ${calculatorCaseDataMarkup(c)}
     ${isFree?'<div class="free-toolbar"><button class="btn" type="button" data-action="add-activity">+ Nouvelle activité</button><span>Maximum pédagogique: 8 activités.</span></div>':''}
     <div class="calculator-table-wrap"><table class="calculator-table"><thead><tr><th>Activité</th><th>TDFN</th><th>Contre-prestations CHF</th><th>Impôt brut CHF</th>${isFree?'<th>Action</th>':''}</tr></thead><tbody>${rows||'<tr><td colspan="5">Ajoutez au moins une activité.</td></tr>'}</tbody></table></div>
-    <div class="calculator-summary"><div><span>Taux effectif résultant <small>indicateur pédagogique</small></span><strong data-calc-average>${fmt(calc.averageRate,4)} %</strong></div><div><span>Contre-prestations</span><strong data-calc-base>${chf(calc.base,2)}</strong></div><div><span>Total de l’impôt</span><strong data-calc-total>${chf(calc.tax,2)}</strong></div></div>
+    <div class="calculator-summary"><div><span>Taux moyen résultant <small>indicateur calculé — pas un TDFN à appliquer</small></span><strong data-calc-average>${fmt(calc.averageRate,4)} %</strong></div><div><span>Contre-prestations</span><strong data-calc-base>${chf(calc.base,2)}</strong></div><div><span>Total de l’impôt</span><strong data-calc-total>${chf(calc.tax,2)}</strong></div></div>
     <fieldset class="rounding-options"><legend>Options d’arrondi visibles dans le prototype</legend><label><input type="radio" checked disabled> Calcul pédagogique sans arrondi intermédiaire</label><label class="unsupported"><input type="radio" disabled> Arrondi par activité <small>non simulé: algorithme public non spécifié</small></label><label class="unsupported"><input type="radio" disabled> Arrondi du total de l’impôt <small>non simulé: algorithme public non spécifié</small></label></fieldset>
     <div class="calculator-note">Le prototype public affiche trois choix, mais ne publie pas leur algorithme de production. Afin de ne pas enseigner une règle inventée, les montants par activité sont affichés à quatre décimales et additionnés sans arrondi intermédiaire; seul le total affiché est arrondi à CHF 0.01. Il ne s’agit pas d’une reproduction certifiée de l’algorithme du Portail AFC.</div>
     <div class="form-actions">${dialog?'<button class="btn" type="button" data-action="close-calc">Annuler</button><button class="btn primary" type="button" data-action="report-calc">Reporter le calcul</button>':'<button class="btn" type="button" data-step="1">← Revoir le principe</button>'}</div>
@@ -288,7 +292,7 @@ function compactDeclarationMarkup(c){
     </section>
     <section class="compact-declaration-section"><h4>II. Calcul de l’impôt</h4>
       ${compactFieldRow({code:'323',label:'Prestations selon le calcul TDFN',sub:reportText,computedKey:'ch323Base',highlight:true,action:`<button class="mini-link" type="button" data-action="open-calc">Ouvrir Calcul</button><span class="report-status ${reportStatus}">${reportText}</span>`})}
-      <div class="compact-tax-summary"><span>Impôt au ch. 323</span><strong data-computed="ch323Tax">${chf(0,2)}</strong><span>Taux effectif résultant <small>indicateur pédagogique</small></span><strong data-computed-rate>0,0000 %</strong></div>
+      <div class="compact-tax-summary"><span>Impôt au ch. 323</span><strong data-computed="ch323Tax">${chf(0,2)}</strong><span>Taux moyen résultant <small>indicateur calculé — pas un TDFN à appliquer</small></span><strong data-computed-rate>0,0000 %</strong></div>
       ${compactFieldRow({code:'379',label:'Total du chiffre d’affaires imposable',sub:'Doit correspondre au ch. 299',computedKey:'ch379',highlight:true})}
       <div class="concordance-box pending" data-concordance></div>
       ${showAcquisition?`<div class="compact-subsection"><h5>Impôt sur les acquisitions</h5><div class="compact-acquisition"><label>Base nette ch. 383 ${amountInput('acqBase','Base impôt sur les acquisitions')}</label><label>Impôt ch. 383 ${amountInput('acqTax','Impôt sur les acquisitions')}</label><label>Taux légal <select class="rate-select compact-select" data-acq-rate aria-label="Taux légal de l’impôt sur les acquisitions">${[8.1,2.6,3.8].map(value=>`<option value="${value}" ${acquisitionRate()===value?'selected':''}>${fmt(value,1)} %</option>`).join('')}</select></label><div class="suggested-tax" data-acq-suggested></div></div></div>`:''}

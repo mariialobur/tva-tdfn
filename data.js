@@ -1,4 +1,4 @@
-// Données intégrées — version 11.0.0
+// Données intégrées — version 11.1.0
 // Cas, sources et tableaux de transition sont réunis dans un module unique.
 
 export const OFFICIAL_SOURCES = [
@@ -2707,153 +2707,120 @@ export const CASES = [
   },
   {
     "id": "M",
-    "tab": "M · Crédit 415",
-    "title": "Reprise d’actifs par procédure de déclaration — ch. 415",
+    "tab": "M · Art. 83",
+    "title": "Procédure de déclaration — faut-il déterminer une correction ?",
     "entity": "Atelier Repris Sàrl",
-    "sector": "Services techniques",
+    "sector": "Reprise de patrimoine",
     "location": "Nyon",
     "period": "S1 2026",
-    "level": "Expert",
+    "level": "Avancé",
     "risk": "high",
-    "description": "Une correction au ch. 415 ne se déduit pas d’un simple pourcentage: elle doit résulter d’un dossier de reprise et d’un calcul documenté.",
-    "mission": "Établissez le décompte courant, puis reportez au ch. 415 la correction de CHF 1’500 déjà justifiée par le tableau de reprise.",
-    "clientNote": "Atelier Repris Sàrl a repris, sous procédure de déclaration au sens de l’art. 38 LTVA, des machines et du matériel affectés à une activité imposable.",
-    "afcNote": "Le dossier comporte le contrat de transfert, l’inventaire, les valeurs résiduelles, la méthode de décompte des parties et un tableau de correction validé donnant CHF 1’500.",
+    "type": "quiz",
+    "description": "Avant de saisir quoi que ce soit au ch. 415, il faut qualifier la reprise: méthode de décompte de l’aliénateur, méthode du repreneur, affectation antérieure et preuve de l’impôt préalable sont déterminantes.",
+    "mission": "Décidez si le dossier exige une correction selon l’art. 83 OTVA. Ne calculez encore ni montant ni signe: ce cas porte uniquement sur la qualification juridique préalable.",
+    "clientNote": "Atelier Repris Sàrl décompte selon les TDFN. Elle reprend par procédure de déclaration des machines d’une société qui décomptait selon la méthode effective. Les machines avaient été utilisées exclusivement pour une activité donnant droit à la déduction de l’impôt préalable; les factures d’origine et l’affectation sont documentées.",
+    "afcNote": "Lorsqu’un repreneur aux TDFN reprend, par procédure de déclaration, un patrimoine d’un assujetti à la méthode effective, la correction suit la logique d’un passage de la méthode effective aux TDFN pour la valeur résiduelle concernée. Le montant doit être établi sur pièces; il ne se déduit pas du chiffre d’affaires courant.",
     "given": [
-      {
-        "label": "Prestations imposables du semestre, TVA comprise",
-        "amount": 100000,
-        "note": "Base TDFN de l’activité courante.",
-        "tag": "TTC"
-      },
-      {
-        "label": "TDFN autorisé dans le cas",
-        "note": "Hypothèse pédagogique pour les services techniques.",
-        "tag": "6,2 %"
-      },
-      {
-        "label": "Correction issue du tableau de reprise",
-        "amount": 1500,
-        "note": "Montant documenté à reporter au ch. 415; il n’est pas recalculé à partir du chiffre d’affaires.",
-        "tag": "415"
-      },
-      {
-        "label": "Pièces du dossier",
-        "note": "Contrat art. 38, inventaire, affectation, valeurs résiduelles et rapprochement comptable.",
-        "tag": "Justificatifs"
-      }
+      {"label": "Méthode de l’aliénateur", "note": "Méthode effective avant le transfert.", "tag": "Effective"},
+      {"label": "Méthode du repreneur", "note": "Atelier Repris Sàrl applique les TDFN.", "tag": "TDFN"},
+      {"label": "Affectation antérieure", "note": "100 % à une activité donnant droit à la déduction de l’impôt préalable.", "tag": "Documentée"},
+      {"label": "Pièces disponibles", "note": "Factures d’origine, inventaire, date d’acquisition, affectation et valeurs résiduelles.", "tag": "Complet"}
     ],
     "checks": [
-      "Vérifier que la procédure de déclaration s’applique effectivement.",
-      "Conserver le calcul de la correction et les valeurs résiduelles.",
-      "Distinguer le ch. 399 avant crédit du solde après ch. 479."
+      "Identifier la méthode de décompte de l’aliénateur et celle du repreneur.",
+      "Vérifier l’affectation antérieure et la preuve de l’impôt préalable.",
+      "Ne jamais calculer une correction art. 83 à partir d’un simple pourcentage du chiffre d’affaires ou du prix de transfert."
     ],
-    "legal": "Art. 38 LTVA · prototype AFC, ch. 415, 479, 500 et 510 · traitement à confirmer sur dossier réel",
-    "sourceIds": [
-      "ltva",
-      "prototype",
-      "forms",
-      "info12"
-    ],
-    "rates": [
+    "legal": "Art. 38 LTVA · art. 83 OTVA · Info TVA 12 TDFN, reprise de patrimoine avec procédure de déclaration",
+    "sourceIds": ["ltva", "otva", "info12", "forms"],
+    "questions": [
       {
-        "label": "Services techniques — hypothèse du cas",
-        "rate": 6.2,
-        "base": 100000,
-        "tax": 6200
+        "q": "La seule existence d’une procédure de déclaration suffit-elle pour saisir automatiquement un montant au ch. 415?",
+        "options": ["Oui", "Non, il faut d’abord qualifier les méthodes, l’affectation et la valeur résiduelle"],
+        "answer": 1,
+        "why": "Le ch. 415 n’est pas une déduction ou une charge automatique liée au transfert. La correction dépend de la situation documentée au sens de l’art. 83 OTVA."
+      },
+      {
+        "q": "Dans ce dossier, le passage économique des biens d’un cédant à la méthode effective vers un repreneur aux TDFN conduit-il à déterminer une correction sur la valeur résiduelle concernée?",
+        "options": ["Oui, sous réserve du calcul documenté", "Non, jamais sous TDFN"],
+        "answer": 0,
+        "why": "La situation est traitée selon la logique du passage de la méthode effective aux TDFN pour les éléments repris concernés."
+      },
+      {
+        "q": "Peut-on obtenir le montant de la correction en appliquant le TDFN de l’activité au prix de transfert?",
+        "options": ["Oui", "Non"],
+        "answer": 1,
+        "why": "La correction repose sur la valeur résiduelle et sur l’impôt préalable documenté selon les règles applicables, pas sur le TDFN du chiffre d’affaires courant."
+      },
+      {
+        "q": "Si l’aliénateur avait lui-même décompté selon les TDFN, la conclusion pourrait-elle être différente?",
+        "options": ["Oui", "Non, la méthode de l’aliénateur est sans importance"],
+        "answer": 0,
+        "why": "La méthode de l’aliénateur est une donnée déterminante. Une reprise auprès d’un assujetti aux TDFN n’entraîne pas la même correction qu’une reprise auprès d’un assujetti à la méthode effective."
       }
     ],
-    "fields": {
-      "ch200": 100000,
-      "ch415": 1500
-    },
-    "deductions": {},
-    "explanations": {
-      "ch200": "Le chiffre d’affaires imposable courant est CHF 100’000 TTC.",
-      "r0base": "La base TDFN du semestre est CHF 100’000.",
-      "ch415": "CHF 1’500 proviennent du tableau de correction documenté; le simulateur ne prétend pas reconstituer ce calcul juridique complexe."
-    },
-    "lesson": "Le ch. 415 est une rubrique de correction fondée sur des pièces et une analyse préalable, non une déduction forfaitaire liée au chiffre d’affaires.",
-    "accountingBasis": "Contre-prestations convenues"
+    "lesson": "Avant le ch. 415, il y a une qualification. Méthode du cédant, méthode du repreneur, affectation et preuve de l’impôt préalable doivent être établies avant de calculer ou de saisir une correction."
   },
   {
     "id": "N",
-    "tab": "N · Ch. 205",
-    "title": "Option — distinguer les ch. 205 et 230",
-    "entity": "Immo Formation Sàrl",
-    "sector": "Opération avec option déjà valablement exercée",
-    "location": "Suisse",
+    "tab": "N · Option sous TDFN",
+    "title": "Option sous TDFN — vérifier d’abord si elle est admise",
+    "entity": "Ferme du Léman",
+    "sector": "Production agricole — produits de propre exploitation",
+    "location": "Vaud",
     "period": "S1 2026",
-    "level": "Application",
+    "level": "Avancé",
     "risk": "high",
     "type": "quiz",
-    "description": "Le ch. 205 informe sur la part du ch. 200 provenant de prestations normalement exclues pour lesquelles l’option a été exercée; il ne constitue pas une déduction.",
-    "mission": "Identifiez le traitement déclaratif d’une contre-prestation de CHF 30’000 déjà qualifiée comme valablement imposée par option.",
-    "clientNote": "L’exercice suppose que les conditions de l’option sont remplies et documentées. La qualification juridique de l’opération n’est pas à refaire dans ce quiz.",
-    "afcNote": "La contre-prestation reste comprise au ch. 200, sa part est indiquée au ch. 205 et elle n’est pas déduite au ch. 230.",
+    "description": "Sous TDFN, l’option pour imposer des prestations exclues est fortement limitée. Le réflexe correct n’est donc pas de commencer par le ch. 205, mais de vérifier d’abord si l’option est juridiquement admissible.",
+    "mission": "Qualifiez une contre-prestation de CHF 30’000 provenant de produits agricoles de la propre exploitation. L’entreprise applique les TDFN et a valablement exercé l’option pour cette prestation relevant de l’art. 21, al. 2, ch. 26 LTVA.",
+    "clientNote": "Le dossier documente que la prestation relève bien de l’exception de l’art. 21, al. 2, ch. 26 LTVA. Il ne s’agit ni de formation, ni de location immobilière, ni d’une autre prestation exclue pour laquelle l’option serait interdite sous TDFN.",
+    "afcNote": "En principe, un assujetti aux TDFN ne peut pas opter pour l’imposition des prestations exclues. La pratique AFC maintient toutefois l’exception prévue pour les prestations visées à l’art. 21, al. 2, ch. 26 LTVA. Une option valable doit être distinguée d’une simple mention erronée de TVA sur une facture.",
     "given": [
-      {
-        "label": "Contre-prestation avec option, TVA comprise",
-        "amount": 30000,
-        "note": "Déjà comprise dans le total du ch. 200.",
-        "tag": "205"
-      },
-      {
-        "label": "Qualification",
-        "note": "Option valablement exercée selon l’hypothèse du cas.",
-        "tag": "Prérequis"
-      }
+      {"label": "Contre-prestation concernée", "amount": 30000, "note": "Produits agricoles provenant de la propre exploitation; montant de l’exercice.", "tag": "Art. 21 al. 2 ch. 26"},
+      {"label": "Méthode de décompte", "note": "TDFN.", "tag": "TDFN"},
+      {"label": "Qualification", "note": "Option valablement exercée pour l’exception admise dans ce cas.", "tag": "Prérequis vérifié"}
     ],
     "checks": [
-      "Le ch. 205 est une rubrique informative comprise dans le ch. 200.",
-      "Le ch. 205 ne diminue pas le ch. 299.",
-      "Le ch. 230 concerne les prestations exclues sans option dans le cas concerné."
+      "Sous TDFN, vérifier l’admissibilité de l’option avant toute saisie au ch. 205.",
+      "Ne pas transposer ce traitement à la formation, à l’immobilier ou à une autre prestation exclue sans vérifier l’art. 77 OTVA.",
+      "Une contre-prestation valablement imposée par option reste comprise au ch. 200; le ch. 205 en précise la part et ne constitue pas une déduction."
     ],
-    "legal": "Art. 22 LTVA · prototype AFC, ch. 200, 205 et 230",
-    "sourceIds": [
-      "ltva",
-      "prototype",
-      "forms"
-    ],
+    "legal": "Art. 22 LTVA · art. 77, al. 3, OTVA · Info TVA 12 TDFN · prototype AFC, ch. 200, 205 et 230",
+    "sourceIds": ["ltva", "otva", "info12", "prototype"],
     "questions": [
       {
-        "q": "La contre-prestation avec option figure-t-elle au ch. 200?",
-        "options": [
-          "Oui, elle est comprise dans le total des contre-prestations",
-          "Non, elle figure uniquement au ch. 205"
-        ],
-        "answer": 0,
-        "why": "Le ch. 205 détaille une partie déjà comprise dans le ch. 200."
-      },
-      {
-        "q": "Faut-il également indiquer CHF 30’000 au ch. 205?",
-        "options": [
-          "Oui",
-          "Non"
-        ],
-        "answer": 0,
-        "why": "Le ch. 205 identifie la part des prestations normalement exclues pour lesquelles l’option a été exercée."
-      },
-      {
-        "q": "Faut-il déduire cette somme au ch. 230?",
-        "options": [
-          "Oui, toujours",
-          "Non, car l’opération est imposée par option dans ce cas"
-        ],
+        "q": "Un assujetti aux TDFN peut-il librement opter pour toutes les prestations exclues de l’art. 21 LTVA?",
+        "options": ["Oui", "Non"],
         "answer": 1,
-        "why": "Une prestation imposée par option n’est pas déduite comme prestation exclue sans option."
+        "why": "Sous TDFN, l’option est en principe exclue; il faut vérifier les exceptions expressément admises."
       },
       {
-        "q": "Le ch. 205 réduit-il le ch. 299?",
-        "options": [
-          "Oui",
-          "Non"
-        ],
+        "q": "L’exception retenue dans ce dossier — produits agricoles de la propre exploitation visés à l’art. 21, al. 2, ch. 26 LTVA — permet-elle une option sous TDFN?",
+        "options": ["Oui, si les conditions de l’option sont remplies", "Non, jamais"],
+        "answer": 0,
+        "why": "La pratique AFC prévoit cette exception. Le dossier doit néanmoins établir que la prestation entre réellement dans cette catégorie."
+      },
+      {
+        "q": "Une fois l’option valablement exercée dans ce cas, la contre-prestation reste-t-elle comprise au ch. 200?",
+        "options": ["Oui", "Non, elle figure seulement au ch. 205"],
+        "answer": 0,
+        "why": "Le ch. 205 détaille une part du chiffre d’affaires déjà comprise dans le ch. 200."
+      },
+      {
+        "q": "Faut-il également indiquer cette part au ch. 205?",
+        "options": ["Oui", "Non"],
+        "answer": 0,
+        "why": "Le ch. 205 sert à identifier les prestations exclues pour lesquelles une option admissible a été exercée."
+      },
+      {
+        "q": "Faut-il déduire la même somme au ch. 230?",
+        "options": ["Oui", "Non"],
         "answer": 1,
-        "why": "Le ch. 205 est informatif et ne fait pas partie du total des déductions au ch. 289."
+        "why": "Une prestation valablement imposée par option n’est pas traitée comme une prestation exclue sans option au ch. 230."
       }
     ],
-    "lesson": "Le ch. 205 précise le contenu du ch. 200; il ne remplace ni le ch. 200 ni une déduction."
+    "lesson": "Sous TDFN, la première question n’est pas «où saisir l’option?», mais «cette option est-elle admise?». Le ch. 205 ne s’utilise qu’après cette qualification."
   },
   {
     "id": "O",
@@ -2931,40 +2898,40 @@ export const CASES = [
   {
     "id": "P",
     "tab": "P · Ch. 415 signé",
-    "title": "Procédure de déclaration — comprendre le signe du ch. 415",
-    "entity": "Pilotage PME Sàrl",
-    "sector": "Conseil aux entreprises",
-    "location": "Vaud",
+    "title": "Procédure de déclaration — reporter une charge fiscale au ch. 415",
+    "entity": "Atelier Repris Sàrl",
+    "sector": "Suite du cas M — reprise de patrimoine",
+    "location": "Nyon",
     "period": "S1 2026",
     "level": "Avancé",
     "risk": "high",
     "accountingBasis": "Contre-prestations convenues",
-    "description": "Le ch. 415 se trouve dans la zone «Crédit d’impôt» du prototype TDFN, mais certaines corrections constituent une charge fiscale et doivent être saisies avec un signe négatif. Ce cas entraîne alors une augmentation du montant à payer.",
-    "mission": "Calculez la dette TDFN sur CHF 20’000 TTC. Une reprise de patrimoine auprès d’un assujetti à la méthode effective entraîne une correction documentée de CHF 2’000 correspondant à une charge fiscale: reportez-la au ch. 415 avec le bon signe, puis contrôlez le montant à payer.",
-    "clientNote": "La reprise de patrimoine est traitée selon la procédure de déclaration de l’art. 38 LTVA. Le calcul de la correction est déjà documenté; ici, l’objectif est de maîtriser son report et son signe dans le décompte TDFN.",
-    "afcNote": "La correction de CHF 2’000 constitue une charge fiscale. Elle est donc saisie comme montant négatif au ch. 415: ch. 479 = CHF -2’000 et ch. 500 = CHF 3’240.",
+    "description": "Après la qualification juridique du cas M, le dossier de reprise a déterminé une correction de CHF 2’000 constituant une charge fiscale. Ce cas porte uniquement sur son report avec le bon signe dans le décompte TDFN.",
+    "mission": "Calculez la dette TDFN sur CHF 20’000 TTC, puis reportez la charge fiscale documentée de CHF 2’000 au ch. 415 avec le signe prévu par la pratique AFC et contrôlez le montant à payer.",
+    "clientNote": "Les méthodes des parties, l’affectation, les valeurs résiduelles et le calcul de la correction ont déjà été vérifiés dans le dossier. Ne refaites pas la qualification du cas M: concentrez-vous sur la saisie.",
+    "afcNote": "Pour une correction constituant une charge fiscale dans ce contexte, le montant est déclaré négativement au ch. 415. Une correction de CHF 2’000 est donc saisie CHF -2’000; le ch. 500 augmente en conséquence.",
     "given": [
       {"label": "Honoraires imposables, TVA comprise", "amount": 20000, "note": "Base TDFN du semestre.", "tag": "TTC"},
-      {"label": "TDFN confirmé", "note": "Conseil aux entreprises.", "tag": "6,2 %"},
-      {"label": "Correction art. 38 déjà calculée", "amount": 2000, "note": "Charge fiscale documentée: à saisir au ch. 415 avec le signe négatif.", "tag": "− CHF 2’000"}
+      {"label": "TDFN confirmé", "note": "Conseil aux entreprises pour l’exercice.", "tag": "6,2 %"},
+      {"label": "Correction déjà déterminée", "amount": 2000, "note": "Charge fiscale documentée à reporter au ch. 415 comme montant négatif.", "tag": "− CHF 2’000"}
     ],
     "checks": [
-      "Vérifier que la correction relève bien de la procédure de déclaration et qu’elle est documentée.",
-      "Identifier son sens fiscal avant de choisir le signe au ch. 415.",
-      "Une charge fiscale saisie comme montant négatif au ch. 415 augmente le ch. 500, car le formulaire soustrait le ch. 479 du ch. 399."
+      "Le cas M a déjà établi qu’une correction doit être déterminée: ici, ne pas refaire la qualification.",
+      "Identifier le sens fiscal de la correction avant de choisir le signe au ch. 415.",
+      "Une charge fiscale saisie négativement au ch. 415 augmente le montant à payer dans le calcul du formulaire."
     ],
-    "legal": "Art. 38 LTVA · art. 83 OTVA · prototype AFC TDFN, ch. 399, 415, 479, 500 et 510",
+    "legal": "Art. 38 LTVA · art. 83 OTVA · Info TVA 12 TDFN · prototype AFC, ch. 399, 415, 479, 500 et 510",
     "sourceIds": ["prototype", "forms", "info12", "ltva", "otva"],
-    "rates": [{"label": "Conseil aux entreprises", "rate": 6.2, "base": 20000, "tax": 1240}],
+    "rates": [{"label": "Services techniques — hypothèse du cas", "rate": 6.2, "base": 20000, "tax": 1240}],
     "fields": {"ch200": 20000, "ch415": -2000},
     "deductions": {},
     "explanations": {
       "ch200": "Le chiffre d’affaires imposable du semestre est CHF 20’000 TTC.",
       "r0base": "La base TDFN est CHF 20’000.",
       "r0tax": "CHF 20’000 × 6,2 % = CHF 1’240.",
-      "ch415": "La correction de CHF 2’000 est une charge fiscale. Dans le décompte TDFN, elle est donc saisie au ch. 415 comme CHF -2’000; le calcul final soustrait ce montant négatif et augmente la dette de CHF 2’000."
+      "ch415": "La correction de CHF 2’000 constitue une charge fiscale. La pratique AFC prévoit son report comme montant négatif au ch. 415; le calcul final augmente donc la dette de CHF 2’000."
     },
-    "lesson": "Le titre visuel «Crédit d’impôt» ne signifie pas que tout montant au ch. 415 réduit automatiquement la dette. Pour une reprise visée par l’art. 83 OTVA qui constitue une charge fiscale, le montant est reporté négativement. Toujours qualifier le mécanisme et vérifier le signe avant la saisie."
+    "lesson": "Qualification d’abord, saisie ensuite. Une charge fiscale relevant de ce mécanisme est reportée négativement au ch. 415; le signe ne se choisit jamais à partir du seul intitulé visuel «Crédit d’impôt»."
   },
   {
     "id": "R",
