@@ -96,12 +96,14 @@ export function validateCase(c,answers){
     const blank=actual===null;
     const invalid=Number.isNaN(actual);
     const negative=!blank&&!invalid&&actual<0;
+    const signedAmountAllowed=key==='ch415';
+    const forbiddenNegative=negative&&!signedAmountAllowed;
     const zeroExpected=Math.abs(Number(target))<0.000001;
-    const unexpected=zeroExpected?(!blank&&(invalid||negative||Math.abs(actual)>0.005)):false;
+    const unexpected=zeroExpected?(!blank&&(invalid||forbiddenNegative||Math.abs(actual)>0.005)):false;
     if(zeroExpected&&!unexpected) continue;
-    const good=!blank&&!invalid&&!negative&&closeEnough(actual,target);
+    const good=!blank&&!invalid&&!forbiddenNegative&&closeEnough(actual,target);
     if(good) correct++;
-    rows.push({key,target,actual,blank,invalid,negative,good,zeroExpected,unexpected});
+    rows.push({key,target,actual,blank,invalid,negative,forbiddenNegative,signedAmountAllowed,good,zeroExpected,unexpected});
   }
   const total=rows.length;
   return {rows,correct,total,score:total?Math.round(correct/total*100):100};
@@ -121,9 +123,9 @@ export function universalChecks(c,source={},reported=null,{reportCurrent=false,a
   const numericKeys=['ch200','ch205',...DEDUCTIONS.map(item=>item.key),'acqBase','acqTax','ch415','ch900','ch910',...(c.rates||[]).map((_,i)=>rateKey('base',i))];
   const invalid=numericKeys.filter(key=>{
     const value=parseAmount(source?.[key]);
-    return value!==null&&(Number.isNaN(value)||value<0);
+    return value!==null&&(Number.isNaN(value)||(value<0&&key!=='ch415'));
   });
-  add('numeric',invalid.length===0,'Formats et montants non négatifs',invalid.length?`À corriger: ${invalid.join(', ')}.`:'Tous les montants saisis sont numériques et non négatifs.');
+  add('numeric',invalid.length===0,'Formats et signes autorisés',invalid.length?`À corriger: ${invalid.join(', ')}.`:'Les montants sont numériques; seul le ch. 415 peut être signé négativement lorsque le dossier l’exige.');
   add('ch205',declaration.ch205<=declaration.ch200+0.011,'ch. 205 inclus dans le ch. 200',declaration.ch205<=declaration.ch200+0.011?'La rubrique informative ne dépasse pas le total déclaré.':`ch. 205 (${declaration.ch205.toFixed(2)}) dépasse ch. 200 (${declaration.ch200.toFixed(2)}).`);
   add('deductions',declaration.ch289<=declaration.ch200+0.011,'Déductions limitées au chiffre d’affaires',declaration.ch289<=declaration.ch200+0.011?'ch. 289 ne dépasse pas ch. 200.':`ch. 289 (${declaration.ch289.toFixed(2)}) dépasse ch. 200 (${declaration.ch200.toFixed(2)}).`);
   add('ch299',declaration.ch299>=-0.011,'Chiffre d’affaires imposable non négatif',declaration.ch299>=-0.011?`ch. 299 = ${declaration.ch299.toFixed(2)}.`:'Les déductions conduisent à un ch. 299 négatif.');

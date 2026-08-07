@@ -86,7 +86,7 @@ export const PRECHECK_DETAILS = {
 export const CASE_PRECHECK_PRIORITIES = {
   A: ['authorization', 'grossNet'], B: ['grossNet'], C: ['rates', 'grossNet'],
   D: ['rates', 'concordance'], D1: ['rates', 'concordance'], D2: ['rates', 'concordance'], D3: ['rates', 'turnover', 'evidence', 'concordance'], D4: ['rates'],
-  E: ['rates'], F: ['rates'], G: ['turnover', 'evidence'], H: ['foreignPlace', 'turnover'], I: ['acquisitions'], J: ['authorization', 'rates'],
+  E: ['rates'], F: ['rates'], G: ['turnover', 'evidence'], H: ['foreignPlace', 'turnover'], I: ['acquisitions'], J: ['authorization', 'turnover', 'rates'],
   K0: ['authorization', 'special'], K1: ['special'], K2: ['special'], K3: ['special', 'evidence'], K4: ['special'], K5: ['special'],
   L0: ['authorization', 'special'], L1: ['special'], L2: ['special'], L3: ['special', 'evidence'], L4: ['special'], L5: ['special'], L6: ['special', 'evidence'], L7: ['special', 'evidence'],
   L: ['special'], M: ['special'], N: ['authorization', 'turnover'], O: ['evidence', 'turnover'], P: ['special'], Q: [], R: ['special', 'turnover']
@@ -94,12 +94,10 @@ export const CASE_PRECHECK_PRIORITIES = {
 
 defineComponent('precheck', ({ checked = {}, priorities = [] }) => {
   const prioritySet = new Set(priorities);
-  const checkedCount = Object.keys(PRECHECK_DETAILS).filter((key) => Boolean(checked[key])).length;
-  const totalCount = Object.keys(PRECHECK_DETAILS).length;
-  return `<div class="precheck-tools">
-    <div><strong>Priorités de ce cas</strong><span>${priorities.length ? priorities.map((key) => h(PRECHECK_DETAILS[key]?.title)).join(' · ') : 'Contrôle général du dossier'}</span><small class="precheck-count" data-precheck-count>${checkedCount} / ${totalCount} contrôles marqués</small></div>
-    <div><button class="btn small" type="button" data-action="precheck-open-all">Tout ouvrir</button><button class="btn small" type="button" data-action="precheck-close-all">Tout fermer</button></div>
-  </div><div class="precheck-list">${Object.entries(PRECHECK_DETAILS).map(([key, detail]) => {
+  const entries = Object.entries(PRECHECK_DETAILS);
+  const checkedCount = entries.filter(([key]) => Boolean(checked[key])).length;
+  const totalCount = entries.length;
+  const renderPanel = ([key, detail]) => {
     const inputId = `precheck-${key}`;
     const panelId = `precheck-panel-${key}`;
     return `<article class="precheck-accordion ${prioritySet.has(key) ? 'precheck-accordion--priority' : ''}" data-precheck-panel="${key}">
@@ -113,14 +111,24 @@ defineComponent('precheck', ({ checked = {}, priorities = [] }) => {
         <div class="precheck-detail-row precheck-detail-alert"><strong>Signal d’alerte</strong><p>${h(detail.alert)}</p></div>
       </div>
     </article>`;
-  }).join('')}</div>`;
+  };
+  const priorityEntries = entries.filter(([key]) => prioritySet.has(key));
+  const visiblePriorities = priorityEntries.length ? priorityEntries : entries.slice(0, 3);
+  const visibleKeys = new Set(visiblePriorities.map(([key]) => key));
+  const rest = entries.filter(([key]) => !visibleKeys.has(key));
+  return `<div class="precheck-tools">
+    <div><strong>À vérifier en priorité pour ce cas</strong><span>${visiblePriorities.map(([, detail]) => h(detail.title)).join(' · ')}</span><small class="precheck-count" data-precheck-count>${checkedCount} / ${totalCount} contrôles marqués</small></div>
+    <div><button class="btn small" type="button" data-action="precheck-open-all">Tout ouvrir</button><button class="btn small" type="button" data-action="precheck-close-all">Tout fermer</button></div>
+  </div>
+  <div class="precheck-list precheck-priority-list">${visiblePriorities.map(renderPanel).join('')}</div>
+  ${rest.length ? `<details class="precheck-secondary"><summary>Afficher les ${rest.length} autres contrôles du dossier</summary><div class="precheck-list">${rest.map(renderPanel).join('')}</div></details>` : ''}`;
 });
 
-defineComponent('navigation', ({ modules = [], activeModule = 0, currentId = '', statuses = {} }) => {
+defineComponent('navigation' , ({ modules = [], activeModule = 0, currentId = '', statuses = {} }) => {
   const currentModule = modules[activeModule] || modules[0] || { ids: [] };
   return `<section class="path-panel">
-    <div class="path-panel__head"><div><span>Parcours TDFN</span><strong>${h(currentModule?.label || '')}</strong></div></div>
-    <label class="module-picker"><span>Module</span><select data-module-select aria-label="Choisir un module">${modules.map((module, index) => `<option value="${index}" ${index === activeModule ? 'selected' : ''}>${h(module.label)}</option>`).join('')}</select></label>
+    <div class="path-panel__head"><div><span>${h(currentModule?.track || 'Parcours TDFN')}</span><strong>${h(currentModule?.label || '')}</strong></div></div>
+    <label class="module-picker"><span>Module</span><select data-module-select aria-label="Choisir un module">${modules.map((module, index) => `<option value="${index}" ${index === activeModule ? 'selected' : ''}>${h(module.track ? `${module.track} · ${module.label}` : module.label)}</option>`).join('')}</select></label>
     <div class="current-module" aria-label="Cas du module actuel">${(currentModule?.ids || []).map((id) => `<button type="button" class="case-link ${id === currentId ? 'active' : ''}" data-public-case="${h(id)}"><span>${h(id)}</span><b>${h(statuses[id]?.title || id)}</b>${statuses[id]?.status ? `<em>${h(statuses[id].status)}</em>` : ''}</button>`).join('')}</div>
     <div class="case-arrows"><button type="button" data-action="previous">← Précédent</button><button type="button" data-action="next">Suivant →</button></div>
   </section>`;

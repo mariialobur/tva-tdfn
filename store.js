@@ -23,8 +23,8 @@ const caseIdAtIndex = (index) => publicCaseId(CASES[Number(index)]) || 'A';
 export function createDefaultState() {
   return {
     version: STATE_VERSION,
-    current: 0,
-    currentId: publicCaseId(CASES[0]) || 'A',
+    current: Math.max(0, caseIndexByPublicId('J')),
+    currentId: 'J',
     mode: 'guided',
     steps: {}, answers: {}, quiz: {}, scores: {}, assisted: {}, attempts: {}, reported: {},
     finalRound: {}, acquisitionRate: {}, dossierOpen: {}, worksheets: {}, precheck: {},

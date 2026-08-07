@@ -1,4 +1,4 @@
-// Données intégrées — version 10.1.0
+// Données intégrées — version 11.0.0
 // Cas, sources et tableaux de transition sont réunis dans un module unique.
 
 export const OFFICIAL_SOURCES = [
@@ -395,7 +395,7 @@ export const CASES = [
     "description": "Le cas reprend la logique de l’exemple AFC: commerce d’articles et vêtements de sport, location et services sur skis ou snowboards.",
     "mission": "Réconciliez CHF 300’000 TTC avec trois comptes de produits, puis calculez la dette TDFN activité par activité.",
     "clientNote": "Les factures restent établies aux taux légaux applicables; les montants du dossier sont des contre-prestations TTC.",
-    "afcNote": "Le cas utilise les TDFN de l’exemple AFC dès 2025: commerce 2,1 %, location 3,0 % et services sur skis ou snowboards 5,3 %.",
+    "afcNote": "Le cas utilise les TDFN de l’exemple AFC dès 2025: commerce 2,1 %, location 3,0 % et services sur skis ou snowboards 5,3 %. Le total d’impôt est CHF 8’760; rapporté à CHF 300’000, le taux moyen résultant est 2,92 %. Ce 2,92 % est un résultat de synthèse, pas un TDFN à appliquer.",
     "given": [
       {
         "label": "Commerce d’articles et vêtements de sport",
@@ -467,7 +467,7 @@ export const CASES = [
       "r2base": "Services sur skis et snowboards: CHF 60’000 TTC.",
       "r2tax": "CHF 60’000 × 5,3 % = CHF 3’180."
     },
-    "lesson": "Une enseigne unique peut exercer plusieurs activités TDFN. La piste d’audit doit relier comptes de produits, bases TTC et taux appliqués."
+    "lesson": "Une enseigne unique peut exercer plusieurs activités TDFN. Chaque base est calculée avec son TDFN propre; le taux moyen de 2,92 % résulte ensuite de CHF 8’760 / CHF 300’000 et ne remplace jamais les TDFN autorisés."
   },
   {
     "id": "D1",
@@ -1272,13 +1272,13 @@ export const CASES = [
     "sector": "Conseil",
     "location": "Bâle",
     "period": "Prévision annuelle 2026",
-    "level": "Avancé",
+    "level": "Fondamentaux · qualification",
     "risk": "high",
     "type": "quiz",
-    "description": "Le cas distingue l’accès initial à la méthode TDFN de son maintien après autorisation. Le traitement dépend non seulement du nombre de périodes fiscales concernées, mais aussi de l’ampleur du dépassement et du moment où il survient.",
-    "mission": "Testez les deux limites cumulatives, concluez sur l’admissibilité initiale, puis appliquez les règles de l’art. 81 OTVA pour un dépassement jusqu’à 50 %, un dépassement supérieur à 50 % et un dépassement durant les douze premiers mois.",
+    "description": "Avant tout calcul, vérifiez si la méthode TDFN peut être utilisée. Ce cas distingue les deux limites quantitatives, les exclusions de l’art. 77 OTVA, le maintien après autorisation et la périodicité annuelle.",
+    "mission": "Commencez par les deux limites cumulatives, contrôlez ensuite les exclusions de l’art. 77 OTVA, puis distinguez les règles de maintien et la limite séparée du décompte annuel.",
     "clientNote": "Le choix de la méthode intervient avant le paramétrage du décompte.",
-    "afcNote": "À 6,2 %, CHF 1,74 million constitue le repère publié pour la première année d’assujettissement ou l’année précédant un passage à la méthode TDFN. Pour une entreprise déjà autorisée, l’art. 81 OTVA distingue les dépassements jusqu’à 50 %, ceux de plus de 50 % et la phase initiale de douze mois.",
+    "afcNote": "Les deux limites quantitatives sont cumulatives, mais elles ne suffisent pas à elles seules: les exclusions de l’art. 77 OTVA doivent aussi être vérifiées. La limite du décompte annuel (CHF 5’005’000) est distincte de la limite TDFN (CHF 5’024’000).",
     "given": [
       {
         "label": "CA imposable annuel prévu, TVA comprise",
@@ -1301,92 +1301,84 @@ export const CASES = [
     "checks": [
       "Accès initial: CA imposable annuel TVA comprise ≤ CHF 5’024’000.",
       "Accès initial: impôt annuel calculé avec les TDFN ≤ CHF 108’000.",
-      "Maintien après autorisation: mesurer séparément le nombre de périodes fiscales et le pourcentage de dépassement de chaque limite.",
-      "Un dépassement de plus de 50 % produit une conséquence plus rapide qu’un dépassement jusqu’à 50 %.",
-      "Pendant les douze premiers mois, contrôler le risque de révocation rétroactive de l’autorisation.",
-      "Contrôler aussi les exclusions de l’art. 77 OTVA."
+      "Nouvel assujetti: les chiffres escomptés des douze premiers mois doivent respecter les deux limites.",
+      "Maintien après autorisation: le dépassement d’une ou des deux limites doit être observé durant trois périodes fiscales consécutives avant le passage obligatoire à la méthode effective.",
+      "Depuis 2025, l’ampleur du dépassement ne crée plus de règle accélérée à +50 %.",
+      "Contrôler aussi les exclusions de l’art. 77 OTVA.",
+      "Ne pas confondre la limite TDFN de CHF 5’024’000 avec la limite distincte du décompte annuel de CHF 5’005’000."
     ],
-    "legal": "Art. 37 LTVA · art. 77 et 81 OTVA · limites publiées par l’AFC",
+    "legal": "Art. 37 LTVA · art. 77, 78 et 81 OTVA · limites publiées par l’AFC",
     "sourceIds": [
       "afc-main",
       "otva",
       "info12",
-      "info12-limits"
+      "info12-limits",
+      "annual-reporting"
     ],
     "questions": [
       {
         "q": "Quel est l’impôt annuel prévisible?",
-        "options": [
-          "CHF 108’000",
-          "CHF 111’600",
-          "CHF 116’100",
-          "CHF 180’000"
-        ],
+        "options": ["CHF 108’000", "CHF 111’600", "CHF 116’100", "CHF 180’000"],
         "answer": 1,
         "why": "CHF 1’800’000 × 6,2 % = CHF 111’600."
       },
       {
         "q": "La limite annuelle de CHF 108’000 est-elle respectée?",
-        "options": [
-          "Oui",
-          "Non"
-        ],
+        "options": ["Oui", "Non"],
         "answer": 1,
         "why": "CHF 111’600 dépasse CHF 108’000."
       },
       {
         "q": "Quelle conclusion est correcte pour la demande initiale?",
-        "options": [
-          "Admissible car le CA reste sous CHF 5,024 mio.",
-          "Non admissible dans ce scénario",
-          "Il suffit de réduire le taux des factures"
-        ],
+        "options": ["Admissible car le CA reste sous CHF 5,024 mio.", "Non admissible dans ce scénario", "Il suffit de réduire le taux des factures"],
         "answer": 1,
         "why": "Les conditions sont cumulatives; la limite de dette fiscale n’est pas respectée."
       },
       {
-        "q": "Entreprise déjà autorisée — une limite est dépassée de 20 % pendant une seule période fiscale. Quelle conclusion est correcte?",
-        "options": [
-          "Le passage immédiat à la méthode effective est obligatoire",
-          "Le dépassement doit être documenté et suivi; cette seule période ne suffit pas encore à imposer le changement",
-          "Le dépassement n’a aucune conséquence et peut être ignoré"
-        ],
-        "answer": 1,
-        "why": "Lorsque le dépassement ne dépasse pas 50 %, le passage devient obligatoire si l’une ou les deux limites sont dépassées pendant trois périodes fiscales consécutives."
-      },
-      {
-        "q": "Entreprise déjà autorisée — une limite est dépassée au maximum de 50 % pour la troisième période fiscale consécutive. Quelle est la conséquence?",
-        "options": [
-          "Passage obligatoire à la méthode effective au début de la période fiscale suivante",
-          "Attendre une quatrième période de dépassement",
-          "Modifier le taux légal indiqué sur les factures"
-        ],
+        "q": "Si le CA est exactement de CHF 5’024’000 et la dette fiscale exactement de CHF 108’000, que peut-on conclure sur les deux limites quantitatives?",
+        "options": ["Elles sont respectées, sous réserve des autres conditions et exclusions", "Elles sont dépassées car les montants doivent être strictement inférieurs", "Seule la limite de chiffre d’affaires est respectée"],
         "answer": 0,
-        "why": "L’art. 81 OTVA impose le passage à la méthode effective au début de la période fiscale qui suit les trois périodes fiscales consécutives de dépassement."
+        "why": "Les limites sont formulées comme des maxima. Les atteindre exactement ne constitue pas, à lui seul, un dépassement; les autres conditions doivent néanmoins être contrôlées."
       },
       {
-        "q": "Entreprise déjà autorisée — l’une des limites est dépassée de 60 % pendant une seule période fiscale. Quelle est la conséquence?",
-        "options": [
-          "Attendre trois périodes fiscales consécutives",
-          "Passage obligatoire à la méthode effective au début de la période fiscale suivante",
-          "Aucune conséquence si l’autre limite reste respectée"
-        ],
+        "q": "Entreprise déjà autorisée — une limite est dépassée pendant une seule période fiscale. Quelle conclusion est correcte?",
+        "options": ["Le passage immédiat à la méthode effective est obligatoire", "Le dépassement doit être documenté et suivi; cette seule période ne suffit pas encore à imposer le changement", "Le dépassement peut être ignoré"],
         "answer": 1,
-        "why": "Un dépassement de plus de 50 % d’une seule limite pendant une période fiscale suffit à rendre obligatoire le passage à la méthode effective au début de la période suivante."
+        "why": "Depuis 2025, le passage obligatoire intervient si l’une ou les deux limites sont dépassées durant trois périodes fiscales consécutives."
       },
       {
-        "q": "Les limites sont déjà dépassées durant les douze premiers mois d’application des TDFN. Quel réflexe est correct?",
-        "options": [
-          "Attendre automatiquement trois périodes fiscales",
-          "Examiner sans délai si l’autorisation doit être révoquée rétroactivement selon l’art. 81 OTVA",
-          "Reporter le dépassement uniquement dans le rapport annuel"
-        ],
+        "q": "Entreprise déjà autorisée — une limite est dépassée de 60 % pendant une seule période fiscale. La seule ampleur du dépassement impose-t-elle un passage immédiat?",
+        "options": ["Oui, car tout dépassement supérieur à 50 % accélère automatiquement le changement", "Non; depuis 2025, l’ampleur du dépassement ne crée plus cette règle accélérée", "Oui, mais seulement si le chiffre d’affaires est concerné"],
         "answer": 1,
-        "why": "La phase initiale de douze mois fait l’objet d’une règle spécifique. Le dossier doit être analysé immédiatement; la règle ordinaire des trois périodes ne peut pas être appliquée mécaniquement."
+        "why": "La règle spéciale liée à un dépassement de plus de 50 % a été supprimée. Le critère de maintien est désormais le dépassement durant trois périodes fiscales consécutives."
+      },
+      {
+        "q": "Entreprise déjà autorisée — l’une des limites est dépassée durant trois périodes fiscales consécutives. Quelle est la conséquence?",
+        "options": ["Passage obligatoire à la méthode effective au début de la période fiscale suivante", "Attendre une quatrième période de dépassement puis changer à la cinquième", "Modifier le taux légal indiqué sur les factures"],
+        "answer": 0,
+        "why": "L’art. 81, al. 3, OTVA impose le passage à la méthode effective au début de la période fiscale qui suit les trois périodes fiscales consécutives de dépassement."
+      },
+      {
+        "q": "Nouvel assujetti — les chiffres d’affaires et l’impôt escomptés pour les douze premiers mois dépassent déjà les limites de l’art. 37 LTVA. L’AFC peut-elle autoriser l’application initiale des TDFN sur cette base?",
+        "options": ["Oui, puis elle attend trois périodes fiscales", "Non, les chiffres escomptés des douze premiers mois doivent respecter les limites pour l’autorisation initiale", "Oui, si l’entreprise n’utilise qu’un seul TDFN"],
+        "answer": 1,
+        "why": "Pour un nouvel assujetti, l’art. 78 OTVA exige que le chiffre d’affaires et l’impôt escomptés des douze premiers mois ne dépassent pas les limites de l’art. 37, al. 1, LTVA."
+      },
+      {
+        "q": "Une entreprise respecte les deux limites mais applique l’imposition de groupe au sens de l’art. 13 LTVA. Peut-elle choisir les TDFN?",
+        "options": ["Oui, car seules les deux limites quantitatives comptent", "Non, l’imposition de groupe fait partie des exclusions de l’art. 77 OTVA", "Oui, mais uniquement avec un seul TDFN"],
+        "answer": 1,
+        "why": "Le respect des limites ne suffit pas. L’art. 77 OTVA exclut notamment les assujettis qui appliquent l’imposition de groupe."
+      },
+      {
+        "q": "Une entreprise remplit les conditions TDFN avec un CA de CHF 5’015’000 et une dette fiscale de CHF 100’000. Peut-elle demander le décompte annuel uniquement sur cette base?",
+        "options": ["Oui, car elle reste sous la limite TDFN de CHF 5’024’000", "Non, la limite distincte du décompte annuel est de CHF 5’005’000", "Oui, car la dette fiscale reste sous CHF 108’000"],
+        "answer": 1,
+        "why": "L’admissibilité aux TDFN et la périodicité annuelle répondent à deux limites de chiffre d’affaires différentes. CHF 5’015’000 reste sous la limite TDFN mais dépasse la limite du décompte annuel."
       }
     ],
-    "lesson": "Accès initial: les deux limites doivent être respectées. Après autorisation: jusqu’à 50 % de dépassement, surveiller trois périodes fiscales consécutives; au-delà de 50 %, une seule période suffit; durant les douze premiers mois, vérifier immédiatement le risque de révocation rétroactive.",
-    "conceptualNote": "Ne mélangez pas quatre questions: admissibilité initiale, dépassement jusqu’à 50 %, dépassement supérieur à 50 % et dépassement pendant les douze premiers mois."
+    "lesson": "Le bon ordre est: 1) deux limites quantitatives, 2) exclusions de l’art. 77 OTVA, 3) règles de maintien de l’art. 81 OTVA, 4) périodicité de remise. La limite du décompte annuel ne remplace jamais le test d’admissibilité TDFN.",
+    "conceptualNote": "Travaillez dans cet ordre: admissibilité quantitative → exclusions → maintien → périodicité. Une réponse correcte sur les limites ne dispense jamais du contrôle juridique de l’art. 77 OTVA."
   },
   {
     "id": "K0",
@@ -2938,8 +2930,8 @@ export const CASES = [
   },
   {
     "id": "P",
-    "tab": "P · Ch. 510",
-    "title": "Crédit supérieur à l’impôt — solde en faveur",
+    "tab": "P · Ch. 415 signé",
+    "title": "Procédure de déclaration — comprendre le signe du ch. 415",
     "entity": "Pilotage PME Sàrl",
     "sector": "Conseil aux entreprises",
     "location": "Vaud",
@@ -2947,60 +2939,32 @@ export const CASES = [
     "level": "Avancé",
     "risk": "high",
     "accountingBasis": "Contre-prestations convenues",
-    "description": "Lorsque le crédit documenté au ch. 479 dépasse l’impôt dû au ch. 399, le solde apparaît au ch. 510 et non comme un montant négatif au ch. 500.",
-    "mission": "Calculez la dette TDFN sur CHF 20’000 TTC, reportez la correction documentée de CHF 2’000 au ch. 415 et contrôlez le solde en faveur.",
-    "clientNote": "Le droit et le montant de la correction sont déjà établis par un dossier séparé; le simulateur teste uniquement son report dans le décompte.",
-    "afcNote": "Le résultat attendu est ch. 399 CHF 1’240, ch. 479 CHF 2’000, ch. 500 CHF 0 et ch. 510 CHF 760.",
+    "description": "Le ch. 415 se trouve dans la zone «Crédit d’impôt» du prototype TDFN, mais certaines corrections constituent une charge fiscale et doivent être saisies avec un signe négatif. Ce cas entraîne alors une augmentation du montant à payer.",
+    "mission": "Calculez la dette TDFN sur CHF 20’000 TTC. Une reprise de patrimoine auprès d’un assujetti à la méthode effective entraîne une correction documentée de CHF 2’000 correspondant à une charge fiscale: reportez-la au ch. 415 avec le bon signe, puis contrôlez le montant à payer.",
+    "clientNote": "La reprise de patrimoine est traitée selon la procédure de déclaration de l’art. 38 LTVA. Le calcul de la correction est déjà documenté; ici, l’objectif est de maîtriser son report et son signe dans le décompte TDFN.",
+    "afcNote": "La correction de CHF 2’000 constitue une charge fiscale. Elle est donc saisie comme montant négatif au ch. 415: ch. 479 = CHF -2’000 et ch. 500 = CHF 3’240.",
     "given": [
-      {
-        "label": "Honoraires imposables, TVA comprise",
-        "amount": 20000,
-        "note": "Base TDFN du semestre.",
-        "tag": "TTC"
-      },
-      {
-        "label": "TDFN confirmé",
-        "note": "Conseil aux entreprises.",
-        "tag": "6,2 %"
-      },
-      {
-        "label": "Correction documentée",
-        "amount": 2000,
-        "note": "Montant fourni à reporter au ch. 415.",
-        "tag": "415"
-      }
+      {"label": "Honoraires imposables, TVA comprise", "amount": 20000, "note": "Base TDFN du semestre.", "tag": "TTC"},
+      {"label": "TDFN confirmé", "note": "Conseil aux entreprises.", "tag": "6,2 %"},
+      {"label": "Correction art. 38 déjà calculée", "amount": 2000, "note": "Charge fiscale documentée: à saisir au ch. 415 avec le signe négatif.", "tag": "− CHF 2’000"}
     ],
     "checks": [
-      "Aucun montant négatif n’est saisi dans le formulaire.",
-      "Le ch. 500 reste à zéro lorsque le crédit dépasse l’impôt.",
-      "Le solde positif en faveur de l’assujetti est affiché au ch. 510."
+      "Vérifier que la correction relève bien de la procédure de déclaration et qu’elle est documentée.",
+      "Identifier son sens fiscal avant de choisir le signe au ch. 415.",
+      "Une charge fiscale saisie comme montant négatif au ch. 415 augmente le ch. 500, car le formulaire soustrait le ch. 479 du ch. 399."
     ],
-    "legal": "Prototype AFC, ch. 399, 415, 479, 500 et 510 · traitement à confirmer sur dossier réel",
-    "sourceIds": [
-      "prototype",
-      "forms",
-      "info12"
-    ],
-    "rates": [
-      {
-        "label": "Conseil aux entreprises",
-        "rate": 6.2,
-        "base": 20000,
-        "tax": 1240
-      }
-    ],
-    "fields": {
-      "ch200": 20000,
-      "ch415": 2000
-    },
+    "legal": "Art. 38 LTVA · art. 83 OTVA · prototype AFC TDFN, ch. 399, 415, 479, 500 et 510",
+    "sourceIds": ["prototype", "forms", "info12", "ltva", "otva"],
+    "rates": [{"label": "Conseil aux entreprises", "rate": 6.2, "base": 20000, "tax": 1240}],
+    "fields": {"ch200": 20000, "ch415": -2000},
     "deductions": {},
     "explanations": {
       "ch200": "Le chiffre d’affaires imposable du semestre est CHF 20’000 TTC.",
       "r0base": "La base TDFN est CHF 20’000.",
       "r0tax": "CHF 20’000 × 6,2 % = CHF 1’240.",
-      "ch415": "La correction documentée de CHF 2’000 est reportée au ch. 415."
+      "ch415": "La correction de CHF 2’000 est une charge fiscale. Dans le décompte TDFN, elle est donc saisie au ch. 415 comme CHF -2’000; le calcul final soustrait ce montant négatif et augmente la dette de CHF 2’000."
     },
-    "lesson": "Le formulaire sépare le montant à payer au ch. 500 du solde en faveur au ch. 510; aucun des deux champs ne reçoit un nombre négatif."
+    "lesson": "Le titre visuel «Crédit d’impôt» ne signifie pas que tout montant au ch. 415 réduit automatiquement la dette. Pour une reprise visée par l’art. 83 OTVA qui constitue une charge fiscale, le montant est reporté négativement. Toujours qualifier le mécanisme et vérifier le signe avant la saisie."
   },
   {
     "id": "R",

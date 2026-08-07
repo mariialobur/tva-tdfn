@@ -13,7 +13,7 @@
   <meta property="og:url" content="https://mariialobur.github.io/tva-tdfn/">
   <link rel="canonical" href="https://mariialobur.github.io/tva-tdfn/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect rx=%2214%22 width=%2264%22 height=%2264%22 fill=%22%231f6078%22/><text x=%2232%22 y=%2241%22 text-anchor=%22middle%22 font-size=%2227%22 fill=%22white%22 font-family=%22Arial%22>TVA</text></svg>">
-  <link rel="stylesheet" href="styles.css?v=10.1.0">
+  <link rel="stylesheet" href="styles.css?v=11.0.0">
   <title>Décompte TVA suisse TDFN — entraînement pédagogique | Mariia Lobur</title>
 </head>
 <body>
@@ -29,7 +29,7 @@
       <button class="ghost-button" type="button" data-action="open-precheck">Contrôle préalable</button>
       <button class="ghost-button" id="openSources" type="button">Sources officielles</button>
       <button class="progress progress-button" type="button" data-action="summary" aria-label="Ouvrir le bilan du parcours">
-        <div><span id="moduleProgressLabel">Module</span><strong id="progressText">0 / 3</strong></div>
+        <div><span id="moduleProgressLabel">Progression globale</span><strong id="progressText">0 / 34</strong></div>
         <div class="progress__track"><span id="progressBar"></span></div>
       </button>
     </div>
@@ -38,9 +38,9 @@
 <section class="principle" aria-label="Principe TDFN">
   <div class="principle__inner">
     <div class="principle__main">
-      <strong>Rappel TDFN:</strong>
-      <div class="principle__flow"><span>taux légal sur la facture</span><b>→</b><span>CA brut TTC × TDFN confirmé</span></div>
-      <small>L’impôt préalable est pris en compte forfaitairement dans le TDFN; il n’est pas déduit séparément dans le décompte courant.</small>
+      <strong>La règle à retenir</strong>
+      <div class="principle__flow"><span>Facture client: TVA au taux légal</span><b>→</b><span>Décompte AFC: CA brut TTC × TDFN confirmé</span></div>
+      <small>Le client reçoit une facture avec le taux légal applicable. Dans le décompte, l’entreprise calcule ensuite la dette fiscale en appliquant le ou les TDFN autorisés au chiffre d’affaires brut, TVA comprise. L’impôt préalable courant n’est pas déduit séparément: il est pris en compte forfaitairement dans le TDFN.</small>
     </div>
     <details class="principle__details">
       <summary>Hypothèses du parcours</summary>
@@ -53,8 +53,8 @@
   <div class="method-limits__top">
     <div class="method-limits__summary-head">
       <div>
-        <span class="method-limits__eyebrow">Admissibilité et maintien de la méthode</span>
-        <h2 id="methodLimitsTitle">Deux limites TDFN cumulatives — à contrôler pour chaque période fiscale</h2>
+        <span class="method-limits__eyebrow">Mémo avant de commencer</span>
+        <h2 id="methodLimitsTitle">Admissibilité TDFN: deux limites quantitatives + exclusions à contrôler</h2>
       </div>
     </div>
     <div class="method-limits__numbers" aria-label="Limites quantitatives TDFN">
@@ -65,7 +65,7 @@
       <span>Comprendre l’admissibilité et les actions en cas de dépassement</span>
       <span class="method-limits__toggle-text" aria-hidden="true">Afficher</span>
     </button>
-    <p class="method-limits__summary-example"><strong>Cas à 6,2 %:</strong> CHF 1’800’000 × 6,2 % = CHF 111’600. La seconde limite est dépassée de CHF 3’600, malgré un chiffre d’affaires inférieur à CHF 5’024’000.</p>
+    <p class="method-limits__summary-example"><strong>Réflexe professionnel:</strong> respecter les deux limites ne suffit pas. Avant de choisir la méthode, contrôlez aussi les exclusions de l’art. 77 OTVA et distinguez l’admissibilité TDFN de la périodicité annuelle.</p>
   </div>
 
   <div class="method-limits__body" id="methodLimitsDetails" hidden>
@@ -96,9 +96,8 @@
           <ol class="method-limits__actions">
             <li><strong>Nouvelle inscription:</strong> l’AFC autorise la méthode si le chiffre d’affaires et l’impôt escomptés durant les douze premiers mois ne dépassent aucune des deux limites.</li>
             <li><strong>Passage depuis la méthode effective:</strong> la période fiscale précédente ne doit avoir dépassé aucune des deux limites.</li>
-            <li><strong>Dépassement jusqu’à 50 %:</strong> si l’une ou les deux limites sont dépassées pendant trois périodes fiscales consécutives, le passage à la méthode effective devient obligatoire au début de la période suivante.</li>
-            <li><strong>Dépassement de plus de 50 %:</strong> une seule période fiscale suffit pour imposer le passage à la méthode effective au début de la période suivante.</li>
-            <li><strong>Douze premiers mois d’adhésion:</strong> si les limites sont dépassées durant cette phase, vérifier immédiatement les conditions d’autorisation et les conséquences prévues à l’art. 81 OTVA; ne pas reporter automatiquement la situation sur les règles ordinaires des trois périodes.</li>
+            <li><strong>Après autorisation:</strong> si l’une ou les deux limites sont dépassées durant trois périodes fiscales consécutives, le passage à la méthode effective devient obligatoire au début de la période fiscale suivante.</li>
+            <li><strong>Amplitude du dépassement:</strong> depuis 2025, l’ancienne règle accélérée liée à un dépassement de plus de 50 % a été supprimée; c’est la succession de trois périodes fiscales qui est déterminante.</li>
             <li><strong>Préparer le changement:</strong> annoncer la modification dans le Portail AFC dans le délai applicable, conserver la réconciliation des limites et analyser le dégrèvement éventuel de l’impôt préalable sur les valeurs résiduelles au ch. 410 du premier décompte selon la méthode effective.</li>
             <li><strong>Autres conditions:</strong> le respect des deux limites ne suffit pas à lui seul; les exclusions prévues à l’art. 77 OTVA doivent aussi être contrôlées.</li>
           </ol>
@@ -134,11 +133,12 @@
       <div class="workspace-head__tools">
         <button class="dossier-toggle" id="toggleDossier" type="button" data-action="toggle-dossier" hidden>Afficher le dossier</button>
         <div class="mode-switch" id="modeSwitch" aria-label="Mode de travail">
-          <button type="button" data-mode="guided">Parcours guidé</button>
-          <button type="button" data-mode="portal">Vue pédagogique AFC</button>
+          <button type="button" data-mode="guided">Apprendre pas à pas</button>
+          <button type="button" data-mode="portal">S’entraîner sur le décompte AFC</button>
         </div>
       </div>
     </div>
+    <div id="moduleIntroSlot"></div>
     <details class="mobile-dossier" id="mobileDossier">
       <summary>Dossier, contrôles et sources du cas</summary>
       <div id="mobileDossierContent"></div>
@@ -174,7 +174,7 @@
     <span> · Projet pédagogique indépendant, sans affiliation à l’AFC.</span>
   </div>
   <div class="footer-meta-line">
-    <span>Mise à jour : 06.08.2026 · sources revues le 06.08.2026.</span>
+    <span>Mise à jour : 07.08.2026 · sources revues le 07.08.2026.</span>
     <a href="https://mariialobur.github.io/tva-debutant/" target="_blank" rel="noopener noreferrer">Entraînement TVA — méthode effective</a>
   </div>
 </footer>
@@ -213,6 +213,6 @@
 <input id="progressImportInput" type="file" accept="application/json,.json" hidden>
 <noscript><div class="noscript-warning">JavaScript doit être activé pour utiliser cet entraînement interactif.</div></noscript>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script type="module" src="app.js?v=10.1.0"></script>
+<script type="module" src="app.js?v=11.0.0"></script>
 </body>
 </html>

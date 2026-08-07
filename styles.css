@@ -1312,3 +1312,79 @@ button[data-action="next"]:disabled {
   color: #6e1f1f;
   font-weight: 700;
 }
+
+
+/* v11.0 — parcours pédagogique, lisibilité et feedback */
+.module-intro{
+  margin:12px 0 16px;
+  padding:14px 16px;
+  border:1px solid #d8e3e8;
+  border-radius:12px;
+  background:#f7fafb;
+  color:var(--ink,#16333f);
+}
+.module-intro__top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.module-intro__top>div:first-child{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.track-pill{display:inline-flex;align-items:center;min-height:28px;padding:4px 9px;border-radius:999px;background:#e8f2f5;color:#164f64;font-size:.78rem;font-weight:800;letter-spacing:.01em}
+.module-intro__top strong{font-size:.98rem;line-height:1.35}
+.module-meta{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.module-meta span{display:inline-flex;align-items:center;min-height:28px;padding:4px 8px;border:1px solid #d5e0e5;border-radius:8px;background:#fff;color:var(--panel-muted,#536771);font-size:max(.78rem,12px);font-weight:700}
+.module-intro details{margin-top:10px;border-top:1px solid #dbe5e9;padding-top:8px}
+.module-intro summary{cursor:pointer;color:#23576a;font-size:max(.84rem,13px);font-weight:800}
+.module-intro ul{margin:8px 0 0;padding-left:20px}
+.module-intro li{margin:4px 0;font-size:max(.86rem,14px);line-height:1.5}
+
+.feedback-choice{margin-top:6px;font-size:max(.84rem,13px);line-height:1.5;color:#314a55}
+.feedback-choice.expected{padding:7px 9px;border-left:3px solid #2c7189;background:#eef7fa;border-radius:0 7px 7px 0;color:#173c4b}
+.feedback-explain{font-size:max(.86rem,14px);line-height:1.55}
+
+.precheck-priority-list{margin-top:10px}
+.precheck-secondary{margin-top:10px;border:1px dashed #c8d9df;border-radius:10px;background:#fbfcfd}
+.precheck-secondary>summary{cursor:pointer;padding:11px 12px;color:#28586a;font-size:max(.82rem,13px);font-weight:800;list-style:none}
+.precheck-secondary>summary::-webkit-details-marker{display:none}
+.precheck-secondary>summary::after{content:' +';font-weight:900}
+.precheck-secondary[open]>summary::after{content:' −'}
+.precheck-secondary .precheck-list{padding:0 10px 10px}
+.precheck-tools span{font-size:max(.80rem,13px);line-height:1.45}
+.precheck-count{font-size:max(.76rem,12px)}
+
+/* Les données fiscales et instructions ne doivent pas tomber à 10–11 px. */
+.principle small,
+.data-note,
+.field-help,
+.label-sub,
+.source-links a,
+.transition-table td small,
+.calculator-case-item small,
+.calculator-case-data__note,
+.calculator-row-instruction,
+.method-limits__note,
+.method-limits__period-note,
+.method-limits__summary-example,
+.old-period-note,
+.lesson,
+.question .hint{
+  font-size:max(.82rem,13px);
+  line-height:1.5;
+}
+.method-limit-card small,.mode-switch button,.sidebar-secondary>summary,.sidebar-secondary__menu button{font-size:max(.76rem,12px)}
+.tag,.status,.level-pill{font-size:max(.72rem,12px)}
+
+/* Cibles tactiles lisibles sur téléphone et tablette. */
+.case-arrow,
+.case-arrows button,
+.mode-switch button,
+.dossier-toggle,
+.precheck-accordion__toggle,
+.btn.small,
+.icon-button{
+  min-height:42px;
+}
+@media(max-width:700px){
+  .module-intro{padding:12px;margin:10px 0 14px}
+  .module-intro__top{display:block}
+  .module-meta{margin-top:8px;justify-content:flex-start}
+  .module-intro__top strong{display:block;width:100%;margin-top:3px}
+  .principle small,.data-note,.field-help,.label-sub,.feedback-explain{font-size:max(.84rem,13px)}
+  .case-arrow,.case-arrows button,.mode-switch button,.dossier-toggle,.btn,.ghost-button{min-height:44px}
+}

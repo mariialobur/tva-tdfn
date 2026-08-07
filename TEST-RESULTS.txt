@@ -1,26 +1,45 @@
-TVA TDFN — version 10.1 reviewed
-Date: 2026-08-06
+TVA TDFN — version 11.0
+Date: 2026-08-07
 
 1. JavaScript syntax
-   PASS: app.js, components.js, data.js, logic.js, store.js, transition.js
+   PASS: app.js, components.js, data.js, logic.js, store.js, transition.js,
+   smoke-test.mjs, tests/unit.mjs, tests/e2e.spec.mjs, playwright.config.mjs.
 
 2. Static smoke tests
-   PASS: 38/38
+   PASS: 47/47.
+   Coverage includes v11 cache-busting, 35-case dataset, current art. 81 logic,
+   art. 77 / annual-reporting distinction, essential/advanced paths,
+   module objectives, prioritized precheck, average-rate explanation,
+   signed ch. 415 handling and mobile readability CSS safeguards.
 
 3. Unit tests
-   PASS: 35 cases, official sources, calculations, migration v100,
-   components, ch. 410/ch. 415 worksheets, field-level scoring,
-   state export/import.
+   PASS: 35 cases.
+   Includes official-source resolution, calculations, multiple TDFN,
+   migration v100, components, ch. 410/ch. 415 worksheets, state export/import,
+   and the negative ch. 415 sign required in case P when the documented
+   procedure-declaration correction is a tax charge.
 
-4. HTML structure
-   PASS: no duplicate static IDs; one stylesheet; one module script.
+4. HTML / application structure
+   PASS: no duplicate static IDs; one stylesheet; one ES module;
+   default new-user path begins with admissibility (case J).
 
-5. Legal-content controls
-   PASS: TDFN limits CHF 5'024'000 / CHF 108'000;
-   annual-reporting threshold CHF 5'005'000 explicitly distinguished;
-   multiple TDFN and >10% rule; ch. 410/ch. 415 directions;
-   Décompte TVA pro and rectification sources.
+5. Legal-content controls incorporated in v11
+   PASS in static/unit tests:
+   - TDFN limits CHF 5’024’000 / CHF 108’000;
+   - annual-reporting threshold CHF 5’005’000 explicitly distinguished;
+   - art. 81 OTVA: three consecutive fiscal periods; old >50% accelerated rule removed;
+   - art. 77 exclusions represented in the admissibility case;
+   - legal-rate invoice vs gross-TTC × TDFN bridge;
+   - multiple TDFN average rate explained as a result, not a rate to apply;
+   - ch. 415 sign convention modelled for a documented art. 38 / art. 83 case;
+   - Décompte TVA pro terminology retained.
 
-6. Browser E2E
-   NOT CONFIRMED in the container: system Chromium timed out in headless mode.
-   Manual GitHub Pages smoke-test remains required.
+6. Accessibility E2E definition
+   UPDATED: axe no longer disables the color-contrast rule.
+
+7. Browser E2E / visual regression
+   NOT CONFIRMED in this container.
+   Reason: Playwright devDependencies are not installed here, and direct system
+   Chromium headless runs time out because of the container runtime/DBus environment.
+   The GitHub Actions workflow remains configured to install Chromium and run E2E.
+   A post-deployment manual check on desktop + mobile is still recommended.
