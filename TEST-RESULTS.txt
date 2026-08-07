@@ -1,30 +1,35 @@
-TVA TDFN — version 13.0
+TVA TDFN — version 14.0
 Date: 2026-08-07
 
 Automated checks executed before packaging:
 
 1. node smoke-test.mjs
-   PASS — 62/62 checks.
-   Coverage includes v13 assets/cache-busting, v130 storage and v120 migration,
-   37-case structure, mission-first UX, no estimated module duration,
-   legal anchor per case, progressive disclosure, current TDFN safeguards,
-   accessibility/static maintainability checks and CI presence.
+   PASS — 67/67 checks.
+   Coverage includes v14 assets/cache-busting, v140 storage and v130 migration,
+   37-case structure, one-work-canvas UX, public pedagogical numbering,
+   theory + guided example per case, selective client/AFC contrast,
+   no estimated duration, split legal/practice sources, direct Fedlex article anchors,
+   transition-practice references, feedback/revision flow, accessibility/static checks
+   and CI presence.
 
 2. node tests/unit.mjs
    PASS — 37/37 cases.
-   Coverage includes all case calculations, 37/37 legal-basis mappings,
-   valid official source IDs, current option exceptions under art. 77 al. 3 OTVA,
-   ch. 410/415 transition worksheets, legacy-state migration to v130,
-   state export/import and component checks.
+   Coverage includes all case calculations, 37/37 pedagogy mappings,
+   37/37 legal-basis mappings, 37/37 AFC-practice mappings,
+   normalized difficulty, valid official source IDs, option safeguards,
+   ch. 410/415 transition worksheets, legacy-state migration to v140,
+   state export/import and revision behavior.
 
 3. JavaScript syntax
    PASS for production and test modules checked with Node.
 
 Browser E2E:
-- Playwright configuration and GitHub Actions workflow remain included.
-- Final visual/browser QA must still be run after deployment because local browser
-  dependencies may differ from GitHub Pages production rendering.
+- Playwright tests and GitHub Actions workflow are included.
+- E2E was not executed locally because the current environment's internal npm registry
+  does not provide the required Playwright/@axe-core packages.
+- Final browser and visual QA must therefore be confirmed by GitHub Actions and on the
+  deployed GitHub Pages version.
 
-Recommended post-deployment visual cases:
-Desktop: J1, D3, N, M, P, L5.
-Mobile 375–390 px: J1, D3, N, L5.
+Recommended post-deployment cases:
+Desktop: 1.1 (J1), D4, D3, N, M, P, L5.
+Mobile 375–390 px: 1.1 (J1), D4, D3, N, L5.

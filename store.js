@@ -1,9 +1,10 @@
 import { CASES } from './data.js';
 
-export const STORAGE_KEY = 'tva_tdfn_v130_state';
-export const STATE_VERSION = 130;
+export const STORAGE_KEY = 'tva_tdfn_v140_state';
+export const STATE_VERSION = 140;
 
 const LEGACY_KEYED_STATES = [
+  { key: 'tva_tdfn_v130_state', version: 130 },
   { key: 'tva_tdfn_v120_state', version: 120 },
   { key: 'tva_tdfn_v100_state', version: 100 },
   { key: 'tva_tdfn_v90_state', version: 90 }
@@ -30,7 +31,7 @@ export function createDefaultState() {
     mode: 'guided',
     steps: {}, answers: {}, quiz: {}, scores: {}, assisted: {}, attempts: {}, reported: {},
     finalRound: {}, acquisitionRate: {}, dossierOpen: {}, worksheets: {}, precheck: {},
-    ui: { activeModule: null }, migrations: {},
+    ui: { activeModule: null, onboardingSeen: false, reviewMode: false, reviewQueue: [], reviewPosition: 0 }, migrations: {},
     free: { activities: [{ label: 'Activité 1', rate: 6.2 }] }
   };
 }

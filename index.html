@@ -13,7 +13,7 @@
   <meta property="og:url" content="https://mariialobur.github.io/tva-tdfn/">
   <link rel="canonical" href="https://mariialobur.github.io/tva-tdfn/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect rx=%2214%22 width=%2264%22 height=%2264%22 fill=%22%231f6078%22/><text x=%2232%22 y=%2241%22 text-anchor=%22middle%22 font-size=%2227%22 fill=%22white%22 font-family=%22Arial%22>TVA</text></svg>">
-  <link rel="stylesheet" href="styles.css?v=13.0.0">
+  <link rel="stylesheet" href="styles.css?v=14.0.0">
   <title>Décompte TVA suisse TDFN — entraînement pédagogique | Mariia Lobur</title>
 </head>
 <body>
@@ -45,41 +45,44 @@
   </div>
 </nav>
 <main class="layout" id="workspace">
-  <aside class="sidebar" id="sidebar" aria-label="Dossier du cas"></aside>
+  <aside class="sidebar" id="sidebar" aria-label="Navigation du parcours"></aside>
   <section class="workspace">
-    <div class="workspace-card workspace-head">
-      <div>
+    <article class="work-canvas">
+      <header class="workspace-head">
         <p class="eyebrow" id="caseLevel"></p>
         <h2 id="caseTitle" tabindex="-1"></h2>
         <p id="caseDescription"></p>
-      </div>
-      <div class="workspace-head__tools" hidden>
-        <button class="dossier-toggle" id="toggleDossier" type="button" data-action="toggle-dossier" hidden>Afficher le dossier</button>
-        <div class="mode-switch hidden" id="modeSwitch" aria-label="Mode de travail"></div>
-      </div>
-    </div>
-    <div id="caseBriefSlot"></div>
-    <div id="stepperSlot"></div>
-    <div id="moduleIntroSlot"></div>
-    <details class="mobile-dossier" id="mobileDossier">
-      <summary>Voir le dossier complet et les sources</summary>
-      <div id="mobileDossierContent"></div>
-    </details>
-    <div class="context-action-bar" id="desktopActionBar" aria-label="Action principale du cas">
-      <button class="btn primary" type="button" data-context-primary>Continuer</button>
-      <details class="more-actions">
-        <summary aria-label="Autres actions">⋯</summary>
-        <div class="more-actions__menu">
-          <button class="menu-action" type="button" data-action="solution">Afficher la solution</button>
-          <button class="menu-action" type="button" data-action="summary">Bilan du parcours</button>
-          <button class="menu-action" type="button" data-action="export-progress">Exporter la progression</button>
-          <button class="menu-action" type="button" data-action="import-progress">Importer une progression</button>
-          <button class="menu-action danger" type="button" data-action="reset-case">Réinitialiser ce cas</button>
+        <div class="workspace-head__tools" hidden>
+          <button class="dossier-toggle" id="toggleDossier" type="button" data-action="toggle-dossier" hidden>Afficher le dossier</button>
+          <div class="mode-switch hidden" id="modeSwitch" aria-label="Mode de travail"></div>
         </div>
+      </header>
+      <div id="learningSlot"></div>
+      <div id="caseBriefSlot"></div>
+      <div id="stepperSlot"></div>
+      <div id="moduleIntroSlot" hidden></div>
+      <details class="mobile-dossier" id="mobileDossier">
+        <summary>Dossier complet</summary>
+        <div id="mobileDossierContent"></div>
       </details>
-    </div>
-    <div id="workArea"></div>
-    <div id="resultArea" aria-live="polite"></div>
+      <div id="workArea"></div>
+      <div class="context-action-bar" id="desktopActionBar" aria-label="Action principale du cas">
+        <button class="btn primary" type="button" data-context-primary>Continuer</button>
+        <details class="more-actions">
+          <summary aria-label="Autres actions">⋯</summary>
+          <div class="more-actions__menu">
+            <button class="menu-action" type="button" data-action="solution">Afficher la solution</button>
+            <button class="menu-action" type="button" data-action="open-precheck">Checklist du dossier</button>
+            <button class="menu-action" type="button" data-action="open-sources">Sources officielles</button>
+            <button class="menu-action" type="button" data-action="summary">Bilan du parcours</button>
+            <button class="menu-action" type="button" data-action="export-progress">Exporter la progression</button>
+            <button class="menu-action" type="button" data-action="import-progress">Importer une progression</button>
+            <button class="menu-action danger" type="button" data-action="reset-case">Réinitialiser ce cas</button>
+          </div>
+        </details>
+      </div>
+      <div id="resultArea" aria-live="polite"></div>
+    </article>
   </section>
 </main>
 <section class="submission-notice" aria-label="Transmission du décompte réel">
@@ -99,6 +102,22 @@
     <a href="https://mariialobur.github.io/tva-debutant/" target="_blank" rel="noopener noreferrer">Entraînement TVA — méthode effective</a>
   </div>
 </footer>
+<dialog id="onboardingDialog" class="source-dialog onboarding-dialog" aria-labelledby="onboardingTitle">
+  <div class="dialog-head">
+    <div><p class="eyebrow">Avant de commencer</p><h2 id="onboardingTitle">Comment apprendre avec ce simulateur</h2></div>
+  </div>
+  <div class="onboarding-content">
+    <p class="onboarding-lead">La théorie générale ne suffit pas pour préparer un décompte. Ici, chaque cas ajoute une règle opérationnelle et vous la fait appliquer immédiatement.</p>
+    <div class="onboarding-flow">
+      <div><b>1</b><strong>Comprendre</strong><span>Une règle courte, sans chapitre inutile.</span></div>
+      <div><b>2</b><strong>Voir un exemple</strong><span>Un exemple guidé sur d’autres données.</span></div>
+      <div><b>3</b><strong>Appliquer</strong><span>Vous résolvez ensuite le dossier du cas.</span></div>
+      <div><b>4</b><strong>Justifier</strong><span>La norme LTVA/OTVA et la pratique AFC restent accessibles.</span></div>
+    </div>
+    <div class="onboarding-principle"><strong>Réflexe TDFN de base</strong><span>Facture client: taux légal → Décompte AFC: chiffre d’affaires brut TTC × TDFN confirmé.</span></div>
+    <button class="btn primary onboarding-start" type="button" data-action="close-onboarding">Commencer le parcours</button>
+  </div>
+</dialog>
 <dialog id="memoDialog" class="source-dialog memo-dialog" aria-labelledby="memoTitle">
   <div class="dialog-head">
     <div><p class="eyebrow">Mémo de référence</p><h2 id="memoTitle">Les règles TDFN à garder sous la main</h2></div>
@@ -166,6 +185,6 @@
 <input id="progressImportInput" type="file" accept="application/json,.json" hidden>
 <noscript><div class="noscript-warning">JavaScript doit être activé pour utiliser cet entraînement interactif.</div></noscript>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script type="module" src="app.js?v=13.0.0"></script>
+<script type="module" src="app.js?v=14.0.0"></script>
 </body>
 </html>

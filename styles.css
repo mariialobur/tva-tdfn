@@ -1,5 +1,5 @@
-/* TVA TDFN Trainer — v13.0
-   Mission-first UI, legal anchor per case, progressive disclosure, mobile-first readability. */
+/* TVA TDFN Trainer — v14.0
+   Micro-learning UI, legal anchor per case, progressive disclosure, mobile-first readability. */
 *,*::before,*::after{box-sizing:border-box}
 :root{
   --ink:#17252c;--muted:#5c6d75;--line:#d9e2e6;--line-strong:#c6d2d8;
@@ -113,3 +113,46 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}a{col
 .calc-edit:hover,.mini-link:hover{background:var(--brand-soft)}
 .mobile-case-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:.8125rem}
 .mobile-dossier-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}
+
+/* ==========================================================
+   v14.0 — Focus & Mastery
+   Un seul canvas de travail, micro-théorie → exemple → application.
+   ========================================================== */
+.work-canvas{max-width:980px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 28px 28px;box-shadow:0 8px 30px rgba(20,48,61,.055)}
+.workspace{display:block}.workspace-head{padding:0 0 18px;border-bottom:1px solid #e7edef;margin-bottom:0}.workspace-head h2{font-size:clamp(1.35rem,2vw,1.7rem);max-width:780px}.workspace-head #caseDescription{font-size:.85rem;color:var(--muted)}
+#learningSlot,#caseBriefSlot,#stepperSlot,#workArea,#resultArea{margin-top:0}
+
+/* Micro-learning: the lesson is part of the case, not a separate chapter. */
+.micro-lesson{padding:20px 0;border-bottom:1px solid #e7edef;background:#fff}
+.micro-lesson-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:12px}.micro-lesson-head>span,.micro-lesson>summary>span{font-weight:850;color:var(--brand-dark)}.micro-lesson-head small,.micro-lesson>summary small{color:var(--muted);font-size:.8125rem}
+.micro-lesson-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.micro-theory,.guided-example{padding:14px 15px;border-radius:12px}.micro-theory{background:#f1f7f9;border-left:4px solid var(--brand)}.guided-example{background:#fbf8f0;border-left:4px solid #b68a37}.micro-theory>span,.guided-example>span{display:block;margin-bottom:5px;font-size:.8125rem;font-weight:850;letter-spacing:.055em;text-transform:uppercase}.micro-theory>span{color:var(--brand)}.guided-example>span{color:#785a1c}.micro-theory p,.guided-example p{margin:0;font-size:.94rem;line-height:1.55}
+.micro-lesson--collapsed{padding:12px 0}.micro-lesson--collapsed>summary{display:flex;justify-content:space-between;gap:14px;cursor:pointer;list-style:none}.micro-lesson--collapsed>summary::-webkit-details-marker{display:none}.micro-lesson--collapsed[open]>summary{margin-bottom:12px}
+.case-sources-inline{display:grid;gap:8px;margin-top:13px}.source-line{display:grid;grid-template-columns:145px minmax(0,1fr);gap:10px;align-items:start}.source-line>span{padding-top:5px;color:var(--muted);font-size:.8125rem;font-weight:800}.source-line>div{display:flex;gap:6px;flex-wrap:wrap}.source-chip{display:inline-flex;align-items:center;gap:6px;min-height:31px;padding:4px 8px;border:1px solid #d7e2e6;border-radius:8px;background:#fff;color:var(--brand-dark);font-size:.8125rem;font-weight:750;text-decoration:none}.source-chip.practice{border-style:dashed;color:#4f6270}.source-chip:hover{background:var(--brand-soft)}
+
+/* Exercise: one visual sheet, not a stack of cards. */
+.case-brief{border:0!important;border-radius:0!important;padding:20px 0 0;background:#fff!important}.mission-banner{padding:0 0 14px!important;border:0!important;background:transparent!important}.mission-banner .eyebrow{color:var(--brand)}.mission-banner>p:last-child{max-width:78ch;margin:0;font-size:1.02rem;font-weight:650;line-height:1.55}.brief-data{border:1px solid #e1e8eb;border-radius:12px;overflow:hidden}.brief-data__head{background:#f8fafb}.brief-facts{background:#fff}
+.stepper{margin-top:16px!important;border:0!important;border-radius:10px!important;background:#f3f7f8!important;padding:5px!important;box-shadow:none!important}.step-button{border-radius:8px}
+.analysis-strip{display:grid;grid-template-columns:minmax(180px,.7fr) 1.6fr auto;gap:16px;align-items:start;padding:18px 0;border-bottom:1px solid #edf1f2}.analysis-strip strong{display:block}.analysis-strip ol{margin:0;padding-left:20px}.analysis-strip li{margin:0 0 5px;color:#40545d;font-size:.9rem}.analysis-strip .mini-link{align-self:center}
+.contrast--inline{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin:18px 0 0;padding:13px 15px;border:1px solid #e0e7ea;border-radius:12px;background:#fbfcfc}.contrast--inline span{display:block;color:var(--muted);font-size:.8125rem;font-weight:850;text-transform:uppercase;letter-spacing:.05em}.contrast--inline p{margin:3px 0 0;font-size:.9rem}.contrast--inline .arrow{color:var(--muted);font-weight:900}
+.quiz-card,.learning-card,.workspace-card,.case-brief,.transition-worksheet{box-shadow:none}.quiz-card{margin-top:18px;border:0!important;border-radius:0!important}.quiz-head{padding:0 0 12px!important;border-bottom:1px solid #e7edef;background:transparent!important}.quiz-body{padding:14px 0 0!important}.question{padding:0 0 18px!important;margin:0 0 18px;border-bottom:1px solid #edf1f2!important}.question:last-child{border-bottom:0!important}.question-options{grid-template-columns:1fr!important;max-width:820px}.quiz-option{padding:10px 12px!important}
+.transition-worksheet{margin-top:18px;border:1px solid #e1e8eb!important}
+.calculator-card,.compact-declaration,.afc-form-card{margin-top:18px}
+
+/* Primary action follows the exercise on desktop. */
+.context-action-bar{position:sticky;bottom:12px;z-index:30;display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:18px -8px 0;padding:9px;border:1px solid #d5e0e4;border-radius:12px;background:rgba(255,255,255,.96);box-shadow:0 10px 28px rgba(20,48,61,.12);backdrop-filter:blur(8px)}.context-action-bar>.primary{min-width:220px}.more-actions__menu{bottom:50px}
+.sidebar-actions{display:none!important}.sidebar-resources{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.sidebar-resources button{min-height:36px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--muted);font-size:.8125rem;font-weight:800;cursor:pointer}.sidebar-resources button:hover{background:#f5f8f9;color:var(--brand-dark)}
+
+/* Feedback consolidates the skill only after application. */
+.competence-confirmed{display:grid;gap:3px;margin:14px 0 0;padding:12px 14px;border-left:4px solid var(--green);background:var(--green-soft);border-radius:0 10px 10px 0}.competence-confirmed span{color:var(--green);font-size:.8125rem;font-weight:850;text-transform:uppercase;letter-spacing:.04em}.competence-confirmed strong{font-size:.92rem}
+.result-card{margin-top:20px}.lesson{margin-top:12px}
+
+/* Onboarding: one-time orientation, no long theory wall. */
+.onboarding-dialog{max-width:680px}.onboarding-content{padding:18px 20px 22px}.onboarding-lead{margin:0 0 16px;font-size:1rem;line-height:1.6}.onboarding-flow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.onboarding-flow>div{display:grid;grid-template-columns:34px 1fr;column-gap:8px;align-items:start;padding:11px;border:1px solid var(--line);border-radius:11px}.onboarding-flow b{grid-row:1/3;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--brand-soft);color:var(--brand)}.onboarding-flow strong{font-size:.9rem}.onboarding-flow span{font-size:.82rem;color:var(--muted)}.onboarding-principle{display:grid;gap:3px;margin-top:12px;padding:12px 14px;border-radius:11px;background:#f1f7f9}.onboarding-principle strong{color:var(--brand-dark)}.onboarding-principle span{font-size:.88rem}.onboarding-start{width:100%;margin-top:14px}
+
+/* Navigation shows pedagogical numbering, internal IDs stay hidden. */
+.case-link{grid-template-columns:42px minmax(0,1fr) auto}.case-link>span{font-family:inherit;font-weight:850;color:var(--brand)}
+
+@media(max-width:1100px){.work-canvas{padding:22px}.micro-lesson-grid{grid-template-columns:1fr}.analysis-strip{grid-template-columns:1fr}.analysis-strip .mini-link{justify-self:start}}
+@media(max-width:980px){.work-canvas{max-width:none;padding:18px 16px 22px;border-radius:14px}.context-action-bar{display:none!important}.sidebar-resources{display:none}.micro-lesson{padding-top:16px}.source-line{grid-template-columns:1fr;gap:4px}.source-line>span{padding-top:0}.mobile-dossier{margin-top:14px}}
+@media(max-width:700px){.work-canvas{padding:14px 13px 20px}.workspace-head{padding-bottom:14px}.workspace-head h2{font-size:1.18rem}.micro-lesson-head{display:block}.micro-lesson-head small{display:block;margin-top:3px}.micro-theory,.guided-example{padding:12px 13px}.micro-theory p,.guided-example p{font-size:.94rem}.case-brief{padding-top:16px}.brief-data{border-radius:10px}.analysis-strip{padding:14px 0}.contrast--inline{grid-template-columns:1fr;margin-top:14px}.contrast--inline .arrow{display:none}.source-chip{width:100%;justify-content:space-between}.onboarding-flow{grid-template-columns:1fr}.onboarding-content{padding:14px}.question-options{grid-template-columns:1fr!important}}
+.competence-confirmed.needs-work{border-left-color:var(--amber);background:var(--amber-soft)}.competence-confirmed.needs-work span{color:var(--amber)}

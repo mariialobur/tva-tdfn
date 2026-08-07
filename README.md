@@ -1,70 +1,74 @@
-# Entraînement TVA suisse — méthode TDFN · v13.0
+# Entraînement TVA suisse — méthode TDFN · v14.0
 
-Simulateur pédagogique en français consacré à la méthode des taux de la dette fiscale nette (TDFN), conçu pour passer d’un raisonnement d’assistant comptable à un contrôle plus autonome des décomptes TVA.
+Simulateur pédagogique en français consacré à la méthode des taux de la dette fiscale nette (TDFN). Il est conçu pour un apprenant qui connaît déjà la théorie TVA de manière générale, mais qui doit transformer cette connaissance en réflexes de travail utilisables en fiduciaire.
 
-## Principe de v13.0
+## Modèle pédagogique de v14.0
 
-L’interface privilégie une seule question: **qu’est-ce que l’utilisateur doit comprendre et faire maintenant?**
+La v14 suit une boucle courte dans chaque cas:
 
-Chaque cas présente, dans cet ordre:
+1. **À comprendre** — une seule règle opérationnelle, sans chapitre théorique long.
+2. **Exemple guidé** — la règle est appliquée immédiatement sur d’autres chiffres ou une autre situation.
+3. **À vous** — l’apprenant traite un nouveau dossier et doit transférer la règle au cas évalué.
+4. **Vérification** — le feedback explique l’erreur avant d’afficher les réponses correctes.
+5. **Fondement juridique / Pratique AFC** — la règle est reliée à la LTVA/OTVA et, lorsque nécessaire, à la pratique administrative ou à la rubrique du décompte.
+6. **Révision sans aide** — lors de la reprise d’un cas non maîtrisé, la théorie est repliée par défaut afin de vérifier que la compétence est devenue autonome.
 
-1. **Votre mission** — la décision ou le calcul attendu.
-2. **Données utiles** — les seules informations nécessaires pour répondre.
-3. **Base légale du cas** — la compétence travaillée et le ou les articles précis LTVA/OTVA qui l’ancrent.
-4. **Analyser → Calculer → Décompte** — le travail à effectuer.
-5. **Feedback** — erreurs à corriger d’abord, réponses correctes repliées.
-6. **Dossier complet et sources** — disponibles à la demande, sans surcharger l’écran.
+L’objectif n’est donc ni un examen «à froid», ni un cours à lire avant de pratiquer: **une règle → un exemple → une application → une justification**.
 
-Aucune durée d’apprentissage estimée n’est affichée: la progression se mesure par les cas réellement maîtrisés.
+Aucune durée estimée n’est affichée. La progression se mesure uniquement par les cas réellement maîtrisés.
 
 ## Contenu
 
 - 37 cas répartis en 10 modules.
 - Parcours essentiel, parcours avancé et atelier autonome.
-- Admissibilité TDFN, plusieurs activités, règle des 10 %, opérations internationales, rubriques courantes, corrections, changements de méthode, procédure de déclaration et option.
+- Admissibilité TDFN, plusieurs activités, règle des 10 %, opérations internationales, rubriques du décompte, corrections, changements de méthode, procédure de déclaration et option.
 - Calculateur TDFN et représentation pédagogique du décompte AFC.
 - Tableaux spécifiques pour les corrections ch. 410 / ch. 415.
 - Checklist professionnelle par dossier.
-- Base légale dédiée à chacun des 37 cas.
-- Référentiel officiel LTVA, OTVA, AFC et prototype du décompte.
-- Sauvegarde locale, export/import de progression et reprise des cas non maîtrisés.
+- Micro-théorie et exemple guidé dédiés à chacun des 37 cas.
+- Fondement LTVA/OTVA dédié à chacun des 37 cas.
+- Références de pratique AFC séparées de la base légale.
+- Sauvegarde locale, export/import de progression et mode de révision des erreurs.
 
 ## Principes UX
 
-- **Mission-first**: la mission apparaît avant le contexte de module et avant le dossier complet.
-- **Progressive disclosure**: théorie, checklist et dossier complet ne s’ouvrent que si l’utilisateur en a besoin.
-- **Un seul CTA principal** à chaque étape.
-- **Langage pédagogique** autour des termes officiels: par exemple `ch.` est expliqué comme la rubrique du décompte et `contre-prestations convenues` comme une déclaration selon les factures émises.
-- **Mobile first**: données et base légale restent dans le flux principal; le dossier complet est replié.
-- **Mastery plutôt que vitesse**: pas de temps estimé, pas de gamification; le statut distingue `maîtrisé`, `à corriger`, `solution consultée` et `à faire`.
+- **Un seul canvas de travail**: le contenu principal ressemble à une feuille d’exercice, pas à un tableau de bord.
+- **Action dans le flux de travail**: le CTA principal est placé sous l’exercice sur desktop et dans la barre mobile prévue à cet effet; il n’est plus dans le menu latéral.
+- **Numérotation pédagogique**: l’utilisateur voit `1.1`, `1.2`, `2.1`…; les identifiants techniques `J1`, `A`, `K5` restent internes.
+- **Progressive disclosure**: dossier complet, checklist et ressources secondaires restent disponibles sans occuper la zone de résolution.
+- **Une colonne pour les QCM**: les réponses juridiques longues restent faciles à comparer et à lire.
+- **Scaffolding progressif**: théorie + exemple visibles lors de l’apprentissage initial, puis repliés par défaut dans la révision.
+- **Mastery plutôt que vitesse**: pas de minuterie, de badges ou de score ludique; l’état distingue `maîtrisé`, `à corriger`, `solution consultée` et `à faire`.
 
-## Base légale par cas
+## Fondement juridique et pratique AFC
 
-Le fichier `legal-basis.js` associe chaque cas à:
+Le fichier `legal-basis.js` associe chaque cas à une ou plusieurs références LTVA/OTVA. Les liens Fedlex ouvrent la page avec l’ancre de l’article concerné lorsqu’elle est disponible.
 
-- une compétence professionnelle formulée en une phrase;
-- une ou plusieurs références précises LTVA/OTVA;
-- une courte explication du lien entre la norme et le geste attendu;
-- un lien vers la source officielle correspondante.
+Le fichier `pedagogy.js` associe séparément les cas à leur pratique AFC: Info TVA 12, pages AFC thématiques ou prototype du décompte. Cette distinction est volontaire:
 
-Le bloc est volontairement compact dans l’interface. Les explications détaillées restent repliées sous `Pourquoi ces références?`.
+- **Fondement juridique** = LTVA / OTVA;
+- **Pratique AFC** = interprétation et application administrative;
+- **Rubrique du décompte** = emplacement pratique dans le formulaire AFC.
+
+Pour les changements de méthode, les références de pratique renvoient notamment aux ch. 2.2.2–2.2.3, 3.2.2–3.2.3 et 4.1 de l’Info TVA 12 actualisée.
 
 ## Architecture
 
-- `index.html` — structure et dialogues.
-- `styles.css` — design system et responsive.
-- `data.js` — cas, sources et données de décompte.
-- `legal-basis.js` — base légale dédiée aux 37 cas.
+- `index.html` — structure du simulateur et dialogues.
+- `styles.css` — design system, canvas de travail et responsive.
+- `data.js` — cas, sources et données du décompte.
+- `pedagogy.js` — micro-théorie, exemples guidés, niveaux et pratique AFC.
+- `legal-basis.js` — ancrage LTVA/OTVA des 37 cas.
 - `logic.js` — calculs et validations.
 - `transition.js` — tableaux des changements de méthode.
-- `components.js` — composants pédagogiques.
-- `store.js` — persistance et migrations.
+- `components.js` — composants pédagogiques et navigation.
+- `store.js` — persistance, migrations et mode révision.
 - `app.js` — orchestration de l’interface.
-- `tests/` + `smoke-test.mjs` — garde-fous fonctionnels, juridiques et UX.
+- `tests/` + `smoke-test.mjs` — garde-fous fonctionnels, juridiques, pédagogiques et UX.
 
 ## Progression et migration
 
-La v13 utilise `tva_tdfn_v130_state`. Une progression v12 (`tva_tdfn_v120_state`) est migrée automatiquement afin de ne pas perdre les cas déjà travaillés.
+La v14 utilise `tva_tdfn_v140_state`. Une progression v13 (`tva_tdfn_v130_state`) est migrée automatiquement. Les migrations plus anciennes conservées dans le projet restent également prises en charge.
 
 ## Tests
 
@@ -74,6 +78,6 @@ npm run test:unit
 npm run test:e2e
 ```
 
-Les tests unitaires vérifient notamment que les 37 cas possèdent chacun une base légale, que les sources citées existent dans le référentiel officiel, ainsi que la cohérence des calculs et des tableaux ch. 410 / ch. 415.
+Avant packaging, les vérifications statiques et unitaires de la v14 passent avec **67/67 contrôles smoke** et **37/37 cas unitaires**.
 
-Le contrôle final visuel doit être exécuté après déploiement sur desktop et mobile, notamment sur J1, D3, N, M, P et L5.
+Le test E2E Playwright est inclus et s’exécute via GitHub Actions après installation des dépendances navigateur. Le rendu final doit également être contrôlé sur le site GitHub Pages, notamment sur desktop et sur un viewport mobile 375–390 px.

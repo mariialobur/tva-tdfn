@@ -1,4 +1,4 @@
-// Données intégrées — version 13.0.0
+// Données intégrées — version 14.0.0
 // Cas, sources et tableaux de transition sont réunis dans un module unique.
 
 export const OFFICIAL_SOURCES = [
@@ -50,6 +50,13 @@ export const OFFICIAL_SOURCES = [
     "scope": "Conditions, adhésion, changement de méthode, cas particuliers",
     "url": "https://www.gate.estv.admin.ch/mwst-webpublikationen/public/IT/12",
     "status": "Publication AFC"
+  },
+  {
+    "id": "info12-2025-practice",
+    "title": "AFC — Info TVA 12, adaptations de pratique dès 2025",
+    "scope": "Ch. 2.2.2–2.2.3 et 3.2.2–3.2.3: délais et corrections lors des changements de méthode; ch. 4: procédure de déclaration",
+    "url": "https://www.estv.admin.ch/dam/estv/fr/dokumente/mwst/publikationen/mwst-publ-sss-aenderungen-2025-2-fr.pdf.download.pdf/mwst-publ-sss-aenderungen-2025-2-fr.pdf",
+    "status": "Pratique AFC publiée, applicable dès le 01.01.2025"
   },
   {
     "id": "forms",

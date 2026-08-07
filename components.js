@@ -130,7 +130,7 @@ defineComponent('navigation' , ({ modules = [], activeModule = 0, currentId = ''
   return `<section class="path-panel">
     <div class="path-panel__head"><div><span>${h(currentModule?.track || 'Parcours TDFN')}</span><strong>${h(currentModule?.label || '')}</strong></div><small>Cas ${position+1}/${(currentModule.ids||[]).length}</small></div>
     <label class="module-picker"><span>Changer de module</span><select data-module-select aria-label="Choisir un module">${modules.map((module, index) => `<option value="${index}" ${index === activeModule ? 'selected' : ''}>${h(module.track ? `${module.track} · ${module.label}` : module.label)}</option>`).join('')}</select></label>
-    <div class="current-module" aria-label="Cas du module actuel">${(currentModule?.ids || []).map((id) => `<button type="button" class="case-link ${id === currentId ? 'active' : ''}" data-public-case="${h(id)}" ${id===currentId?'aria-current="step"':''}><span>${h(id)}</span><b>${h(statuses[id]?.title || id)}</b>${statuses[id]?.status ? `<em>${h(statuses[id].status)}</em>` : '<em>à faire</em>'}</button>`).join('')}</div>
+    <div class="current-module" aria-label="Cas du module actuel">${(currentModule?.ids || []).map((id) => `<button type="button" class="case-link ${id === currentId ? 'active' : ''}" data-public-case="${h(id)}" ${id===currentId?'aria-current="step"':''}><span>${h(statuses[id]?.code || '')}</span><b>${h(statuses[id]?.title || '')}</b>${statuses[id]?.status ? `<em>${h(statuses[id].status)}</em>` : '<em>à faire</em>'}</button>`).join('')}</div>
     <div class="case-arrows"><button type="button" data-action="previous">← Précédent</button><button type="button" data-action="next">Suivant →</button></div>
   </section>`;
 });
