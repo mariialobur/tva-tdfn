@@ -1,4 +1,4 @@
-// Données intégrées — version 12.0.0
+// Données intégrées — version 13.0.0
 // Cas, sources et tableaux de transition sont réunis dans un module unique.
 
 export const OFFICIAL_SOURCES = [
@@ -2914,7 +2914,7 @@ export const CASES = [
     "description": "Sous TDFN, l’option pour imposer des prestations exclues est fortement limitée. Le réflexe correct n’est donc pas de commencer par le ch. 205, mais de vérifier d’abord si l’option est juridiquement admissible.",
     "mission": "Qualifiez une contre-prestation de CHF 30’000 provenant de produits agricoles de la propre exploitation. L’entreprise applique les TDFN et a valablement exercé l’option pour cette prestation relevant de l’art. 21, al. 2, ch. 26 LTVA.",
     "clientNote": "Le dossier documente que la prestation relève bien de l’exception de l’art. 21, al. 2, ch. 26 LTVA. Il ne s’agit ni de formation, ni de location immobilière, ni d’une autre prestation exclue pour laquelle l’option serait interdite sous TDFN.",
-    "afcNote": "En principe, un assujetti aux TDFN ne peut pas opter pour l’imposition des prestations exclues. La pratique AFC maintient toutefois l’exception prévue pour les prestations visées à l’art. 21, al. 2, ch. 26 LTVA. Une option valable doit être distinguée d’une simple mention erronée de TVA sur une facture.",
+    "afcNote": "En principe, un assujetti aux TDFN ne peut pas opter pour l’imposition des prestations exclues. L’art. 77, al. 3, OTVA maintient toutefois des exceptions pour les prestations visées à l’art. 21, al. 2, ch. 25, 26, 28 et 28bis LTVA. Ce cas porte uniquement sur le ch. 26. Une option valable doit être distinguée d’une simple mention erronée de TVA sur une facture.",
     "given": [
       {"label": "Contre-prestation concernée", "amount": 30000, "note": "Produits agricoles provenant de la propre exploitation; montant de l’exercice.", "tag": "Art. 21 al. 2 ch. 26"},
       {"label": "Méthode de décompte", "note": "TDFN.", "tag": "TDFN"},
@@ -2922,7 +2922,7 @@ export const CASES = [
     ],
     "checks": [
       "Sous TDFN, vérifier l’admissibilité de l’option avant toute saisie au ch. 205.",
-      "Ne pas transposer ce traitement à la formation, à l’immobilier ou à une autre prestation exclue sans vérifier l’art. 77 OTVA.",
+      "Ne pas transposer ce traitement à une autre prestation exclue: vérifier l’art. 77, al. 3, OTVA et la liste complète des exceptions (art. 21, al. 2, ch. 25, 26, 28 et 28bis LTVA).",
       "Une contre-prestation valablement imposée par option reste comprise au ch. 200; le ch. 205 en précise la part et ne constitue pas une déduction."
     ],
     "legal": "Art. 22 LTVA · art. 77, al. 3, OTVA · Info TVA 12 TDFN · prototype AFC, ch. 200, 205 et 230",
@@ -2932,13 +2932,13 @@ export const CASES = [
         "q": "Un assujetti aux TDFN peut-il librement opter pour toutes les prestations exclues de l’art. 21 LTVA?",
         "options": ["Oui", "Non"],
         "answer": 1,
-        "why": "Sous TDFN, l’option est en principe exclue; il faut vérifier les exceptions expressément admises."
+        "why": "Sous TDFN, l’option est en principe exclue. L’art. 77, al. 3, OTVA prévoit toutefois des exceptions pour les prestations visées à l’art. 21, al. 2, ch. 25, 26, 28 et 28bis LTVA."
       },
       {
         "q": "L’exception retenue dans ce dossier — produits agricoles de la propre exploitation visés à l’art. 21, al. 2, ch. 26 LTVA — permet-elle une option sous TDFN?",
         "options": ["Oui, si les conditions de l’option sont remplies", "Non, jamais"],
         "answer": 0,
-        "why": "La pratique AFC prévoit cette exception. Le dossier doit néanmoins établir que la prestation entre réellement dans cette catégorie."
+        "why": "Le ch. 26 fait partie des exceptions expressément maintenues par l’art. 77, al. 3, OTVA. Le dossier doit néanmoins établir que la prestation entre réellement dans cette catégorie et que les conditions de l’option sont remplies."
       },
       {
         "q": "Une fois l’option valablement exercée dans ce cas, la contre-prestation reste-t-elle comprise au ch. 200?",
@@ -2959,7 +2959,7 @@ export const CASES = [
         "why": "Une prestation valablement imposée par option n’est pas traitée comme une prestation exclue sans option au ch. 230."
       }
     ],
-    "lesson": "Sous TDFN, la première question n’est pas «où saisir l’option?», mais «cette option est-elle admise?». Le ch. 205 ne s’utilise qu’après cette qualification."
+    "lesson": "Sous TDFN, la première question n’est pas «où saisir l’option?», mais «cette option est-elle admise?». L’art. 77, al. 3, OTVA maintient les exceptions des ch. 25, 26, 28 et 28bis de l’art. 21, al. 2, LTVA. Le ch. 205 ne s’utilise qu’après cette qualification."
   },
   {
     "id": "O",

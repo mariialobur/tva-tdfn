@@ -1,4 +1,5 @@
 import { CASES, DEDUCTIONS, OFFICIAL_SOURCES } from './data.js';
+import { LEGAL_BASIS } from './legal-basis.js';
 import { rateKey, parseAmount, expectedInputMap, computeCalculator, calculatorSignature, computeDeclaration, validateCase, allActivityBasesEntered, universalChecks, roundToCent } from './logic.js';
 import { state, saveState, resetAllState, clearCaseState, createDefaultState, publicCaseId, exportStateSnapshot, importStateSnapshot } from './store.js';
 import { componentMarkup, CASE_PRECHECK_PRIORITIES, PRECHECK_DETAILS } from './components.js';
@@ -25,43 +26,43 @@ const esc=value=>String(value??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt
 
 export const MODULES = [
   {
-    label: '1 · Admissibilité TDFN', track: 'Parcours essentiel', level: 'Débutant', duration: '15–20 min', ids: ['J1', 'J2', 'J3'],
+    label: '1 · Admissibilité TDFN', track: 'Parcours essentiel', level: 'Débutant', ids: ['J1', 'J2', 'J3'],
     objectives: ['Vérifier l’accès initial aux TDFN', 'Suivre correctement les dépassements', 'Distinguer TDFN et décompte annuel']
   },
   {
-    label: '2 · Comprendre la méthode', track: 'Parcours essentiel', level: 'Débutant', duration: '15–20 min', ids: ['A', 'B', 'C'],
+    label: '2 · Comprendre la méthode', track: 'Parcours essentiel', level: 'Débutant', ids: ['A', 'B', 'C'],
     objectives: ['Distinguer taux légal et TDFN', 'Passer de HT à TTC lorsque nécessaire', 'Calculer la dette TDFN sur la bonne base']
   },
   {
-    label: '3 · Plusieurs activités', track: 'Parcours essentiel', level: 'Intermédiaire', duration: '20–25 min', ids: ['D', 'D1', 'D2'],
+    label: '3 · Plusieurs activités', track: 'Parcours essentiel', level: 'Intermédiaire', ids: ['D', 'D1', 'D2'],
     objectives: ['Ventiler le chiffre d’affaires par activité', 'Appliquer plusieurs TDFN confirmés', 'Regrouper les activités qui partagent le même TDFN']
   },
   {
-    label: '4 · Règle des 10 %', track: 'Parcours essentiel', level: 'Intermédiaire', duration: '20–25 min', ids: ['D4', 'E', 'F'],
+    label: '4 · Règle des 10 %', track: 'Parcours essentiel', level: 'Intermédiaire', ids: ['D4', 'E', 'F'],
     objectives: ['Distinguer 10,0 % de plus de 10 %', 'Traiter une nouvelle activité', 'Appliquer la règle sur trois périodes fiscales pour une activité établie']
   },
   {
-    label: '5 · International et synthèse', track: 'Parcours essentiel', level: 'Intermédiaire', duration: '25–30 min', ids: ['G', 'H', 'I', 'D3'],
+    label: '5 · International et synthèse', track: 'Parcours essentiel', level: 'Intermédiaire', ids: ['G', 'H', 'I', 'D3'],
     objectives: ['Distinguer exportation et prestation à l’étranger', 'Traiter l’impôt sur les acquisitions', 'Combiner plusieurs TDFN avec une opération internationale']
   },
   {
-    label: '6 · Rubriques courantes et corrections', track: 'Parcours essentiel', level: 'Intermédiaire', duration: '20–30 min', ids: ['L', 'O', 'R'],
+    label: '6 · Rubriques courantes et corrections', track: 'Parcours essentiel', level: 'Intermédiaire', ids: ['L', 'O', 'R'],
     objectives: ['Séparer chiffre d’affaires et autres flux de fonds', 'Traiter une diminution de contre-prestation', 'Corriger la bonne période sans masquer une erreur']
   },
   {
-    label: '7 · Méthode effective → TDFN', track: 'Parcours avancé', level: 'Avancé', duration: '35–45 min', ids: ['K0', 'K1', 'K2', 'K3', 'K4', 'K5'],
-    objectives: ['Vérifier si le changement est possible', 'Calculer les corrections de valeur résiduelle', 'Reporter correctement le ch. 415']
+    label: '7 · Méthode effective → TDFN', track: 'Parcours avancé', level: 'Avancé', ids: ['K0', 'K1', 'K2', 'K3', 'K4', 'K5'],
+    objectives: ['Vérifier si le changement est possible', 'Calculer les corrections de valeur résiduelle', 'Compléter correctement le ch. 415']
   },
   {
-    label: '8 · TDFN → méthode effective', track: 'Parcours avancé', level: 'Avancé', duration: '45–60 min', ids: ['L0', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7'],
-    objectives: ['Identifier les éléments ouvrant un dégrèvement ultérieur', 'Tenir compte de la part résiduelle et du droit à déduction', 'Reporter correctement le ch. 410']
+    label: '8 · TDFN → méthode effective', track: 'Parcours avancé', level: 'Avancé', ids: ['L0', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7'],
+    objectives: ['Identifier les éléments ouvrant un dégrèvement ultérieur', 'Tenir compte de la part résiduelle et du droit à déduction', 'Compléter correctement le ch. 410']
   },
   {
-    label: '9 · Procédures particulières', track: 'Parcours avancé', level: 'Avancé', duration: '25–35 min', ids: ['N', 'M', 'P'],
-    objectives: ['Vérifier si une option est admissible sous TDFN', 'Qualifier une reprise de patrimoine avant toute correction', 'Reporter une charge fiscale au ch. 415 avec le bon signe']
+    label: '9 · Procédures particulières', track: 'Parcours avancé', level: 'Avancé', ids: ['N', 'M', 'P'],
+    objectives: ['Vérifier si une option est admissible sous TDFN', 'Qualifier une reprise de patrimoine avant toute correction', 'Saisir une charge fiscale au ch. 415 avec le bon signe']
   },
   {
-    label: '10 · Atelier libre', track: 'Atelier autonome', level: 'Autonome', duration: 'Libre', ids: ['Q'],
+    label: '10 · Atelier libre', track: 'Atelier autonome', level: 'Autonome', ids: ['Q'],
     objectives: ['Reproduire un décompte déjà paramétré par l’AFC', 'Contrôler la cohérence arithmétique', 'Conserver une piste d’audit exploitable']
   }
 ];
@@ -85,7 +86,7 @@ function updateNavigationAvailability() {
 
 const scoredCases=()=>CASES.filter(c=>!c.excludeFromProgress);
 function masteredCount(){return CASES.filter((c)=>{const id=casePublicId(c);return !c.excludeFromProgress&&state.scores[id]===100&&!state.assisted[id];}).length;}
-function caseStatus(index){const c=CASES[index],id=casePublicId(c);if(c.excludeFromProgress)return ['libre','free'];if(state.assisted[id])return ['assisté','assisted'];if(state.scores[id]===100)return ['maîtrisé','mastered'];if(Number.isFinite(state.scores[id]))return [`${state.scores[id]}%`,'partial'];return null;}
+function caseStatus(index){const c=CASES[index],id=casePublicId(c);if(c.excludeFromProgress)return ['libre','free'];if(state.assisted[id])return ['solution consultée','assisted'];if(state.scores[id]===100)return ['maîtrisé','mastered'];if(Number.isFinite(state.scores[id]))return ['à corriger','partial'];return null;}
 function renderHeader(){
   const mastered=masteredCount();
   const total=scoredCases().length;
@@ -100,25 +101,38 @@ function renderTabs(){
   document.querySelector('#caseSelect').innerHTML=MODULES.map((module)=>`<optgroup label="${esc(`${module.track} · ${module.label}`)}">${module.ids.map((id)=>{const index=publicIndex(id);const c=CASES[index];return c?`<option value="${index}" ${index===state.current?'selected':''}>${esc(module.label)} · ${esc(c.tab)}</option>`:'';}).join('')}</optgroup>`).join('');
 }
 
+function accountingBasisLabel(value){
+  const text=String(value||'').toLowerCase();
+  if(text.includes('convenues')) return {title:'Déclaration du CA',value:'Contre-prestations convenues',plain:'Selon les factures émises'};
+  if(text.includes('reçues')||text.includes('recues')) return {title:'Déclaration du CA',value:'Contre-prestations reçues',plain:'Selon les encaissements'};
+  return value?{title:'Déclaration du CA',value:String(value),plain:''}:null;
+}
+function legalAnchorMarkup(c){
+  const basis=LEGAL_BASIS[casePublicId(c)];
+  if(!basis) return '';
+  const refs=(basis.refs||[]).map((ref)=>{const source=sourceById(ref.sourceId);if(!source)return '';return `<a class="legal-ref" href="${source.url}" target="_blank" rel="noopener noreferrer" title="${esc(ref.note)}" aria-label="${esc(ref.citation)} — ouvrir la source officielle"><strong>${esc(ref.citation)}</strong><span aria-hidden="true">↗</span></a>`;}).join('');
+  return `<aside class="legal-anchor" aria-label="Compétence et base légale du cas"><div class="legal-anchor__intro"><span class="legal-anchor__label">Compétence travaillée</span><strong>${esc(basis.skill)}</strong></div><div class="legal-anchor__source-label">Base légale</div><div class="legal-anchor__refs">${refs}</div><details class="legal-anchor__why"><summary>Pourquoi ces références?</summary>${(basis.refs||[]).map((ref)=>`<p><b>${esc(ref.citation)}</b> — ${esc(ref.note)}</p>`).join('')}</details></aside>`;
+}
 function dossierMarkup(c,compact=false){
   const links=(c.sourceIds||[]).map(sourceById).filter(Boolean);
-  const basis=c.accountingBasis?`<div class="accounting-basis"><span>Mode de décompte</span><strong>${esc(c.accountingBasis)}</strong></div>`:'';
+  const basisInfo=accountingBasisLabel(c.accountingBasis);
+  const basis=basisInfo?`<div class="accounting-basis"><span>${esc(basisInfo.title)}</span><strong>${esc(basisInfo.value)}</strong>${basisInfo.plain?`<small>${esc(basisInfo.plain)}</small>`:''}</div>`:'';
   return `<div class="panel dossier-main">
       ${compact?`<div class="mobile-case-meta"><strong>${esc(c.entity)}</strong><span>${esc(c.period)}</span></div>${basis}`:`<p class="eyebrow dossier-label">Dossier</p><h2 class="entity">${esc(c.entity)}</h2><div class="meta">${esc(c.sector)} · ${esc(c.location)} · ${esc(c.period)}</div>${basis}<span class="level-pill">${esc(c.level)}</span>`}
     </div>
     <div class="panel dossier-data"><p class="eyebrow">Données complètes</p><div class="data-list">${c.given.map(item=>`<div class="data-row"><div class="data-main">${esc(item.label)}${item.tag?`<span class="tag">${esc(item.tag)}</span>`:''}<span class="data-note">${esc(item.note||'')}</span></div>${Number.isFinite(item.amount)?`<div class="data-amount">${chf(item.amount,0)}</div>`:''}</div>`).join('')}</div></div>
-    <details class="panel dossier-details"><summary>Contrôles, base légale et sources</summary><div class="dossier-details__body"><p><strong>${esc(c.legal)}</strong></p><div class="checks">${c.checks.map((item,index)=>`<div class="check"><b>${index+1}.</b><span>${esc(item)}</span></div>`).join('')}</div><div class="source-links">${links.map(source=>`<a href="${source.url}" target="_blank" rel="noopener noreferrer">${esc(source.title)}</a>`).join('')}</div></div></details>`;
+    <details class="panel dossier-details"><summary>Contrôles et sources complémentaires</summary><div class="dossier-details__body"><div class="checks">${c.checks.map((item,index)=>`<div class="check"><b>${index+1}.</b><span>${esc(item)}</span></div>`).join('')}</div><div class="source-links">${links.map(source=>`<a href="${source.url}" target="_blank" rel="noopener noreferrer">${esc(source.title)}</a>`).join('')}</div></div></details>`;
 }
 function briefFactsMarkup(c){
   const items=(c.given||[]).map(item=>`<div class="brief-fact"><div><strong>${esc(item.label)}</strong>${item.note?`<small>${esc(item.note)}</small>`:''}</div><div class="brief-fact__value">${Number.isFinite(item.amount)?chf(item.amount,0):''}${item.tag?`<span>${esc(item.tag)}</span>`:''}</div></div>`).join('');
-  return `<section class="case-brief" aria-label="Mission et données utiles"><div class="mission-banner"><p class="eyebrow">Votre mission</p><p>${esc(c.mission)}</p></div><details class="brief-data" open><summary>Données utiles pour répondre</summary><div class="brief-facts">${items}</div></details></section>`;
+  return `<section class="case-brief" aria-label="Mission et données utiles"><div class="mission-banner"><p class="eyebrow">Votre mission</p><p>${esc(c.mission)}</p></div>${items?`<div class="brief-data"><div class="brief-data__head"><strong>Données utiles</strong><span>Tout ce qui est nécessaire pour répondre est ici.</span></div><div class="brief-facts">${items}</div></div>`:''}${legalAnchorMarkup(c)}</section>`;
 }
 function renderSidebar(){
   const c=current();
   const activeModule=moduleIndexFor(c);
   const statuses={};
   CASES.forEach((item,index)=>{const id=casePublicId(item);const status=caseStatus(index);statuses[id]={title:(item.tab?.split('·').slice(1).join('·').trim()||item.title),status:status?.[0]||''};});
-  document.querySelector('#sidebar').innerHTML=componentMarkup('navigation',{modules:MODULES,activeModule,currentId:casePublicId(c),statuses})+`<div class="integrated-dossier">${dossierMarkup(c)}</div>
+  document.querySelector('#sidebar').innerHTML=componentMarkup('navigation',{modules:MODULES,activeModule,currentId:casePublicId(c),statuses})+`<details class="sidebar-dossier-disclosure"><summary>Dossier complet et sources</summary><div class="integrated-dossier">${dossierMarkup(c)}</div></details>
     <div class="sidebar-actions" id="sidebarActionBar" aria-label="Action principale et ressources du cas">
       <button class="btn primary" type="button" data-context-primary>Continuer</button>
       <details class="sidebar-secondary">
@@ -144,7 +158,7 @@ function renderActionBars(c){
   if(c.type==='quiz') config={label:worksheetModel(casePublicId(c))?'Contrôler le tableau et les réponses':'Vérifier les réponses',action:'validate'};
   else if(state.mode==='portal') config={label:c.type==='free'?'Vérifier la cohérence':'Contrôler le décompte',action:'validate'};
   else if(step===1) config={label:'Continuer vers le calcul →',step:'2'};
-  else if(step===2) config={label:'Reporter au décompte →',action:'report-calc'};
+  else if(step===2) config={label:'Transférer au décompte →',action:'report-calc'};
   else config={label:c.type==='free'?'Vérifier la cohérence':'Contrôler le décompte',action:'validate'};
   for(const id of ['mobileActionBar','desktopActionBar','sidebarActionBar']){
     const bar=document.querySelector(`#${id}`);if(!bar)continue;
@@ -164,7 +178,7 @@ function renderCaseHead(){
   const intro=document.querySelector('#moduleIntroSlot');
   if(intro){
     const done=module.ids.filter((id)=>state.scores[id]===100&&!state.assisted[id]).length;
-    intro.innerHTML=`<section class="module-context" aria-label="Position dans le parcours"><div class="module-context__main"><span class="track-pill">${esc(module.track)}</span><div><small>Module ${moduleIndex+1} sur ${MODULES.length}</small><strong>${esc(module.label)}</strong></div></div><div class="module-context__meta"><span>${esc(module.level)}</span><span>≈ ${esc(module.duration)}</span><span>${done}/${module.ids.length} maîtrisés</span></div><details><summary>Objectifs du module</summary><ul>${module.objectives.map((item)=>`<li>${esc(item)}</li>`).join('')}</ul></details></section>`;
+    intro.innerHTML=`<details class="module-context"><summary><span>Module ${moduleIndex+1}/${MODULES.length} · ${esc(module.label.replace(/^\d+ · /,''))}</span><b>${done}/${module.ids.length} maîtrisés</b></summary><div class="module-context__details"><small>${esc(module.track)}</small><ul>${module.objectives.map((item)=>`<li>${esc(item)}</li>`).join('')}</ul></div></details>`;
   }
   const switcher=document.querySelector('#modeSwitch');
   if(switcher){
@@ -187,7 +201,7 @@ function renderStepper(){
   const c=current();
   const step=state.steps[stateKey()]||1;
   const canOpenDeclaration=Boolean(state.reported[stateKey()]);
-  return `<div class="workspace-card stepper" role="navigation" aria-label="Étapes du cas">${[['1','Analyser'],['2','Calculer'],['3','Reporter']].map(([number,label])=>{const disabled=Number(number)===3&&!canOpenDeclaration&&c.type!=='free';return `<button class="step-button ${Number(number)===step?'active':''}" data-step="${number}" type="button" ${disabled?'disabled':''}><span>${number}</span>${label}</button>`;}).join('')}</div>`;
+  return `<div class="workspace-card stepper" role="navigation" aria-label="Étapes du cas">${[['1','Analyser'],['2','Calculer'],['3','Décompte']].map(([number,label])=>{const disabled=Number(number)===3&&!canOpenDeclaration&&c.type!=='free';return `<button class="step-button ${Number(number)===step?'active':''}" data-step="${number}" type="button" ${disabled?'disabled':''}><span>${number}</span>${label}</button>`;}).join('')}</div>`;
 }
 function learning(c){
   const priorities=(CASE_PRECHECK_PRIORITIES[casePublicId(c)]||[]).slice(0,3).map((key)=>PRECHECK_DETAILS[key]?.title).filter(Boolean);
@@ -205,7 +219,7 @@ function acquisitionRate(){return Number(state.acquisitionRate[stateKey()]??(cur
 function calculatorCaseDataMarkup(c){
   if(c.type==='free') return `<section class="calculator-case-data"><div class="calculator-case-data__head"><div><p class="eyebrow">Données à utiliser</p><h4>Reprenez les activités et TDFN déjà confirmés par l’AFC</h4></div><span class="accounting-basis-inline">${esc(c.accountingBasis||'Selon le dossier')}</span></div><p class="calculator-case-data__note">Le mode libre ne contient pas de montants imposés. Saisissez uniquement les données du dossier réel ou d’un scénario que vous avez préparé.</p></section>`;
   const items=(c.given||[]).map(item=>`<div class="calculator-case-item"><div><strong>${esc(item.label)}</strong>${item.note?`<small>${esc(item.note)}</small>`:''}</div><div class="calculator-case-value">${Number.isFinite(item.amount)?chf(item.amount,0):''}${item.tag?`<span>${esc(item.tag)}</span>`:''}</div></div>`).join('');
-  return `<section class="calculator-case-data" aria-label="Rappel des données du cas"><div class="calculator-case-data__head"><div><p class="eyebrow">Rappel du dossier</p><h4>Données à reporter ou à calculer</h4></div><span class="accounting-basis-inline">${esc(c.accountingBasis||'Selon le dossier')}</span></div><div class="calculator-case-grid">${items}</div><p class="calculator-case-data__note">Gardez ce rappel visible pendant la saisie. Les montants à introduire dans «Calcul TDFN» sont des contre-prestations brutes, TVA comprise.</p></section>`;
+  return `<section class="calculator-case-data" aria-label="Rappel des données du cas"><div class="calculator-case-data__head"><div><p class="eyebrow">Rappel du dossier</p><h4>Données à saisir ou à calculer</h4></div><span class="accounting-basis-inline">${esc(c.accountingBasis||'Selon le dossier')}</span></div><div class="calculator-case-grid">${items}</div><p class="calculator-case-data__note">Gardez ce rappel visible pendant la saisie. Les montants à introduire dans «Calcul TDFN» sont des contre-prestations brutes, TVA comprise.</p></section>`;
 }
 function calculatorRowInstruction(c){
   if(c.id==='B') return 'Calculez d’abord le montant TTC à partir de CHF 100’000 HT et du taux légal de 8,1 %.';
@@ -227,7 +241,7 @@ function calculatorMarkup(c,{dialog=false}={}){
     ${isFree?`<td><button class="icon-button compact" type="button" data-action="remove-activity" data-index="${index}" aria-label="Supprimer l’activité ${index+1}">×</button></td>`:''}
   </tr>`).join('');
   return `<div class="calculator-shell ${dialog?'calculator-dialog-body':''}">
-    <div class="calculator-title"><div><p class="eyebrow">Étape 2 · Calculer</p><h3>Calcul TDFN par activité</h3><p>Saisissez la base TTC de chaque activité. Le total calculé sera ensuite reporté au ch. 323.</p></div><span class="transfer-state ${currentReport?'ok':'pending'}">${currentReport?'Calcul reporté':'À reporter'}</span></div>
+    <div class="calculator-title"><div><p class="eyebrow">Étape 2 · Calculer</p><h3>Calcul TDFN par activité</h3><p>Saisissez la base TTC de chaque activité. Le total calculé sera ensuite transféré au ch. 323.</p></div><span class="transfer-state ${currentReport?'ok':'pending'}">${currentReport?'Calcul transféré':'À transférer'}</span></div>
     <div class="old-period-note"><strong>Période modélisée:</strong> à partir du 01.01.2025. ${isFree?'Saisissez uniquement les activités et TDFN déjà confirmés dans le courrier ou le profil AFC de l’entreprise.':'Les blocs d’anciens taux ne sont pas utilisés dans ce cas.'}</div>
     ${calculatorCaseDataMarkup(c)}
     ${isFree?'<div class="free-toolbar"><button class="btn" type="button" data-action="add-activity">+ Nouvelle activité</button><span>Maximum pédagogique: 8 activités.</span></div>':''}
@@ -235,7 +249,7 @@ function calculatorMarkup(c,{dialog=false}={}){
     <div class="calculator-summary"><div><span>Taux moyen résultant <small>indicateur calculé — pas un TDFN à appliquer</small></span><strong data-calc-average>${fmt(calc.averageRate,4)} %</strong></div><div><span>Contre-prestations</span><strong data-calc-base>${chf(calc.base,2)}</strong></div><div><span>Total de l’impôt</span><strong data-calc-total>${chf(calc.tax,2)}</strong></div></div>
     <fieldset class="rounding-options"><legend>À propos de l’arrondi</legend><label><input type="radio" checked disabled> Calcul pédagogique sans arrondi intermédiaire</label><label class="unsupported"><input type="radio" disabled> Arrondi par activité <small>non simulé: algorithme public non spécifié</small></label><label class="unsupported"><input type="radio" disabled> Arrondi du total de l’impôt <small>non simulé: algorithme public non spécifié</small></label></fieldset>
     <div class="calculator-note">Le prototype public affiche trois choix, mais ne publie pas leur algorithme de production. Afin de ne pas enseigner une règle inventée, les montants par activité sont affichés à quatre décimales et additionnés sans arrondi intermédiaire; seul le total affiché est arrondi à CHF 0.01. Il ne s’agit pas d’une reproduction certifiée de l’algorithme du Portail AFC.</div>
-    <div class="form-actions">${dialog?'<button class="btn" type="button" data-action="close-calc">Annuler</button><button class="btn primary" type="button" data-action="report-calc">Reporter le calcul</button>':'<button class="btn" type="button" data-step="1">← Revoir le principe</button>'}</div>
+    <div class="form-actions">${dialog?'<button class="btn" type="button" data-action="close-calc">Annuler</button><button class="btn primary" type="button" data-action="report-calc">Transférer le calcul</button>':'<button class="btn" type="button" data-step="1">← Revoir le principe</button>'}</div>
   </div>`;
 }
 function portalRow({code,label,sub='',valueKey,computedKey,secondComputed,rateValue,extra='',highlight=false}){
@@ -244,7 +258,7 @@ function portalRow({code,label,sub='',valueKey,computedKey,secondComputed,rateVa
 function declarationMarkup(c){
   const report=state.reported[stateKey()];
   const reportStatus=reportedCurrent(c)?'current':report?'stale':'missing';
-  const reportText=reportStatus==='current'?'Calcul reporté et à jour':reportStatus==='stale'?'Calcul modifié: report à refaire':'Aucun calcul reporté';
+  const reportText=reportStatus==='current'?'Calcul transféré et à jour':reportStatus==='stale'?'Calcul modifié : transfert à refaire':'Calcul non encore transféré';
   const deductionRows=DEDUCTIONS.map(item=>portalRow({code:item.code,label:item.label,sub:item.help,valueKey:item.key,extra:item.key==='ch225'?'<button class="mini-link" type="button" data-action="attachment-info">Joindre le formulaire 764</button>':item.key==='ch280'?`<div class="divers-note">${textInput('ch280Note','Description de la déduction diverse')}</div>`:''})).join('');
   return `<div class="afc-form-card">
     <div class="afc-form-header"><div><p class="eyebrow">Vue formulaire complet</p><h3>Décompte d’entraînement — méthode TDFN</h3></div><div class="afc-form-header__actions"><span class="simulation-badge">Exercice · aucune transmission</span><button class="btn small" type="button" data-mode="guided">← Revenir au mode guidé</button></div></div>
@@ -285,7 +299,7 @@ function compactFieldRow({code,label,sub='',valueKey,computedKey,highlight=false
 function compactDeclarationMarkup(c){
   const report=state.reported[stateKey()];
   const reportStatus=reportedCurrent(c)?'current':report?'stale':'missing';
-  const reportText=reportStatus==='current'?'Calcul reporté et à jour':reportStatus==='stale'?'Calcul modifié: report à refaire':'Aucun calcul reporté';
+  const reportText=reportStatus==='current'?'Calcul transféré et à jour':reportStatus==='stale'?'Calcul modifié : transfert à refaire':'Calcul non encore transféré';
   const requiredKeys=new Set(Object.entries(c.deductions||{}).filter(([,value])=>Math.abs(Number(value||0))>0.000001).map(([key])=>key));
   Object.keys(answers()).filter(key=>DEDUCTIONS.some(item=>item.key===key)&&String(answers()[key]).trim()!=='').forEach(key=>requiredKeys.add(key));
   const deductions=(c.type==='free'?DEDUCTIONS:DEDUCTIONS.filter(item=>requiredKeys.has(item.key))).map(item=>compactFieldRow({code:item.code,label:item.label,sub:item.help,valueKey:item.key})).join('');
@@ -293,7 +307,7 @@ function compactDeclarationMarkup(c){
   const showCredit=c.type==='free'||Number(c.fields?.ch415||0)!==0||String(inputValue('ch415')).trim()!=='';
   const showFunds=c.type==='free'||Number(c.fields?.ch900||0)!==0||Number(c.fields?.ch910||0)!==0||String(inputValue('ch900')).trim()!==''||String(inputValue('ch910')).trim()!=='';
   return `<div class="compact-declaration">
-    <div class="compact-declaration-head"><div><p class="eyebrow">Étape 3 · Reporter</p><h3>Complétez uniquement les rubriques utiles</h3><p>Commencez par cette vue simplifiée; ouvrez le formulaire complet seulement si vous voulez vous entraîner sur toutes les rubriques.</p></div><button class="btn small" type="button" data-mode="portal">Voir le formulaire complet</button></div>
+    <div class="compact-declaration-head"><div><p class="eyebrow">Étape 3 · Décompte</p><h3>Complétez uniquement les rubriques utiles</h3><p>Commencez par cette vue simplifiée; ouvrez le formulaire complet seulement si vous voulez vous entraîner sur toutes les rubriques.</p></div><button class="btn small" type="button" data-mode="portal">Voir le formulaire complet</button></div>
     <section class="compact-declaration-section"><h4>I. Chiffre d’affaires</h4>
       ${compactFieldRow({code:'200',label:'Total des contre-prestations',sub:c.accountingBasis||'Contre-prestations convenues',valueKey:'ch200',highlight:true})}
       ${deductions||'<p class="compact-empty">Aucune déduction spécifique n’est attendue dans ce cas.</p>'}
@@ -321,10 +335,12 @@ function quizMarkup(c){
 
 function renderWork(){
   const c=current();
+  const briefSlot=document.querySelector('#caseBriefSlot');
+  if(briefSlot) briefSlot.innerHTML=briefFactsMarkup(c);
   const stepperSlot=document.querySelector('#stepperSlot');
   if(c.type==='quiz'){
     stepperSlot.innerHTML='';
-    document.querySelector('#workArea').innerHTML=briefFactsMarkup(c)+renderContrast(c)+quizMarkup(c);
+    document.querySelector('#workArea').innerHTML=renderContrast(c)+quizMarkup(c);
     renderActionBars(c);
     return;
   }
@@ -336,7 +352,7 @@ function renderWork(){
   const step=state.steps[stateKey()]||1;
   stepperSlot.innerHTML=renderStepper();
   let content=learning(c);
-  if(step===1) content=briefFactsMarkup(c)+renderContrast(c)+content;
+  if(step===1) content=renderContrast(c)+content;
   if(step===2) content=calculatorMarkup(c);
   if(step===3) content=compactDeclarationMarkup(c);
   document.querySelector('#workArea').innerHTML=content;
@@ -361,7 +377,7 @@ function updateComputed(){
   document.querySelectorAll('[data-concordance]').forEach(node=>{
     const currentReport=reportedCurrent(c);
     if(!report){node.className='concordance-box pending';node.innerHTML='<strong>Concordance non disponible.</strong> Ouvrez «Calcul», saisissez les bases par activité et reportez le résultat.';return;}
-    if(!currentReport){node.className='concordance-box warning';node.innerHTML='<strong>Le calcul reporté n’est plus à jour.</strong> Une activité, un TDFN ou une base a été modifié; reportez à nouveau le calcul.';return;}
+    if(!currentReport){node.className='concordance-box warning';node.innerHTML='<strong>Le calcul transféré n’est plus à jour.</strong> Une activité, un TDFN ou une base a été modifié; transférez à nouveau le calcul.';return;}
     const ok=Math.abs(declaration.concordance)<=0.011;
     node.className=`concordance-box ${ok?'success':'error'}`;
     node.innerHTML=ok?`<strong>Concordance validée:</strong> ch. 379 = ch. 299 = ${chf(declaration.ch299,2)}.`:`<strong>Écart de concordance:</strong> ch. 299 ${chf(declaration.ch299,2)} − ch. 379 ${chf(declaration.ch379,2)} = ${chf(declaration.concordance,2)}.`;
@@ -377,7 +393,7 @@ function reportCalculation(){
   state.dossierOpen[stateKey()]=false;
   save();
   const dialog=document.querySelector('#calcDialog');if(dialog?.open)dialog.close();
-  renderAll();showToast(`Calcul reporté au ch. 323: ${chf(calc.base,2)} et ${chf(calc.tax,2)} d’impôt.`,'success');
+  renderAll();showToast(`Calcul transféré au ch. 323: ${chf(calc.base,2)} et ${chf(calc.tax,2)} d’impôt.`,'success');
 }
 
 function openCalculator(){const dialog=document.querySelector('#calcDialog');dialog.querySelector('#calcDialogContent').innerHTML=calculatorMarkup(current(),{dialog:true});dialog.showModal();updateComputed();}
@@ -402,6 +418,8 @@ function formFeedbackMarkup(c,rows){
   return `${wrong.length?`<div class="feedback-focus"><h4>À corriger (${wrong.length})</h4>${wrong.map(render).join('')}</div>`:'<div class="callout success"><strong>Aucune erreur dans les champs du cas.</strong></div>'}${good.length?`<details class="feedback-correct"><summary>Voir les contrôles corrects (${good.length})</summary>${good.map(render).join('')}</details>`:''}`;
 }
 
+function moduleCompletionMarkup(c,mastered){if(!mastered)return '';const module=MODULES[moduleIndexFor(c)];if(!module||module.ids.at(-1)!==casePublicId(c))return '';const done=module.ids.filter((id)=>state.scores[id]===100&&!state.assisted[id]).length;if(done!==module.ids.length)return '';return `<section class="module-complete"><div class="module-complete__check">✓</div><div><span>Module terminé</span><strong>${esc(module.label)}</strong><p>${module.objectives.map((item)=>`✓ ${esc(item)}`).join('<br>')}</p></div></section>`;}
+function legalReviewAction(mastered){return mastered?'':`<button class="btn legal-review-btn" type="button" data-action="legal-basis">Revoir la base légale ↑</button>`;}
 function validateFree(){
   const c=current(),report=state.reported[stateKey()];
   const universal=universalChecks(c,answers(),report,{reportCurrent:reportedCurrent(c),acquisitionRate:acquisitionRate()});
@@ -427,7 +445,7 @@ function validateForm(){
   const mastered=score===100&&!state.assisted[stateKey()];
   const declaration=universal.declaration;
   const primaryResultAction=mastered?'<button class="btn primary" type="button" data-action="next">Cas suivant →</button>':state.assisted[stateKey()]?'<button class="btn primary" type="button" data-action="restart-no-help">Recommencer sans aide</button><button class="btn" type="button" data-action="next">Passer au cas suivant</button>':'<button class="btn primary" type="button" data-action="return-to-work">Corriger mes réponses</button><button class="btn" type="button" data-action="next">Passer au cas suivant</button>';
-  document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score ${mastered?'good':score>=70?'medium':'bad'}">${score}%</div><div><h3>${mastered?'Cas maîtrisé':score===100?'Calcul correct après consultation de la solution':score>=70?'Encore quelques corrections':'Reprenez les points signalés'}</h3><p>${correct} contrôle(s) correct(s) sur ${total} · tentative ${state.attempts[stateKey()]}</p>${state.assisted[stateKey()]?'<div class="assisted-note">La solution a été consultée: recommencez sans aide pour maîtriser le cas.</div>':''}</div></div><div class="feedback">${formFeedbackMarkup(c,validation.rows)}<details class="feedback-universal"><summary>Contrôles de cohérence du décompte (${universal.correct}/${universal.total})</summary>${checksMarkup(universal.rows)}</details></div><div class="lesson"><strong>À retenir:</strong> ${esc(c.lesson)}<br><strong>Résultat du décompte:</strong> ch. 399 ${chf(declaration.ch399,2)} · ch. 479 ${chf(declaration.ch479,2)} · ch. 500 ${chf(declaration.ch500,2)} · ch. 510 ${chf(declaration.ch510,2)}.</div><div class="form-actions">${primaryResultAction}</div></div>`;
+  document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score ${mastered?'good':score>=70?'medium':'bad'}">${score}%</div><div><h3>${mastered?'Cas maîtrisé':score===100?'Calcul correct après consultation de la solution':score>=70?'Encore quelques corrections':'Reprenez les points signalés'}</h3><p>${correct} contrôle(s) correct(s) sur ${total} · tentative ${state.attempts[stateKey()]}</p>${state.assisted[stateKey()]?'<div class="assisted-note">La solution a été consultée: recommencez sans aide pour maîtriser le cas.</div>':''}</div></div><div class="feedback">${formFeedbackMarkup(c,validation.rows)}<details class="feedback-universal"><summary>Contrôles de cohérence du décompte (${universal.correct}/${universal.total})</summary>${checksMarkup(universal.rows)}</details></div><div class="lesson"><strong>À retenir:</strong> ${esc(c.lesson)}<br><strong>Résultat du décompte:</strong> ch. 399 ${chf(declaration.ch399,2)} · ch. 479 ${chf(declaration.ch479,2)} · ch. 500 ${chf(declaration.ch500,2)} · ch. 510 ${chf(declaration.ch510,2)}.</div>${moduleCompletionMarkup(c,mastered)}<div class="form-actions">${primaryResultAction}${legalReviewAction(mastered)}</div></div>`;
   document.querySelector('#resultArea').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -444,7 +462,7 @@ function validateQuiz(){
   const good=details.map((item,index)=>({...item,index})).filter(item=>item.good);
   const renderQuizFeedback=(item)=>{const selected=qa[item.index]===undefined?'Aucune réponse':item.question.options[Number(qa[item.index])]??'Aucune réponse';const expected=item.question.options[item.question.answer];return `<div class="feedback-row ${item.good?'is-good':'is-bad'}"><div class="feedback-name">${item.good?'✓':'✕'} Question ${item.index+1}</div><div class="feedback-choice"><strong>Votre choix:</strong> ${esc(selected)}</div>${item.good?'':`<div class="feedback-choice expected"><strong>Réponse attendue:</strong> ${esc(expected)}</div>`}<div class="feedback-explain">${esc(item.question.why)}</div></div>`;};
   const nextActions=mastered?'<button class="btn primary" type="button" data-action="next">Cas suivant →</button>':state.assisted[stateKey()]?'<button class="btn primary" type="button" data-action="restart-no-help">Recommencer sans aide</button><button class="btn" type="button" data-action="next">Passer au cas suivant</button>':'<button class="btn primary" type="button" data-action="return-to-work">Corriger mes réponses</button><button class="btn" type="button" data-action="next">Passer au cas suivant</button>';
-  document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score ${mastered?'good':score>=67?'medium':'bad'}">${score}%</div><div><h3>${mastered?'Qualification maîtrisée':score>=67?'Presque acquis':'Analyse à reprendre'}</h3><p>${correct}/${total} contrôle(s) correct(s)${worksheet.applicable?' · tableau compris':''}</p></div></div>${worksheetFeedbackMarkup(worksheet,esc,chf)}<div class="feedback">${wrong.length?`<div class="feedback-focus"><h4>À revoir (${wrong.length})</h4>${wrong.map(renderQuizFeedback).join('')}</div>`:'<div class="callout success"><strong>Toutes les réponses sont correctes.</strong></div>'}${good.length?`<details class="feedback-correct"><summary>Voir les réponses correctes (${good.length})</summary>${good.map(renderQuizFeedback).join('')}</details>`:''}</div><div class="lesson"><strong>À retenir:</strong> ${esc(c.lesson)}</div><div class="form-actions">${nextActions}</div></div>`;
+  document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score ${mastered?'good':score>=67?'medium':'bad'}">${score}%</div><div><h3>${mastered?'Qualification maîtrisée':score>=67?'Presque acquis':'Analyse à reprendre'}</h3><p>${correct}/${total} contrôle(s) correct(s)${worksheet.applicable?' · tableau compris':''}</p></div></div>${worksheetFeedbackMarkup(worksheet,esc,chf)}<div class="feedback">${wrong.length?`<div class="feedback-focus"><h4>À revoir (${wrong.length})</h4>${wrong.map(renderQuizFeedback).join('')}</div>`:'<div class="callout success"><strong>Toutes les réponses sont correctes.</strong></div>'}${good.length?`<details class="feedback-correct"><summary>Voir les réponses correctes (${good.length})</summary>${good.map(renderQuizFeedback).join('')}</details>`:''}</div><div class="lesson"><strong>À retenir:</strong> ${esc(c.lesson)}</div>${moduleCompletionMarkup(c,mastered)}<div class="form-actions">${nextActions}${legalReviewAction(mastered)}</div></div>`;
   document.querySelector('#resultArea').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -457,11 +475,12 @@ function showSolution(){
     Object.entries(expectedInputMap(c)).forEach(([key,value])=>{if(Math.abs(value)>0.000001)state.answers[stateKey()][key]=String(value);});
     const calc=computeCalculator(c,state.answers[stateKey()]);state.reported[stateKey()]={...calc,signature:calculatorSignature(c,state.answers[stateKey()]),reportedAt:new Date().toISOString()};state.steps[stateKey()]=3;
   }
-  save();renderAll();document.querySelector('#resultArea').innerHTML='<div class="callout success"><strong>Solution affichée.</strong> Le cas reste marqué «assisté». Recommencez sans aide pour le valider réellement.</div>';
+  save();renderAll();document.querySelector('#resultArea').innerHTML='<div class="callout success"><strong>Solution affichée.</strong> Le cas reste marqué «solution consultée». Recommencez sans aide pour le valider réellement.</div>';
 }
 function resetCase(noConfirm=false){if(!noConfirm&&!confirm('Réinitialiser les réponses et le statut de ce cas?'))return;clearCaseState(state.current);delete worksheetFeedback[casePublicId(baseCurrent())];document.querySelector('#resultArea').innerHTML='';renderAll();}
 
-function summary(){const mastered=masteredCount(),total=scoredCases().length;const scores=CASES.map((c)=>{const id=casePublicId(c);return !c.excludeFromProgress&&!state.assisted[id]?state.scores[id]:undefined;}).filter(Number.isFinite);const average=scores.length?Math.round(scores.reduce((sum,value)=>sum+value,0)/scores.length):0;const order=visualOrder();document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score good">${mastered}/${total}</div><div><h3>Bilan du parcours TDFN</h3><p>Score moyen sans solution: ${average}% · le cas libre n’entre pas dans la note</p></div></div><div class="summary-list">${order.map((index)=>{const c=CASES[index];const status=caseStatus(index);const module=MODULES[moduleIndexFor(c)];return `<div class="summary-item"><div><b>${esc(c.tab)} — ${esc(c.title)}</b><span>${esc(module.track)} · ${esc(c.level)}</span></div><div class="summary-state ${status?.[1]||''}">${status?.[0]||'non commencé'}</div></div>`;}).join('')}</div><div class="form-actions"><button class="btn" type="button" data-action="print">Imprimer</button><button class="btn danger" type="button" data-action="reset-all">Effacer toute la progression</button></div></div>`;}
+function summary(){const mastered=masteredCount(),total=scoredCases().length;const scores=CASES.map((c)=>{const id=casePublicId(c);return !c.excludeFromProgress&&!state.assisted[id]?state.scores[id]:undefined;}).filter(Number.isFinite);const average=scores.length?Math.round(scores.reduce((sum,value)=>sum+value,0)/scores.length):0;const order=visualOrder();document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score good">${mastered}/${total}</div><div><h3>Bilan du parcours TDFN</h3><p>Score moyen sans solution: ${average}% · le cas libre n’entre pas dans la note</p></div></div><div class="summary-list">${order.map((index)=>{const c=CASES[index];const status=caseStatus(index);const module=MODULES[moduleIndexFor(c)];return `<div class="summary-item"><div><b>${esc(c.tab)} — ${esc(c.title)}</b><span>${esc(module.track)} · ${esc(c.level)}</span></div><div class="summary-state ${status?.[1]||''}">${status?.[0]||'non commencé'}</div></div>`;}).join('')}</div><div class="form-actions"><button class="btn primary" type="button" data-action="review-errors">Revoir mes erreurs</button><button class="btn" type="button" data-action="print">Imprimer</button><button class="btn danger" type="button" data-action="reset-all">Effacer toute la progression</button></div></div>`;}
+function reviewErrors(){const target=visualOrder().find((index)=>{const c=CASES[index],id=casePublicId(c);return !c.excludeFromProgress&&(state.assisted[id]||Number.isFinite(state.scores[id])&&state.scores[id]<100);});if(target===undefined){showToast('Aucun cas à revoir pour le moment.','success');return;}selectCase(target,true);showToast('Premier cas à revoir ouvert. Corrigez-le puis relancez «Revoir mes erreurs» depuis le bilan.','info');}
 function preview(){const c=current();const declaration=computeDeclaration(c,answers(),state.reported[stateKey()],state.finalRound[stateKey()]);document.querySelector('#previewContent').innerHTML=`<div class="preview-sheet"><h3>Aperçu du décompte — ${esc(c.entity)}</h3><p>${esc(c.period)} · simulation pédagogique</p><div class="preview-grid">${[['ch. 200',declaration.ch200],['ch. 289',declaration.ch289],['ch. 299',declaration.ch299],['ch. 323 — prestations',declaration.ch323Base],['ch. 323 — impôt',declaration.ch323Tax],['ch. 379',declaration.ch379],['ch. 383',declaration.acqTax],['ch. 399',declaration.ch399],['ch. 479',declaration.ch479],['ch. 500',declaration.ch500],['ch. 510',declaration.ch510],['ch. 900',declaration.ch900],['ch. 910',declaration.ch910]].map(([label,value])=>`<div><span>${label}</span><strong>${chf(value,2)}</strong></div>`).join('')}</div></div>`;document.querySelector('#previewDialog').showModal();}
 function selectCase(index,focus=false){state.current=Math.max(0,Math.min(CASES.length-1,index));state.currentId=casePublicId(CASES[state.current]);save();history.replaceState(null,'',`#cas-${casePublicId(CASES[state.current])}`);document.querySelector('#resultArea').innerHTML='';renderAll();if(focus){const title=document.querySelector('#caseTitle');title?.focus({preventScroll:true});title?.scrollIntoView({behavior:'smooth',block:'start'});}}
 function renderSources(){document.querySelector('#sourceRegistry').innerHTML=`<table class="source-table"><thead><tr><th>Source</th><th>Utilisation</th><th>Statut</th></tr></thead><tbody>${OFFICIAL_SOURCES.map(source=>`<tr><td><a href="${source.url}" target="_blank" rel="noopener noreferrer">${esc(source.title)}</a></td><td>${esc(source.scope)}</td><td>${esc(source.status)}</td></tr>`).join('')}</tbody></table>`;}
@@ -514,15 +533,17 @@ function handleAction(action,button){
   if(action==='toggle-dossier'){state.dossierOpen[stateKey()]=!state.dossierOpen[stateKey()];save();renderAll();}
   if(action==='clear-worksheet'){clearWorksheet(casePublicId(current()));delete worksheetFeedback[casePublicId(current())];renderWork();}
   if(action==='export-progress')exportProgress();
+  if(action==='review-errors')reviewErrors();
   if(action==='import-progress')requestProgressImport();
   if(action==='open-precheck'){renderPrecheck();document.querySelector('#precheckDialog').showModal();}
   if(action==='open-memo')document.querySelector('#memoDialog').showModal();
-  if(action==='open-sources')document.querySelector('#sourceDialog').showModal();
+  if(action==='open-sources'){const memo=document.querySelector('#memoDialog');if(memo?.open)memo.close();const source=document.querySelector('#sourceDialog');if(source&&!source.open)source.showModal();}
   if(action==='close-precheck')document.querySelector('#precheckDialog').close();
   if(action==='reset-precheck'){state.precheck[casePublicId(current())]={};save();renderPrecheck();}
   if(action==='precheck-open-all'||action==='precheck-close-all'){const open=action==='precheck-open-all';document.querySelectorAll('[data-precheck-panel]').forEach(panel=>{const body=panel.querySelector('.precheck-accordion__body');const toggle=panel.querySelector('[data-action="toggle-precheck-detail"]');if(body)body.hidden=!open;if(toggle)toggle.setAttribute('aria-expanded',String(open));});document.querySelectorAll('.precheck-secondary').forEach(details=>details.open=open);}
   if(action==='toggle-precheck-detail'){const key=button?.dataset.key;const panel=document.querySelector(`[data-precheck-panel="${key}"]`);const body=panel?.querySelector('.precheck-accordion__body');if(body){body.hidden=!body.hidden;button.setAttribute('aria-expanded',String(!body.hidden));}}
   if(action==='return-to-work'){document.querySelector('#resultArea').innerHTML='';document.querySelector('#workArea')?.scrollIntoView({behavior:'smooth',block:'start'});}
+  if(action==='legal-basis')document.querySelector('.legal-anchor')?.scrollIntoView({behavior:'smooth',block:'center'});
   if(action==='reset-all'&&confirm('Effacer toute la progression de l’entraînement?')){resetAllState();renderAll();document.querySelector('#resultArea').innerHTML='';}
 }
 
@@ -544,7 +565,7 @@ document.addEventListener('change',event=>{
 document.querySelector('#progressImportInput')?.addEventListener('change',event=>importProgressFile(event.target.files?.[0]));
 document.querySelector('#caseSelect').addEventListener('change',event=>selectCase(Number(event.target.value)));
 document.querySelector('#caseTabs').addEventListener('keydown',event=>{if(!['ArrowRight','ArrowLeft','Home','End'].includes(event.key))return;event.preventDefault();if(event.key==='ArrowRight')navigateVisual(1);if(event.key==='ArrowLeft')navigateVisual(-1);if(event.key==='Home')selectCase(visualOrder()[0],true);if(event.key==='End')selectCase(visualOrder().at(-1),true);});
-document.querySelector('#openSources').addEventListener('click',()=>document.querySelector('#sourceDialog').showModal());document.querySelector('#closeSources').addEventListener('click',()=>document.querySelector('#sourceDialog').close());
+document.querySelector('#openSources')?.addEventListener('click',()=>document.querySelector('#sourceDialog').showModal());document.querySelector('#closeSources').addEventListener('click',()=>document.querySelector('#sourceDialog').close());
 document.querySelector('#openMemo')?.addEventListener('click',()=>document.querySelector('#memoDialog').showModal());document.querySelector('#openMemoInline')?.addEventListener('click',()=>document.querySelector('#memoDialog').showModal());document.querySelector('#closeMemo')?.addEventListener('click',()=>document.querySelector('#memoDialog').close());
 for(const id of ['memoDialog','sourceDialog','precheckDialog','calcDialog','previewDialog'])document.querySelector(`#${id}`).addEventListener('click',event=>{if(event.target===event.currentTarget)event.currentTarget.close();});
 const hashMatch=location.hash.match(/^#cas-([A-Z]+\d*)$/i);if(hashMatch){const rawRequested=hashMatch[1].toUpperCase();const requested=rawRequested==='K'?'K0':rawRequested==='J'?'J1':rawRequested;const index=publicIndex(requested);if(index>=0){state.current=index;state.currentId=casePublicId(CASES[index]);if(rawRequested!==requested)history.replaceState(null,'',`#cas-${requested}`);}}

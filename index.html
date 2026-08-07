@@ -13,7 +13,7 @@
   <meta property="og:url" content="https://mariialobur.github.io/tva-tdfn/">
   <link rel="canonical" href="https://mariialobur.github.io/tva-tdfn/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect rx=%2214%22 width=%2264%22 height=%2264%22 fill=%22%231f6078%22/><text x=%2232%22 y=%2241%22 text-anchor=%22middle%22 font-size=%2227%22 fill=%22white%22 font-family=%22Arial%22>TVA</text></svg>">
-  <link rel="stylesheet" href="styles.css?v=12.0.0">
+  <link rel="stylesheet" href="styles.css?v=13.0.0">
   <title>Décompte TVA suisse TDFN — entraînement pédagogique | Mariia Lobur</title>
 </head>
 <body>
@@ -26,8 +26,7 @@
       <p class="subtitle">Cas progressifs · plusieurs TDFN · changements de méthode · rectification</p>
     </div>
     <div class="header-tools">
-      <button class="ghost-button" id="openMemo" type="button">Mémo TDFN</button>
-      <button class="ghost-button" id="openSources" type="button">Sources</button>
+      <button class="ghost-button" id="openMemo" type="button">Aide</button>
       <button class="progress progress-button" type="button" data-action="summary" aria-label="Ouvrir le bilan du parcours">
         <div><span id="moduleProgressLabel">Cas maîtrisés</span><strong id="progressText">0 / 36</strong></div>
         <div class="progress__track"><span id="progressBar"></span></div>
@@ -35,15 +34,7 @@
     </div>
   </div>
 </header>
-<section class="foundation-strip" aria-label="Règle essentielle TDFN">
-  <div class="foundation-strip__inner">
-    <strong>Réflexe TDFN</strong>
-    <span><b>Facture client</b> · taux légal</span>
-    <span class="foundation-arrow">→</span>
-    <span><b>Décompte AFC</b> · CA brut TTC × TDFN confirmé</span>
-    <button type="button" id="openMemoInline">Comprendre la règle</button>
-  </div>
-</section>
+
 
 <nav class="case-nav" aria-label="Cas pratiques">
   <div class="case-nav__inner">
@@ -67,12 +58,13 @@
         <div class="mode-switch hidden" id="modeSwitch" aria-label="Mode de travail"></div>
       </div>
     </div>
+    <div id="caseBriefSlot"></div>
+    <div id="stepperSlot"></div>
     <div id="moduleIntroSlot"></div>
     <details class="mobile-dossier" id="mobileDossier">
       <summary>Voir le dossier complet et les sources</summary>
       <div id="mobileDossierContent"></div>
     </details>
-    <div id="stepperSlot"></div>
     <div class="context-action-bar" id="desktopActionBar" aria-label="Action principale du cas">
       <button class="btn primary" type="button" data-context-primary>Continuer</button>
       <details class="more-actions">
@@ -129,10 +121,14 @@
       <p>Le <strong>décompte annuel</strong> répond à un seuil distinct de chiffre d’affaires: CHF 5’005’000, ainsi qu’à ses propres conditions.</p>
     </section>
     <section class="memo-rule">
-      <h3>4. Réflexe de travail</h3>
+      <h3>4. Lire le décompte sans jargon inutile</h3>
+      <p><strong>ch.</strong> signifie «chiffre», c’est-à-dire la rubrique du décompte AFC. <strong>Contre-prestations convenues</strong> signifie que le chiffre d’affaires est déclaré selon les factures émises; <strong>reçues</strong>, selon les encaissements.</p>
+    </section>
+    <section class="memo-rule">
+      <h3>5. Réflexe de travail</h3>
       <ol><li>Qualifier l’opération.</li><li>Identifier la rubrique.</li><li>Calculer la base et l’impôt.</li><li>Contrôler la concordance.</li><li>Conserver la preuve et la source.</li></ol>
     </section>
-    <div class="memo-source-links"><a href="https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires" target="_blank" rel="noopener noreferrer">AFC — TDFN</a><a href="https://www.fedlex.admin.ch/eli/cc/2009/828/fr" target="_blank" rel="noopener noreferrer">OTVA</a><a href="https://www.estv.admin.ch/fr/tva-decompte-annuel-2025" target="_blank" rel="noopener noreferrer">AFC — décompte annuel</a></div>
+    <div class="memo-source-links"><a href="https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires" target="_blank" rel="noopener noreferrer">AFC — TDFN</a><a href="https://www.fedlex.admin.ch/eli/cc/2009/615/fr" target="_blank" rel="noopener noreferrer">LTVA</a><a href="https://www.fedlex.admin.ch/eli/cc/2009/828/fr" target="_blank" rel="noopener noreferrer">OTVA</a><button class="btn small" type="button" data-action="open-sources">Référentiel officiel complet</button></div>
   </div>
 </dialog>
 <dialog id="sourceDialog" class="source-dialog" aria-labelledby="sourceTitle">
@@ -170,6 +166,6 @@
 <input id="progressImportInput" type="file" accept="application/json,.json" hidden>
 <noscript><div class="noscript-warning">JavaScript doit être activé pour utiliser cet entraînement interactif.</div></noscript>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script type="module" src="app.js?v=12.0.0"></script>
+<script type="module" src="app.js?v=13.0.0"></script>
 </body>
 </html>

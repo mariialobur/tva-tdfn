@@ -1,9 +1,10 @@
 import { CASES } from './data.js';
 
-export const STORAGE_KEY = 'tva_tdfn_v120_state';
-export const STATE_VERSION = 120;
+export const STORAGE_KEY = 'tva_tdfn_v130_state';
+export const STATE_VERSION = 130;
 
 const LEGACY_KEYED_STATES = [
+  { key: 'tva_tdfn_v120_state', version: 120 },
   { key: 'tva_tdfn_v100_state', version: 100 },
   { key: 'tva_tdfn_v90_state', version: 90 }
 ];

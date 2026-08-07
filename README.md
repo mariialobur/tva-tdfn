@@ -1,63 +1,79 @@
-# Entraînement TVA suisse — méthode TDFN · v12.0
+# Entraînement TVA suisse — méthode TDFN · v13.0
 
-Application pédagogique autonome pour apprendre à qualifier et préparer un décompte TVA suisse selon la méthode des taux de la dette fiscale nette (TDFN).
+Simulateur pédagogique en français consacré à la méthode des taux de la dette fiscale nette (TDFN), conçu pour passer d’un raisonnement d’assistant comptable à un contrôle plus autonome des décomptes TVA.
 
-La version 12.0 privilégie la compréhension de l’utilisateur avant la densité du formulaire: une mission claire, les données utiles au même endroit, un parcours en trois verbes («Analyser → Calculer → Reporter»), puis un feedback centré d’abord sur les erreurs à corriger.
+## Principe de v13.0
 
-## Parcours
+L’interface privilégie une seule question: **qu’est-ce que l’utilisateur doit comprendre et faire maintenant?**
 
-37 cas au total, dont 36 évalués et un atelier libre, répartis en 10 modules:
+Chaque cas présente, dans cet ordre:
 
-1. Admissibilité TDFN — J1, J2, J3
-2. Comprendre la méthode — A, B, C
-3. Plusieurs activités — D, D1, D2
-4. Règle des 10 % — D4, E, F
-5. International et synthèse — G, H, I, D3
-6. Rubriques courantes et corrections — L, O, R
-7. Méthode effective → TDFN — K0 à K5
-8. TDFN → méthode effective — L0 à L7
-9. Procédures particulières — N, M, P
-10. Atelier libre — Q
+1. **Votre mission** — la décision ou le calcul attendu.
+2. **Données utiles** — les seules informations nécessaires pour répondre.
+3. **Base légale du cas** — la compétence travaillée et le ou les articles précis LTVA/OTVA qui l’ancrent.
+4. **Analyser → Calculer → Décompte** — le travail à effectuer.
+5. **Feedback** — erreurs à corriger d’abord, réponses correctes repliées.
+6. **Dossier complet et sources** — disponibles à la demande, sans surcharger l’écran.
 
-Les modules 1 à 6 forment le parcours essentiel. Les modules 7 à 9 sont explicitement avancés.
+Aucune durée d’apprentissage estimée n’est affichée: la progression se mesure par les cas réellement maîtrisés.
 
-## Principes UX de v12.0
+## Contenu
 
-- La mission est placée dans la zone de travail, pas uniquement dans le dossier latéral.
-- Les données indispensables à la réponse restent visibles près de la question, y compris sur mobile.
-- Le grand bloc théorique permanent a été remplacé par un «Réflexe TDFN» compact et un mémo ouvrable à la demande.
-- Le mode de travail technique n’est plus demandé avant que l’utilisateur ait compris le cas.
-- Le parcours guidé suit «Analyser → Calculer → Reporter».
-- Le formulaire complet reste accessible à l’étape de report mais n’est plus imposé au débutant.
-- La checklist professionnelle est disponible comme second niveau d’aide.
-- Après validation, les erreurs sont affichées en premier; les réponses correctes sont repliées.
-- Tant que le cas n’est pas maîtrisé, «Corriger mes réponses» est l’action principale.
-- Une solution consultée marque le cas comme assisté et impose une reprise sans aide pour obtenir la maîtrise.
-- La navigation affiche le module, le numéro du cas et un intitulé court.
-- La typographie d’écran ne descend pas sous 13 px; les contrôles tactiles importants visent au moins 44 px sur mobile.
+- 37 cas répartis en 10 modules.
+- Parcours essentiel, parcours avancé et atelier autonome.
+- Admissibilité TDFN, plusieurs activités, règle des 10 %, opérations internationales, rubriques courantes, corrections, changements de méthode, procédure de déclaration et option.
+- Calculateur TDFN et représentation pédagogique du décompte AFC.
+- Tableaux spécifiques pour les corrections ch. 410 / ch. 415.
+- Checklist professionnelle par dossier.
+- Base légale dédiée à chacun des 37 cas.
+- Référentiel officiel LTVA, OTVA, AFC et prototype du décompte.
+- Sauvegarde locale, export/import de progression et reprise des cas non maîtrisés.
 
-## Points juridiques protégés dans les tests
+## Principes UX
 
-Le jeu de tests vérifie notamment la séparation des seuils TDFN et du décompte annuel, la logique actuelle de maintien des TDFN sur trois périodes fiscales consécutives, l’abandon de l’ancienne règle liée au dépassement de plus de 50 %, la limitation de l’option sous TDFN, ainsi que la qualification et le signe du ch. 415 dans les cas concernés.
+- **Mission-first**: la mission apparaît avant le contexte de module et avant le dossier complet.
+- **Progressive disclosure**: théorie, checklist et dossier complet ne s’ouvrent que si l’utilisateur en a besoin.
+- **Un seul CTA principal** à chaque étape.
+- **Langage pédagogique** autour des termes officiels: par exemple `ch.` est expliqué comme la rubrique du décompte et `contre-prestations convenues` comme une déclaration selon les factures émises.
+- **Mobile first**: données et base légale restent dans le flux principal; le dossier complet est replié.
+- **Mastery plutôt que vitesse**: pas de temps estimé, pas de gamification; le statut distingue `maîtrisé`, `à corriger`, `solution consultée` et `à faire`.
 
-Le site reste un outil pédagogique indépendant. Les sources AFC/ESTV intégrées au trainer restent la référence pour un dossier réel.
+## Base légale par cas
 
-## Qualité technique
+Le fichier `legal-basis.js` associe chaque cas à:
 
-Commandes locales:
+- une compétence professionnelle formulée en une phrase;
+- une ou plusieurs références précises LTVA/OTVA;
+- une courte explication du lien entre la norme et le geste attendu;
+- un lien vers la source officielle correspondante.
+
+Le bloc est volontairement compact dans l’interface. Les explications détaillées restent repliées sous `Pourquoi ces références?`.
+
+## Architecture
+
+- `index.html` — structure et dialogues.
+- `styles.css` — design system et responsive.
+- `data.js` — cas, sources et données de décompte.
+- `legal-basis.js` — base légale dédiée aux 37 cas.
+- `logic.js` — calculs et validations.
+- `transition.js` — tableaux des changements de méthode.
+- `components.js` — composants pédagogiques.
+- `store.js` — persistance et migrations.
+- `app.js` — orchestration de l’interface.
+- `tests/` + `smoke-test.mjs` — garde-fous fonctionnels, juridiques et UX.
+
+## Progression et migration
+
+La v13 utilise `tva_tdfn_v130_state`. Une progression v12 (`tva_tdfn_v120_state`) est migrée automatiquement afin de ne pas perdre les cas déjà travaillés.
+
+## Tests
 
 ```bash
-node smoke-test.mjs
-node tests/unit.mjs
+npm run test:smoke
+npm run test:unit
 npm run test:e2e
 ```
 
-- Smoke test: 62 contrôles structure/UX/juridique.
-- Unit tests: 37 cas + calculs + migration + composants + tableaux ch. 410/415.
-- Playwright + axe: prévu dans GitHub Actions pour desktop et mobile Chromium.
+Les tests unitaires vérifient notamment que les 37 cas possèdent chacun une base légale, que les sources citées existent dans le référentiel officiel, ainsi que la cohérence des calculs et des tableaux ch. 410 / ch. 415.
 
-Dans l’environnement de génération de cette archive, Playwright n’a pas pu être installé depuis le registre npm disponible. L’E2E navigateur doit donc être confirmé par GitHub Actions après publication.
-
-## Déploiement GitHub Pages
-
-Le projet est statique. Publier le contenu du dossier à la racine de la branche servie par GitHub Pages. Les fichiers `styles.css` et `app.js` utilisent le cache-busting `v=12.0.0`.
+Le contrôle final visuel doit être exécuté après déploiement sur desktop et mobile, notamment sur J1, D3, N, M, P et L5.
