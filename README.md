@@ -1,10 +1,10 @@
-# Entraînement TVA suisse — méthode TDFN · v14.0
+# Entraînement TVA suisse — méthode TDFN · v15.0
 
 Simulateur pédagogique en français consacré à la méthode des taux de la dette fiscale nette (TDFN). Il est conçu pour un apprenant qui connaît déjà la théorie TVA de manière générale, mais qui doit transformer cette connaissance en réflexes de travail utilisables en fiduciaire.
 
-## Modèle pédagogique de v14.0
+## Modèle pédagogique de v15.0
 
-La v14 suit une boucle courte dans chaque cas:
+La v15 suit une boucle courte dans chaque cas:
 
 1. **À comprendre** — une seule règle opérationnelle, sans chapitre théorique long.
 2. **Exemple guidé** — la règle est appliquée immédiatement sur d’autres chiffres ou une autre situation.
@@ -16,6 +16,17 @@ La v14 suit une boucle courte dans chaque cas:
 L’objectif n’est donc ni un examen «à froid», ni un cours à lire avant de pratiquer: **une règle → un exemple → une application → une justification**.
 
 Aucune durée estimée n’est affichée. La progression se mesure uniquement par les cas réellement maîtrisés.
+
+## Nouveautés v15.0 — Acquis & Maîtrisé
+
+- Correction juridique du cas D2: pour la règle des 10 %, les chiffres d’affaires des activités soumises au même TDFN sont cumulés (art. 86, al. 3, OTVA), tout en conservant une traçabilité comptable suffisante.
+- Distinction pédagogique entre **Acquis** (réussi après théorie + exemple guidé) et **Maîtrisé** (réussi ensuite sans exemple).
+- Nouveau mode **Validation sans aide** pour confirmer la maîtrise.
+- Références juridiques compactées: les références principales restent visibles, les références complémentaires sont repliées.
+- Liens AFC directs ajoutés pour les ch. 2.2.2 et 3.2.2 de l’Info TVA 12.
+- Rappel du dossier dans le calcul réduit aux seules données utiles.
+- Tests sémantiques ajoutés pour protéger les règles sensibles (D2, D4, I, ch. 410/415).
+
 
 ## Contenu
 
@@ -38,7 +49,7 @@ Aucune durée estimée n’est affichée. La progression se mesure uniquement pa
 - **Progressive disclosure**: dossier complet, checklist et ressources secondaires restent disponibles sans occuper la zone de résolution.
 - **Une colonne pour les QCM**: les réponses juridiques longues restent faciles à comparer et à lire.
 - **Scaffolding progressif**: théorie + exemple visibles lors de l’apprentissage initial, puis repliés par défaut dans la révision.
-- **Mastery plutôt que vitesse**: pas de minuterie, de badges ou de score ludique; l’état distingue `maîtrisé`, `à corriger`, `solution consultée` et `à faire`.
+- **Mastery plutôt que vitesse**: pas de minuterie, de badges ou de score ludique; l’état distingue `acquis`, `maîtrisé`, `à corriger`, `solution consultée` et `à faire`.
 
 ## Fondement juridique et pratique AFC
 
@@ -68,7 +79,7 @@ Pour les changements de méthode, les références de pratique renvoient notamme
 
 ## Progression et migration
 
-La v14 utilise `tva_tdfn_v140_state`. Une progression v13 (`tva_tdfn_v130_state`) est migrée automatiquement. Les migrations plus anciennes conservées dans le projet restent également prises en charge.
+La v15 utilise `tva_tdfn_v150_state`. Une progression v14 (`tva_tdfn_v140_state`) est migrée automatiquement. Les migrations plus anciennes conservées dans le projet restent également prises en charge.
 
 ## Tests
 
@@ -78,6 +89,6 @@ npm run test:unit
 npm run test:e2e
 ```
 
-Avant packaging, les vérifications statiques et unitaires de la v14 passent avec **67/67 contrôles smoke** et **37/37 cas unitaires**.
+Avant packaging, les vérifications statiques et unitaires de la v15 passent avec **76/76 contrôles smoke** et **37/37 cas unitaires**.
 
 Le test E2E Playwright est inclus et s’exécute via GitHub Actions après installation des dépendances navigateur. Le rendu final doit également être contrôlé sur le site GitHub Pages, notamment sur desktop et sur un viewport mobile 375–390 px.

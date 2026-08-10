@@ -91,14 +91,16 @@ function updateNavigationAvailability() {
 }
 
 const scoredCases=()=>CASES.filter(c=>!c.excludeFromProgress);
-function masteredCount(){return CASES.filter((c)=>{const id=casePublicId(c);return !c.excludeFromProgress&&state.scores[id]===100&&!state.assisted[id];}).length;}
-function caseStatus(index){const c=CASES[index],id=casePublicId(c);if(c.excludeFromProgress)return ['libre','free'];if(state.assisted[id])return ['solution consultée','assisted'];if(state.scores[id]===100)return ['maîtrisé','mastered'];if(Number.isFinite(state.scores[id]))return ['à corriger','partial'];return null;}
+function acquiredCount(){return CASES.filter((c)=>{const id=casePublicId(c);return !c.excludeFromProgress&&state.scores[id]===100&&!state.assisted[id];}).length;}
+function masteredCount(){return CASES.filter((c)=>{const id=casePublicId(c);return !c.excludeFromProgress&&Boolean(state.mastered?.[id]);}).length;}
+function caseStatus(index){const c=CASES[index],id=casePublicId(c);if(c.excludeFromProgress)return ['libre','free'];if(state.assisted[id])return ['solution consultée','assisted'];if(state.mastered?.[id])return ['maîtrisé','mastered'];if(state.scores[id]===100)return ['acquis','acquired'];if(Number.isFinite(state.scores[id]))return ['à corriger','partial'];return null;}
 function renderHeader(){
+  const acquired=acquiredCount();
   const mastered=masteredCount();
   const total=scoredCases().length;
-  document.querySelector('#moduleProgressLabel').textContent='Cas maîtrisés';
-  document.querySelector('#progressText').textContent=`${mastered} / ${total}`;
-  document.querySelector('#progressBar').style.width=total?`${mastered/total*100}%`:'0%';
+  document.querySelector('#moduleProgressLabel').textContent='Progression';
+  document.querySelector('#progressText').textContent=`${acquired} / ${total} acquis · ${mastered} maîtrisés`;
+  document.querySelector('#progressBar').style.width=total?`${acquired/total*100}%`:'0%';
 }
 function moduleFor(c){return MODULES[moduleIndexFor(c)]?.label || 'Parcours TDFN';}
 function renderTabs(){
@@ -117,7 +119,8 @@ function legalArticleUrl(ref, source){
   if(!source) return '#';
   if(!['ltva','otva'].includes(ref.sourceId)) return ref.url || source.url;
   const match=String(ref.citation||'').match(/art\.\s*(\d+[a-z]*)/i);
-  return match ? `${source.url}#art_${match[1].toLowerCase()}` : source.url;
+  const article=match?.[1]?.toLowerCase().replace(/^(\d+)([a-z]+)$/,'$1_$2');
+  return article ? `${source.url}#art_${article}` : source.url;
 }
 function legalAnchorMarkup(c){
   const id=casePublicId(c);
@@ -128,8 +131,9 @@ function legalAnchorMarkup(c){
   const practiceRefs=[...(basis.refs||[]).filter(ref=>!lawIds.has(ref.sourceId)),...(CASE_PRACTICE[id]||[])];
   const unique=(items)=>items.filter((item,index,array)=>array.findIndex(other=>other.citation===item.citation&&other.sourceId===item.sourceId)===index);
   const renderRef=(ref,kind)=>{const source=sourceById(ref.sourceId);if(!source)return '';const url=kind==='law'?legalArticleUrl(ref,source):(ref.url||source.url);return `<a class="source-chip ${kind}" href="${url}" target="_blank" rel="noopener noreferrer" title="${esc(ref.note||source.scope||'Source officielle')}"><span>${esc(ref.citation)}</span><b aria-hidden="true">↗</b></a>`;};
-  const lawMarkup=unique(lawRefs).map(ref=>renderRef(ref,'law')).join('');
-  const practiceMarkup=unique(practiceRefs).map(ref=>renderRef(ref,'practice')).join('');
+  const compactRefs=(refs,kind,limit)=>{const items=unique(refs);const visible=items.slice(0,limit).map(ref=>renderRef(ref,kind)).join('');const rest=items.slice(limit);if(!rest.length)return visible;return `${visible}<details class="source-more"><summary>+ ${rest.length} référence${rest.length>1?'s':''}</summary><div>${rest.map(ref=>renderRef(ref,kind)).join('')}</div></details>`;};
+  const lawMarkup=compactRefs(lawRefs,'law',2);
+  const practiceMarkup=compactRefs(practiceRefs,'practice',1);
   return `<div class="case-sources-inline" aria-label="Fondement juridique et pratique AFC du cas">
     <div class="source-line"><span>Fondement juridique</span><div>${lawMarkup||'<em>Voir le référentiel officiel</em>'}</div></div>
     ${practiceMarkup?`<div class="source-line"><span>Pratique AFC</span><div>${practiceMarkup}</div></div>`:''}
@@ -186,7 +190,7 @@ function renderCaseHead(){
   const step=state.steps[stateKey()]||1;
   const moduleIndex=moduleIndexFor(c);
   const module=MODULES[moduleIndex]||MODULES[0];
-  document.querySelector('#caseLevel').textContent=`${reviewProgressLabel()?`${reviewProgressLabel()} · `:''}Module ${moduleIndex+1} · Cas ${moduleCasePosition(c)+1}/${module.ids.length} · ${caseDifficulty(c)} · ${caseKind(c)}`;
+  document.querySelector('#caseLevel').textContent=`${sessionProgressLabel()?`${sessionProgressLabel()} · `:''}Module ${moduleIndex+1} · Cas ${moduleCasePosition(c)+1}/${module.ids.length} · ${caseDifficulty(c)} · ${caseKind(c)}`;
   document.querySelector('#caseTitle').textContent=c.title;
   document.querySelector('#caseDescription').textContent=module.track;
   const intro=document.querySelector('#moduleIntroSlot');if(intro)intro.innerHTML='';
@@ -224,14 +228,14 @@ function acquisitionRate(){return Number(state.acquisitionRate[stateKey()]??(cur
 
 function calculatorCaseDataMarkup(c){
   if(c.type==='free') return `<section class="calculator-case-data"><div class="calculator-case-data__head"><div><p class="eyebrow">Données à utiliser</p><h4>Reprenez les activités et TDFN déjà confirmés par l’AFC</h4></div><span class="accounting-basis-inline">${esc(c.accountingBasis||'Selon le dossier')}</span></div><p class="calculator-case-data__note">Le mode libre ne contient pas de montants imposés. Saisissez uniquement les données du dossier réel ou d’un scénario que vous avez préparé.</p></section>`;
-  const items=(c.given||[]).map(item=>`<div class="calculator-case-item"><div><strong>${esc(item.label)}</strong>${item.note?`<small>${esc(item.note)}</small>`:''}</div><div class="calculator-case-value">${Number.isFinite(item.amount)?chf(item.amount,0):''}${item.tag?`<span>${esc(item.tag)}</span>`:''}</div></div>`).join('');
-  return `<section class="calculator-case-data" aria-label="Rappel des données du cas"><div class="calculator-case-data__head"><div><p class="eyebrow">Rappel du dossier</p><h4>Données à saisir ou à calculer</h4></div><span class="accounting-basis-inline">${esc(c.accountingBasis||'Selon le dossier')}</span></div><div class="calculator-case-grid">${items}</div><p class="calculator-case-data__note">Gardez ce rappel visible pendant la saisie. Les montants à introduire dans «Calcul TDFN» sont des contre-prestations brutes, TVA comprise.</p></section>`;
+  const items=(c.given||[]).filter(item=>Number.isFinite(item.amount)||item.tag).map(item=>`<span class="calculator-context-chip"><b>${esc(item.label)}:</b> ${Number.isFinite(item.amount)?chf(item.amount,0):''}${item.tag?` · ${esc(item.tag)}`:''}</span>`).join('');
+  return `<section class="calculator-case-data calculator-case-data--compact" aria-label="Rappel des données du cas"><div class="calculator-case-data__head"><div><p class="eyebrow">Repères du dossier</p><h4>Gardez uniquement les données utiles sous les yeux</h4></div><span class="accounting-basis-inline">${esc(c.accountingBasis||'Selon le dossier')}</span></div><div class="calculator-context-list">${items}</div><p class="calculator-case-data__note">Les explications complètes restent disponibles dans «Dossier complet». Les bases TDFN sont des contre-prestations brutes, TVA comprise.</p></section>`;
 }
 function calculatorRowInstruction(c){
   if(c.id==='B') return 'Calculez d’abord le montant TTC à partir de CHF 100’000 HT et du taux légal de 8,1 %.';
   if(c.id==='G') return 'Saisissez uniquement les ventes imposables en Suisse après la déduction de l’exportation au ch. 220.';
   if(c.id==='H') return 'Saisissez uniquement la part imposable en Suisse après la déduction au ch. 221.';
-  return 'Reportez le montant TTC correspondant indiqué dans le rappel du dossier.';
+  return 'Reportez le montant TTC correspondant indiqué dans les repères du dossier.';
 }
 
 function calculatorMarkup(c,{dialog=false}={}){
@@ -343,7 +347,7 @@ function renderWork(){
   const c=current();
   const step=state.steps[stateKey()]||1;
   const learningSlot=document.querySelector('#learningSlot');
-  const lessonExpanded=!state.ui?.reviewMode&&state.scores[stateKey()]!==100&&(c.type==='quiz'||step===1);
+  const lessonExpanded=!state.ui?.reviewMode&&!state.ui?.validationMode&&state.scores[stateKey()]!==100&&(c.type==='quiz'||step===1);
   if(learningSlot) learningSlot.innerHTML=microLessonMarkup(c,lessonExpanded);
   const briefSlot=document.querySelector('#caseBriefSlot');
   if(briefSlot) briefSlot.innerHTML=briefFactsMarkup(c);
@@ -427,18 +431,23 @@ function formFeedbackMarkup(c,rows){
   return `${wrong.length?`<div class="feedback-focus"><h4>À corriger (${wrong.length})</h4>${wrong.map(render).join('')}</div>`:'<div class="callout success"><strong>Aucune erreur dans les champs du cas.</strong></div>'}${good.length?`<details class="feedback-correct"><summary>Voir les contrôles corrects (${good.length})</summary>${good.map(render).join('')}</details>`:''}`;
 }
 
-function moduleCompletionMarkup(c,mastered){if(!mastered)return '';const module=MODULES[moduleIndexFor(c)];if(!module||module.ids.at(-1)!==casePublicId(c))return '';const done=module.ids.filter((id)=>state.scores[id]===100&&!state.assisted[id]).length;if(done!==module.ids.length)return '';return `<section class="module-complete"><div class="module-complete__check">✓</div><div><span>Module terminé</span><strong>${esc(module.label)}</strong><p>${module.objectives.map((item)=>`✓ ${esc(item)}`).join('<br>')}</p></div></section>`;}
+function moduleCompletionMarkup(c){const module=MODULES[moduleIndexFor(c)];if(!module||module.ids.at(-1)!==casePublicId(c))return '';const acquired=module.ids.filter((id)=>state.scores[id]===100&&!state.assisted[id]).length;const mastered=module.ids.filter((id)=>state.mastered?.[id]).length;if(mastered===module.ids.length)return `<section class="module-complete is-mastered"><div class="module-complete__check">✓</div><div><span>Module maîtrisé</span><strong>${esc(module.label)}</strong><p>${module.objectives.map((item)=>`✓ ${esc(item)}`).join('<br>')}</p></div></section>`;if(acquired===module.ids.length)return `<section class="module-complete is-acquired"><div class="module-complete__check">✓</div><div><span>Module acquis</span><strong>${esc(module.label)}</strong><p>Les cas ont été réussis après apprentissage. Validez-les ensuite sans exemple guidé pour confirmer la maîtrise.</p></div></section>`;return '';}
 function legalReviewAction(mastered){return mastered?'':`<button class="btn legal-review-btn" type="button" data-action="legal-basis">Revoir la base légale ↑</button>`;}
-function competenceConfirmedMarkup(c,mastered){const basis=LEGAL_BASIS[casePublicId(c)];if(!basis?.skill)return '';const label=mastered?'Compétence consolidée':'Compétence à consolider';return `<div class="competence-confirmed ${mastered?'is-mastered':'needs-work'}"><span>${label}</span><strong>${esc(basis.skill)}</strong></div>`;}
+function competenceConfirmedMarkup(c,status){const basis=LEGAL_BASIS[casePublicId(c)];if(!basis?.skill)return '';const label=status==='mastered'?'Compétence maîtrisée':status==='acquired'?'Compétence acquise':'Compétence à consolider';const cls=status==='mastered'?'is-mastered':status==='acquired'?'is-acquired':'needs-work';return `<div class="competence-confirmed ${cls}"><span>${label}</span><strong>${esc(basis.skill)}</strong></div>`;}
 function reviewProblemIds(){return visualOrder().map(index=>CASES[index]).filter(c=>!c.excludeFromProgress).map(c=>casePublicId(c)).filter(id=>state.assisted[id]||(Number.isFinite(state.scores[id])&&state.scores[id]<100));}
-function reviewProgressLabel(){if(!state.ui?.reviewMode)return '';const queue=state.ui.reviewQueue||[];const pos=Math.max(0,queue.indexOf(stateKey()));return queue.length?`Révision · ${Math.min(pos+1,queue.length)}/${queue.length}`:'';}
-function resultActions(mastered){
+function validationCandidateIds(){return visualOrder().map(index=>CASES[index]).filter(c=>!c.excludeFromProgress).map(c=>casePublicId(c)).filter(id=>state.scores[id]===100&&!state.assisted[id]&&!state.mastered?.[id]);}
+function sessionProgressLabel(){if(state.ui?.validationMode){const queue=state.ui.validationQueue||[];const pos=Math.max(0,queue.indexOf(stateKey()));return queue.length?`Validation sans aide · ${Math.min(pos+1,queue.length)}/${queue.length}`:'Validation sans aide';}if(!state.ui?.reviewMode)return '';const queue=state.ui.reviewQueue||[];const pos=Math.max(0,queue.indexOf(stateKey()));return queue.length?`Révision · ${Math.min(pos+1,queue.length)}/${queue.length}`:'';}
+function resultActions(status){
+  if(state.ui?.validationMode){
+    if(status==='mastered') return '<button class="btn primary" type="button" data-action="validation-next">Validation suivante →</button><button class="btn" type="button" data-action="summary">Terminer la validation</button>';
+    return '<button class="btn primary" type="button" data-action="leave-validation">Revoir la règle et corriger</button><button class="btn" type="button" data-action="validation-next">Passer à la suivante</button>';
+  }
   if(state.ui?.reviewMode){
-    if(mastered) return '<button class="btn primary" type="button" data-action="review-next">Erreur suivante →</button><button class="btn" type="button" data-action="summary">Terminer la révision</button>';
+    if(status==='mastered'||status==='acquired') return '<button class="btn primary" type="button" data-action="review-next">Erreur suivante →</button><button class="btn" type="button" data-action="summary">Terminer la révision</button>';
     if(state.assisted[stateKey()]) return '<button class="btn primary" type="button" data-action="restart-no-help">Recommencer sans aide</button><button class="btn" type="button" data-action="review-next">Erreur suivante →</button>';
     return '<button class="btn primary" type="button" data-action="return-to-work">Corriger mes réponses</button><button class="btn" type="button" data-action="review-next">Erreur suivante →</button>';
   }
-  if(mastered) return '<button class="btn primary" type="button" data-action="next">Cas suivant →</button>';
+  if(status==='mastered'||status==='acquired') return '<button class="btn primary" type="button" data-action="next">Cas suivant →</button>';
   if(state.assisted[stateKey()]) return '<button class="btn primary" type="button" data-action="restart-no-help">Recommencer sans aide</button><button class="btn" type="button" data-action="next">Passer au cas suivant</button>';
   return '<button class="btn primary" type="button" data-action="return-to-work">Corriger mes réponses</button><button class="btn" type="button" data-action="next">Passer au cas suivant</button>';
 }
@@ -462,12 +471,18 @@ function validateForm(){
   const score=total?Math.round(correct/total*100):0;
   state.scores[stateKey()]=score;
   state.attempts[stateKey()]=(state.attempts[stateKey()]||0)+1;
+  const acquired=score===100&&!state.assisted[stateKey()];
+  if(acquired&&state.ui?.validationMode) state.mastered[stateKey()]=true;
+  if(!acquired) delete state.mastered[stateKey()];
+  const mastered=Boolean(state.mastered?.[stateKey()]);
+  const status=mastered?'mastered':acquired?'acquired':'needs';
   save();renderHeader();renderTabs();renderSidebar();
   validation.rows.forEach(row=>{document.querySelectorAll(`[data-key="${row.key}"]`).forEach(input=>{input.classList.remove('ok','error','blank');input.classList.add(row.blank?'blank':row.good?'ok':'error');input.setAttribute('aria-invalid',String(!row.good));});});
-  const mastered=score===100&&!state.assisted[stateKey()];
   const declaration=universal.declaration;
-  const primaryResultAction=resultActions(mastered);
-  document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score ${mastered?'good':score>=70?'medium':'bad'}">${score}%</div><div><h3>${mastered?'Cas maîtrisé':score===100?'Calcul correct après consultation de la solution':score>=70?'Encore quelques corrections':'Reprenez les points signalés'}</h3><p>${correct} contrôle(s) correct(s) sur ${total} · tentative ${state.attempts[stateKey()]}</p>${state.assisted[stateKey()]?'<div class="assisted-note">La solution a été consultée: recommencez sans aide pour maîtriser le cas.</div>':''}</div></div><div class="feedback">${formFeedbackMarkup(c,validation.rows)}<details class="feedback-universal"><summary>Contrôles de cohérence du décompte (${universal.correct}/${universal.total})</summary>${checksMarkup(universal.rows)}</details></div>${competenceConfirmedMarkup(c,mastered)}<div class="lesson"><strong>${mastered?'Règle consolidée':'Règle à retenir'}:</strong> ${esc(c.lesson)}<br><strong>Résultat du décompte:</strong> ch. 399 ${chf(declaration.ch399,2)} · ch. 479 ${chf(declaration.ch479,2)} · ch. 500 ${chf(declaration.ch500,2)} · ch. 510 ${chf(declaration.ch510,2)}.</div>${moduleCompletionMarkup(c,mastered)}<div class="form-actions">${primaryResultAction}${legalReviewAction(mastered)}</div></div>`;
+  const primaryResultAction=resultActions(status);
+  const title=mastered?'Cas maîtrisé':acquired?'Cas acquis':score===100?'Calcul correct après consultation de la solution':score>=70?'Encore quelques corrections':'Reprenez les points signalés';
+  const learningNote=acquired&&!mastered?'<div class="acquired-note">Réussi après la théorie et l’exemple guidé. Le cas est acquis; une validation ultérieure sans exemple confirmera la maîtrise.</div>':'';
+  document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score ${acquired?'good':score>=70?'medium':'bad'}">${score}%</div><div><h3>${title}</h3><p>${correct} contrôle(s) correct(s) sur ${total} · tentative ${state.attempts[stateKey()]}</p>${learningNote}${state.assisted[stateKey()]?'<div class="assisted-note">La solution a été consultée: recommencez sans aide pour acquérir le cas.</div>':''}</div></div><div class="feedback">${formFeedbackMarkup(c,validation.rows)}<details class="feedback-universal"><summary>Contrôles de cohérence du décompte (${universal.correct}/${universal.total})</summary>${checksMarkup(universal.rows)}</details></div>${competenceConfirmedMarkup(c,status)}<div class="lesson"><strong>${mastered?'Règle maîtrisée':acquired?'Règle acquise':'Règle à retenir'}:</strong> ${esc(c.lesson)}<br><strong>Résultat du décompte:</strong> ch. 399 ${chf(declaration.ch399,2)} · ch. 479 ${chf(declaration.ch479,2)} · ch. 500 ${chf(declaration.ch500,2)} · ch. 510 ${chf(declaration.ch510,2)}.</div>${moduleCompletionMarkup(c)}<div class="form-actions">${primaryResultAction}${legalReviewAction(mastered)}</div></div>`;
   document.querySelector('#resultArea').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -478,19 +493,26 @@ function validateQuiz(){
   const correct=correctQuestions+worksheet.correct;
   const total=c.questions.length+worksheet.total;
   const score=total?Math.round(correct/total*100):100;
-  state.scores[stateKey()]=score;state.attempts[stateKey()]=(state.attempts[stateKey()]||0)+1;save();renderHeader();renderTabs();renderSidebar();renderWork();
-  const mastered=score===100&&!state.assisted[stateKey()];
+  state.scores[stateKey()]=score;state.attempts[stateKey()]=(state.attempts[stateKey()]||0)+1;
+  const acquired=score===100&&!state.assisted[stateKey()];
+  if(acquired&&state.ui?.validationMode) state.mastered[stateKey()]=true;
+  if(!acquired) delete state.mastered[stateKey()];
+  const mastered=Boolean(state.mastered?.[stateKey()]);
+  const status=mastered?'mastered':acquired?'acquired':'needs';
+  save();renderHeader();renderTabs();renderSidebar();renderWork();
   const wrong=details.map((item,index)=>({...item,index})).filter(item=>!item.good);
   const good=details.map((item,index)=>({...item,index})).filter(item=>item.good);
   const renderQuizFeedback=(item)=>{const selected=qa[item.index]===undefined?'Aucune réponse':item.question.options[Number(qa[item.index])]??'Aucune réponse';const expected=item.question.options[item.question.answer];return `<div class="feedback-row ${item.good?'is-good':'is-bad'}"><div class="feedback-name">${item.good?'✓':'✕'} Question ${item.index+1}</div><div class="feedback-choice"><strong>Votre choix:</strong> ${esc(selected)}</div>${item.good?'':`<div class="feedback-choice expected"><strong>Réponse attendue:</strong> ${esc(expected)}</div>`}<div class="feedback-explain">${esc(item.question.why)}</div></div>`;};
-  const nextActions=resultActions(mastered);
-  document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score ${mastered?'good':score>=67?'medium':'bad'}">${score}%</div><div><h3>${mastered?'Qualification maîtrisée':score>=67?'Presque acquis':'Analyse à reprendre'}</h3><p>${correct}/${total} contrôle(s) correct(s)${worksheet.applicable?' · tableau compris':''}</p></div></div>${worksheetFeedbackMarkup(worksheet,esc,chf)}<div class="feedback">${wrong.length?`<div class="feedback-focus"><h4>À revoir (${wrong.length})</h4>${wrong.map(renderQuizFeedback).join('')}</div>`:'<div class="callout success"><strong>Toutes les réponses sont correctes.</strong></div>'}${good.length?`<details class="feedback-correct"><summary>Voir les réponses correctes (${good.length})</summary>${good.map(renderQuizFeedback).join('')}</details>`:''}</div>${competenceConfirmedMarkup(c,mastered)}<div class="lesson"><strong>${mastered?'Règle consolidée':'Règle à retenir'}:</strong> ${esc(c.lesson)}</div>${moduleCompletionMarkup(c,mastered)}<div class="form-actions">${nextActions}${legalReviewAction(mastered)}</div></div>`;
+  const nextActions=resultActions(status);
+  const quizTitle=mastered?'Qualification maîtrisée':acquired?'Qualification acquise':score>=67?'Presque acquis':'Analyse à reprendre';
+  const learningNote=acquired&&!mastered?'<div class="acquired-note">Réussi après la théorie et l’exemple guidé. Une validation ultérieure sans exemple confirmera la maîtrise.</div>':'';
+  document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score ${acquired?'good':score>=67?'medium':'bad'}">${score}%</div><div><h3>${quizTitle}</h3><p>${correct}/${total} contrôle(s) correct(s)${worksheet.applicable?' · tableau compris':''}</p>${learningNote}</div></div>${worksheetFeedbackMarkup(worksheet,esc,chf)}<div class="feedback">${wrong.length?`<div class="feedback-focus"><h4>À revoir (${wrong.length})</h4>${wrong.map(renderQuizFeedback).join('')}</div>`:'<div class="callout success"><strong>Toutes les réponses sont correctes.</strong></div>'}${good.length?`<details class="feedback-correct"><summary>Voir les réponses correctes (${good.length})</summary>${good.map(renderQuizFeedback).join('')}</details>`:''}</div>${competenceConfirmedMarkup(c,status)}<div class="lesson"><strong>${mastered?'Règle maîtrisée':acquired?'Règle acquise':'Règle à retenir'}:</strong> ${esc(c.lesson)}</div>${moduleCompletionMarkup(c)}<div class="form-actions">${nextActions}${legalReviewAction(mastered)}</div></div>`;
   document.querySelector('#resultArea').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 
 function showSolution(){
-  const c=current();if(c.type==='free'){showToast('Le cas libre ne possède pas de solution prédéfinie. Utilisez le contrôle de cohérence.','info');return;}state.assisted[stateKey()]=true;delete state.scores[stateKey()];
+  const c=current();if(c.type==='free'){showToast('Le cas libre ne possède pas de solution prédéfinie. Utilisez le contrôle de cohérence.','info');return;}state.assisted[stateKey()]=true;delete state.scores[stateKey()];delete state.mastered?.[stateKey()];
   if(c.type==='quiz'){const qa=quizAnswers();c.questions.forEach((question,index)=>qa[index]=question.answer);fillWorksheetSolution(casePublicId(c));}
   else{
     state.answers[stateKey()]={};
@@ -502,17 +524,18 @@ function showSolution(){
 function resetCase(noConfirm=false){if(!noConfirm&&!confirm('Réinitialiser les réponses et le statut de ce cas?'))return;clearCaseState(state.current);delete worksheetFeedback[casePublicId(baseCurrent())];document.querySelector('#resultArea').innerHTML='';renderAll();}
 
 function summary(){
-  const mastered=masteredCount(),total=scoredCases().length;
+  const acquired=acquiredCount(),mastered=masteredCount(),total=scoredCases().length;
   const scores=CASES.map((c)=>{const id=casePublicId(c);return !c.excludeFromProgress&&!state.assisted[id]?state.scores[id]:undefined;}).filter(Number.isFinite);
   const average=scores.length?Math.round(scores.reduce((sum,value)=>sum+value,0)/scores.length):0;
-  const order=visualOrder();const problems=reviewProblemIds();
-  state.ui.reviewMode=false;state.ui.reviewQueue=[];state.ui.reviewPosition=0;save();
-  document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score good">${mastered}/${total}</div><div><h3>Bilan du parcours TDFN</h3><p>Score moyen sans solution: ${average}% · ${total} cas évalués + 1 atelier libre</p></div></div><div class="summary-list">${order.map((index)=>{const c=CASES[index];const status=caseStatus(index);const module=MODULES[moduleIndexFor(c)];return `<div class="summary-item"><div><b>${esc(displayCaseCode(c))} · ${esc(caseShortTitle(c))}</b><span>${esc(module.track)} · ${esc(caseDifficulty(c))}</span></div><div class="summary-state ${status?.[1]||''}">${status?.[0]||'non commencé'}</div></div>`;}).join('')}</div><div class="form-actions">${problems.length?`<button class="btn primary" type="button" data-action="review-errors">Revoir mes erreurs (${problems.length})</button>`:'<button class="btn primary" type="button" data-action="next">Continuer le parcours</button>'}<button class="btn" type="button" data-action="print">Imprimer</button><button class="btn danger" type="button" data-action="reset-all">Effacer toute la progression</button></div></div>`;
+  const order=visualOrder();const problems=reviewProblemIds();const validations=validationCandidateIds();
+  state.ui.reviewMode=false;state.ui.reviewQueue=[];state.ui.reviewPosition=0;state.ui.validationMode=false;state.ui.validationQueue=[];state.ui.validationPosition=0;save();
+  const actions=[problems.length?`<button class="btn primary" type="button" data-action="review-errors">Revoir mes erreurs (${problems.length})</button>`:'',validations.length?`<button class="btn ${problems.length?'':'primary'}" type="button" data-action="start-validation">Valider mes acquis sans aide (${validations.length})</button>`:'',!problems.length&&!validations.length?'<button class="btn primary" type="button" data-action="next">Continuer le parcours</button>':''].join('');
+  document.querySelector('#resultArea').innerHTML=`<div class="result-card"><div class="result-head"><div class="result-score good">${mastered}/${total}</div><div><h3>Bilan du parcours TDFN</h3><p>${acquired}/${total} cas acquis · ${mastered}/${total} maîtrisés · score moyen ${average}% sans solution</p></div></div><div class="summary-explain"><strong>Acquis</strong>: réussi après la règle et l’exemple guidé. <strong>Maîtrisé</strong>: réussi ensuite dans une validation sans exemple.</div><div class="summary-list">${order.map((index)=>{const c=CASES[index];const status=caseStatus(index);const module=MODULES[moduleIndexFor(c)];return `<div class="summary-item"><div><b>${esc(displayCaseCode(c))} · ${esc(caseShortTitle(c))}</b><span>${esc(module.track)} · ${esc(caseDifficulty(c))}</span></div><div class="summary-state ${status?.[1]||''}">${status?.[0]||'non commencé'}</div></div>`;}).join('')}</div><div class="form-actions">${actions}<button class="btn" type="button" data-action="print">Imprimer</button><button class="btn danger" type="button" data-action="reset-all">Effacer toute la progression</button></div></div>`;
 }
 function reviewErrors(){
   const queue=reviewProblemIds();
   if(!queue.length){showToast('Aucun cas à revoir pour le moment.','success');return;}
-  state.ui.reviewMode=true;state.ui.reviewQueue=queue;state.ui.reviewPosition=0;save();
+  state.ui.validationMode=false;state.ui.validationQueue=[];state.ui.validationPosition=0;state.ui.reviewMode=true;state.ui.reviewQueue=queue;state.ui.reviewPosition=0;save();
   const target=publicIndex(queue[0]);if(target>=0)selectCase(target,true);
   showToast(`Mode révision: ${queue.length} cas à reprendre.`, 'info');
 }
@@ -526,6 +549,24 @@ function reviewNext(){
   if(!nextId){state.ui.reviewMode=false;state.ui.reviewQueue=[];state.ui.reviewPosition=0;save();summary();showToast('Révision terminée: aucun cas en erreur dans cette série.','success');return;}
   state.ui.reviewPosition=queue.indexOf(nextId);save();const index=publicIndex(nextId);if(index>=0)selectCase(index,true);
 }
+function prepareValidationCase(id){
+  delete state.answers[id];delete state.quiz[id];delete state.reported[id];delete state.steps[id];delete state.finalRound[id];delete state.acquisitionRate[id];delete state.worksheets[id];delete state.precheck[id];state.dossierOpen[id]=false;state.assisted[id]=false;
+}
+function startValidation(){
+  const queue=validationCandidateIds();
+  if(!queue.length){showToast('Aucun cas acquis n’attend de validation.','success');return;}
+  state.ui.reviewMode=false;state.ui.reviewQueue=[];state.ui.reviewPosition=0;state.ui.validationMode=true;state.ui.validationQueue=queue;state.ui.validationPosition=0;
+  prepareValidationCase(queue[0]);save();const index=publicIndex(queue[0]);if(index>=0)selectCase(index,true);showToast(`Validation sans aide: ${queue.length} cas à confirmer.`, 'info');
+}
+function validationNext(){
+  if(!state.ui?.validationMode){startValidation();return;}
+  const queue=state.ui.validationQueue||[];const currentPos=Math.max(0,queue.indexOf(stateKey()));let nextId='';
+  for(let i=currentPos+1;i<queue.length;i++){if(!state.mastered?.[queue[i]]){nextId=queue[i];break;}}
+  if(!nextId){for(let i=0;i<=currentPos;i++){const id=queue[i];if(id!==stateKey()&&!state.mastered?.[id]&&state.scores[id]===100&&!state.assisted[id]){nextId=id;break;}}}
+  if(!nextId){state.ui.validationMode=false;state.ui.validationQueue=[];state.ui.validationPosition=0;save();summary();showToast('Validation terminée. Les cas réussis sans exemple sont maintenant maîtrisés.','success');return;}
+  state.ui.validationPosition=queue.indexOf(nextId);prepareValidationCase(nextId);save();const index=publicIndex(nextId);if(index>=0)selectCase(index,true);
+}
+function leaveValidation(){state.ui.validationMode=false;state.ui.validationQueue=[];state.ui.validationPosition=0;save();renderAll();document.querySelector('#workArea')?.scrollIntoView({behavior:'smooth',block:'start'});showToast('Mode apprentissage réactivé: relisez la règle puis corrigez le cas.','info');}
 function preview(){const c=current();const declaration=computeDeclaration(c,answers(),state.reported[stateKey()],state.finalRound[stateKey()]);document.querySelector('#previewContent').innerHTML=`<div class="preview-sheet"><h3>Aperçu du décompte — ${esc(c.entity)}</h3><p>${esc(c.period)} · simulation pédagogique</p><div class="preview-grid">${[['ch. 200',declaration.ch200],['ch. 289',declaration.ch289],['ch. 299',declaration.ch299],['ch. 323 — prestations',declaration.ch323Base],['ch. 323 — impôt',declaration.ch323Tax],['ch. 379',declaration.ch379],['ch. 383',declaration.acqTax],['ch. 399',declaration.ch399],['ch. 479',declaration.ch479],['ch. 500',declaration.ch500],['ch. 510',declaration.ch510],['ch. 900',declaration.ch900],['ch. 910',declaration.ch910]].map(([label,value])=>`<div><span>${label}</span><strong>${chf(value,2)}</strong></div>`).join('')}</div></div>`;document.querySelector('#previewDialog').showModal();}
 function selectCase(index,focus=false){state.current=Math.max(0,Math.min(CASES.length-1,index));state.currentId=casePublicId(CASES[state.current]);save();history.replaceState(null,'',`#cas-${casePublicId(CASES[state.current])}`);document.querySelector('#resultArea').innerHTML='';renderAll();if(focus){const title=document.querySelector('#caseTitle');title?.focus({preventScroll:true});title?.scrollIntoView({behavior:'smooth',block:'start'});}}
 function renderSources(){document.querySelector('#sourceRegistry').innerHTML=`<table class="source-table"><thead><tr><th>Source</th><th>Utilisation</th><th>Statut</th></tr></thead><tbody>${OFFICIAL_SOURCES.map(source=>`<tr><td><a href="${source.url}" target="_blank" rel="noopener noreferrer">${esc(source.title)}</a></td><td>${esc(source.scope)}</td><td>${esc(source.status)}</td></tr>`).join('')}</tbody></table>`;}
@@ -580,6 +621,9 @@ function handleAction(action,button){
   if(action==='export-progress')exportProgress();
   if(action==='review-errors')reviewErrors();
   if(action==='review-next')reviewNext();
+  if(action==='start-validation')startValidation();
+  if(action==='validation-next')validationNext();
+  if(action==='leave-validation')leaveValidation();
   if(action==='close-onboarding'){state.ui.onboardingSeen=true;save();document.querySelector('#onboardingDialog')?.close();}
   if(action==='import-progress')requestProgressImport();
   if(action==='open-precheck'){renderPrecheck();document.querySelector('#precheckDialog').showModal();}

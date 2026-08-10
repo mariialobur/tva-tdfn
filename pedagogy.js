@@ -1,4 +1,4 @@
-// Couche pédagogique — version 14.0.0
+// Couche pédagogique — version 15.0.0
 // Chaque cas suit la même logique: une règle courte, un exemple guidé distinct, puis l'application évaluée.
 
 export const CASE_PEDAGOGY = {
@@ -10,8 +10,8 @@ export const CASE_PEDAGOGY = {
   C:{difficulty:'Débutant',kind:'Calcul',theory:'Le taux légal facturé et le TDFN ne répondent pas à la même question. Une même entreprise peut facturer selon plusieurs taux légaux tout en utilisant les TDFN attribués à ses activités dans le décompte.',example:'Exemple: CHF 10’000 HT d’hébergement à 3,8 % donnent CHF 10’380 TTC; cette base est ensuite traitée avec le TDFN attribué à l’hébergement. Le taux légal sert à la facture, le TDFN au décompte.'},
   D:{difficulty:'Intermédiaire',kind:'Calcul',theory:'Lorsqu’une entreprise exerce plusieurs activités avec des TDFN différents, chaque chiffre d’affaires doit être ventilé puis calculé séparément. Le total de l’impôt est la somme des dettes obtenues.',example:'Exemple: CHF 80’000 × 2,1 % = CHF 1’680 et CHF 20’000 × 5,3 % = CHF 1’060 → dette totale CHF 2’740. Il ne faut pas créer une «moyenne» à appliquer aux deux activités.'},
   D1:{difficulty:'Intermédiaire',kind:'Organisation',theory:'Plusieurs TDFN ne sont exploitables que si la comptabilité permet de retrouver durablement le chiffre d’affaires de chaque activité. La ventilation doit être réconciliable avec le chiffre d’affaires total.',example:'Un garage sépare ventes de véhicules, pneus et atelier dans trois comptes de produits: le calcul TDFN peut être reconstitué depuis la comptabilité sans estimation a posteriori.'},
-  D2:{difficulty:'Intermédiaire',kind:'Organisation',theory:'Deux activités distinctes peuvent partager le même TDFN. Elles peuvent être regroupées pour certains contrôles, mais leur traçabilité comptable doit rester suffisante.',example:'Exemple: activité A CHF 12’000 et activité B CHF 9’000, toutes deux au même TDFN → CHF 21’000 sont regroupés pour le contrôle concerné, mais les deux comptes de produits restent identifiables dans la comptabilité.'},
-  D4:{difficulty:'Intermédiaire',kind:'Qualification',theory:'La règle des 10 % utilise un seuil strict. Il faut calculer la part de l’activité dans le chiffre d’affaires déterminant et distinguer précisément une part égale au seuil d’une part qui le dépasse.',example:'Exemple: sur CHF 200’000 de CA imposable, CHF 20’000 = 10,0 % → seuil non franchi; CHF 20’200 = 10,1 % → seuil strictement dépassé.'},
+  D2:{difficulty:'Intermédiaire',kind:'Organisation',theory:'Deux activités distinctes auxquelles s’applique le même TDFN sont cumulées pour la règle des 10 %. Cette agrégation fiscale n’efface pas la nécessité d’une traçabilité comptable suffisante par activité.',example:'Exemple: pension CHF 18’000 et toilettage CHF 12’000, tous deux au même TDFN → CHF 30’000 sont cumulés pour le contrôle des 10 %, tandis que les deux comptes de produits restent identifiables.'},
+  D4:{difficulty:'Intermédiaire',kind:'Qualification',theory:'La règle des 10 % utilise un seuil strict. Il faut calculer la part de l’activité dans le chiffre d’affaires déterminant et distinguer précisément une part égale au seuil d’une part qui le dépasse.',example:'Exemple: sur CHF 250’000 de CA imposable, CHF 24’500 = 9,8 % → seuil non franchi; CHF 25’500 = 10,2 % → seuil strictement dépassé. Appliquez ensuite le même raisonnement aux données du cas.'},
   E:{difficulty:'Intermédiaire',kind:'Qualification',theory:'Pour une activité nouvelle, le contrôle du seuil se fait de manière prospective à partir du chiffre d’affaires attendu sur les douze premiers mois.',example:'Exemple: nouvelle activité attendue CHF 12’000 sur CA total attendu CHF 100’000 → 12 %. Le contrôle se fait sur les douze premiers mois attendus et non sur un historique qui n’existe pas encore.'},
   F:{difficulty:'Intermédiaire',kind:'Qualification',theory:'Pour une activité déjà établie, il faut suivre le dépassement du seuil sur trois périodes fiscales consécutives. Les activités relevant du même TDFN sont regroupées pour ce contrôle.',example:'Exemple: un groupe d’activités au même TDFN représente 11 %, 12 % puis 11 % sur trois périodes fiscales successives → le dépassement est durable; le TDFN supplémentaire produit ses effets à partir de la période suivante.'},
   G:{difficulty:'Intermédiaire',kind:'Décompte',theory:'Une exportation documentée fait partie du chiffre d’affaires total avant d’être déduite dans la rubrique prévue. Elle ne doit pas rester dans la base soumise au TDFN suisse.',example:'Exemple: CHF 90’000 de ventes suisses + CHF 10’000 d’exportations documentées → ch. 200 CHF 100’000, déduction export CHF 10’000, base suisse restante CHF 90’000.'},
@@ -64,14 +64,14 @@ export const CASE_PRACTICE = {
   L:[{citation:'Prototype AFC — ch. 900 et 910',sourceId:'prototype'}],
   O:[{citation:'Prototype AFC — ch. 235',sourceId:'prototype'}],
   R:[{citation:'AFC — décompte de rectification',sourceId:'rectification'},{citation:'AFC — concordance annuelle',sourceId:'annual-concordance'},{citation:'AFC — paiement et intérêt moratoire',sourceId:'payment-interest'}],
-  K0:[{citation:'Info TVA 12, ch. 2.2.2 — délai du passage effective → TDFN',sourceId:'info12-2025-practice'}],
-  K1:[{citation:'Info TVA 12, ch. 2.2.3 — corrections lors du passage aux TDFN',sourceId:'info12-2025-practice'}],
+  K0:[{citation:'Info TVA 12, ch. 2.2.2 — délai du passage effective → TDFN',sourceId:'info12-222'}],
+  K1:[{citation:'AFC — passage effective → TDFN et ch. 415',sourceId:'tdfn-transition-2025'},{citation:'Info TVA 12, ch. 2.2.3 — corrections lors du passage aux TDFN',sourceId:'info12-2025-practice'}],
   K2:[{citation:'Info TVA 12, ch. 2.2.3 — valeur résiduelle et ch. 415',sourceId:'info12-2025-practice'}],
   K3:[{citation:'Info TVA 12, ch. 2.2.3 — stock, immobilisations et ch. 415',sourceId:'info12-2025-practice'}],
   K4:[{citation:'Info TVA 12, ch. 2.2.3 — prestations de services et valeur résiduelle',sourceId:'info12-2025-practice'}],
   K5:[{citation:'Info TVA 12, ch. 2.2.3 — correction sur l’impôt préalable effectivement admis',sourceId:'info12-2025-practice'}],
-  L0:[{citation:'Info TVA 12, ch. 3.2.2 — délai du passage TDFN → effective',sourceId:'info12-2025-practice'}],
-  L1:[{citation:'Info TVA 12, ch. 3.2.3 — corrections / ch. 410',sourceId:'info12-2025-practice'}],
+  L0:[{citation:'Info TVA 12, ch. 3.2.2 — délai du passage TDFN → effective',sourceId:'info12-322'}],
+  L1:[{citation:'AFC — passage TDFN → effective et ch. 410',sourceId:'tdfn-transition-2025'},{citation:'Info TVA 12, ch. 3.2.3 — corrections / ch. 410',sourceId:'info12-2025-practice'}],
   L2:[{citation:'Info TVA 12, ch. 3.2.3 — valeur résiduelle / ch. 410',sourceId:'info12-2025-practice'}],
   L3:[{citation:'Info TVA 12, ch. 3.2.3 — stock et immobilisations / ch. 410',sourceId:'info12-2025-practice'}],
   L4:[{citation:'Info TVA 12, ch. 3.2.3 — prestations encore disponibles',sourceId:'info12-2025-practice'}],

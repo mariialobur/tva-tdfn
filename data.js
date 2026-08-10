@@ -1,4 +1,4 @@
-// Données intégrées — version 14.0.0
+// Données intégrées — version 15.0.0
 // Cas, sources et tableaux de transition sont réunis dans un module unique.
 
 export const OFFICIAL_SOURCES = [
@@ -57,6 +57,20 @@ export const OFFICIAL_SOURCES = [
     "scope": "Ch. 2.2.2–2.2.3 et 3.2.2–3.2.3: délais et corrections lors des changements de méthode; ch. 4: procédure de déclaration",
     "url": "https://www.estv.admin.ch/dam/estv/fr/dokumente/mwst/publikationen/mwst-publ-sss-aenderungen-2025-2-fr.pdf.download.pdf/mwst-publ-sss-aenderungen-2025-2-fr.pdf",
     "status": "Pratique AFC publiée, applicable dès le 01.01.2025"
+  },
+  {
+    "id": "info12-222",
+    "title": "Info TVA 12, ch. 2.2.2 — passage de la méthode effective aux TDFN",
+    "scope": "Délais et conditions temporelles du passage de la méthode effective aux TDFN",
+    "url": "https://www.gate.estv.admin.ch/mwst-webpublikationen/public/pages/taxInfos/cipherDisplay.xhtml?componentId=1005202&publicationId=1004992",
+    "status": "Pratique AFC officielle"
+  },
+  {
+    "id": "info12-322",
+    "title": "Info TVA 12, ch. 3.2.2 — passage des TDFN à la méthode effective",
+    "scope": "Délais et conditions temporelles du passage des TDFN à la méthode effective",
+    "url": "https://www.gate.estv.admin.ch/mwst-webpublikationen/public/pages/taxInfos/cipherDisplay.xhtml?componentId=1005237&publicationId=1004992",
+    "status": "Pratique AFC officielle"
   },
   {
     "id": "forms",
@@ -590,11 +604,11 @@ export const CASES = [
     "period": "S1 2026",
     "level": "Activités multiples · regroupement",
     "risk": "high",
-    "description": "Quatre activités sont suivies séparément dans la comptabilité et dans le tableau de calcul. Trois valeurs de TDFN distinctes sont utilisées, car pension et toilettage relèvent toutes deux de 5,3 %.",
-    "conceptualNote": "La règle des 10 % s’apprécie par activité concernée. Dans ce dossier, pension (20 %) et toilettage (13,33 %) dépassent chacune séparément 10 % du chiffre d’affaires total imposable. Le fait qu’elles partagent le TDFN de 5,3 % ne les transforme pas en une seule activité: elles restent séparées dans les comptes, le contrôle du seuil et le tableau pédagogique.",
-    "mission": "Contrôlez séparément la part de chacune des quatre activités, puis reportez quatre lignes d’activité dans le calcul. Deux lignes utilisent le même TDFN de 5,3 %.",
+    "description": "Quatre activités restent identifiables dans la comptabilité, mais pension et toilettage relèvent du même TDFN de 5,3 %. Pour la règle des 10 %, leurs chiffres d’affaires sont donc cumulés.",
+    "conceptualNote": "La traçabilité comptable et le contrôle fiscal répondent à deux besoins différents. Pension et toilettage restent identifiables dans les comptes, mais, puisqu’elles relèvent du même TDFN de 5,3 %, leurs chiffres d’affaires sont cumulés pour la règle des 10 % conformément à l’art. 86, al. 3, OTVA.",
+    "mission": "Conservez les quatre flux comptables distincts, puis regroupez pension et toilettage pour le contrôle des 10 % et pour la ligne de calcul au TDFN de 5,3 %. Le décompte utilise ainsi trois lignes TDFN.",
     "clientNote": "Les recettes TTC sont extraites de quatre comptes de produits et rapprochées avec la caisse et les factures.",
-    "afcNote": "Le cas utilise les activités AFC 2025: articles imposables au taux normal 2,1 %, biens imposables au taux réduit 0,1 %, pension 5,3 % et toilettage 5,3 %.",
+    "afcNote": "Le cas utilise trois TDFN: commerce au taux normal 2,1 %, commerce au taux réduit 0,1 % et services pension + toilettage 5,3 %. Les deux activités de services restent traçables séparément en comptabilité.",
     "given": [
       {
         "label": "Articles et animaux imposables au taux normal",
@@ -611,13 +625,13 @@ export const CASES = [
       {
         "label": "Pension et hôtel pour animaux",
         "amount": 60000,
-        "note": "Prestations TTC.",
+        "note": "Prestations TTC, compte de produits distinct.",
         "tag": "5,3 %"
       },
       {
         "label": "Salon de toilettage",
         "amount": 40000,
-        "note": "Prestations TTC.",
+        "note": "Prestations TTC, compte de produits distinct.",
         "tag": "5,3 %"
       },
       {
@@ -628,13 +642,14 @@ export const CASES = [
       }
     ],
     "checks": [
-      "Les quatre directions d’activité restent visibles dans la comptabilité.",
-      "Pension et toilettage dépassent chacune séparément le seuil de 10 %; elles restent distinctes dans les comptes.",
-      "Les quatre lignes d’activité totalisent CHF 300’000 et l’impôt TDFN totalise CHF 7’900.",
-      "Le taux légal de la vente dépend du bien; le TDFN reste un taux de décompte."
+      "Les quatre activités restent identifiables dans la comptabilité et la piste d’audit.",
+      "Pour la règle des 10 %, pension et toilettage sont cumulées: CHF 60’000 + CHF 40’000 = CHF 100’000, soit 33,33 % du chiffre d’affaires imposable.",
+      "Le calcul TDFN comporte trois lignes: 2,1 %, 0,1 % et 5,3 %; leur base totale est CHF 300’000.",
+      "L’impôt TDFN totalise CHF 7’900."
     ],
-    "legal": "Art. 37 LTVA · art. 86 OTVA · ordonnance AFC sur les TDFN dès 2025",
+    "legal": "Art. 37 LTVA · art. 86, al. 3, OTVA · pratique AFC TDFN dès 2025",
     "sourceIds": [
+      "info12-154",
       "tdfn-2025-additional-rates",
       "tdfn-rates-2025-pdf",
       "rates",
@@ -655,16 +670,10 @@ export const CASES = [
         "tax": 80
       },
       {
-        "label": "Pension et hôtel pour animaux",
+        "label": "Pension + toilettage — activités regroupées au même TDFN",
         "rate": 5.3,
-        "base": 60000,
-        "tax": 3180
-      },
-      {
-        "label": "Salon de toilettage",
-        "rate": 5.3,
-        "base": 40000,
-        "tax": 2120
+        "base": 100000,
+        "tax": 5300
       }
     ],
     "fields": {
@@ -677,12 +686,10 @@ export const CASES = [
       "r0tax": "CHF 120’000 × 2,1 % = CHF 2’520.",
       "r1base": "Commerce au taux réduit: CHF 80’000.",
       "r1tax": "CHF 80’000 × 0,1 % = CHF 80.",
-      "r2base": "Pension: CHF 60’000.",
-      "r2tax": "CHF 60’000 × 5,3 % = CHF 3’180.",
-      "r3base": "Toilettage: CHF 40’000.",
-      "r3tax": "CHF 40’000 × 5,3 % = CHF 2’120."
+      "r2base": "Pension + toilettage: CHF 60’000 + CHF 40’000 = CHF 100’000.",
+      "r2tax": "CHF 100’000 × 5,3 % = CHF 5’300."
     },
-    "lesson": "Le seuil se contrôle par activité. Deux activités peuvent utiliser le même TDFN sans perdre leur identité comptable ni leur piste d’audit."
+    "lesson": "Pour la règle des 10 %, les activités auxquelles s’applique le même TDFN sont cumulées. Elles restent néanmoins suffisamment détaillées en comptabilité pour préserver la traçabilité du dossier."
   },
   {
     "id": "D3",
@@ -1268,7 +1275,7 @@ export const CASES = [
       "acqBase": "La base nette de l’acquisition est CHF 10’000.",
       "acqTax": "CHF 10’000 × 8,1 % = CHF 810."
     },
-    "lesson": "Le total du ch. 399 et du ch. 500 est CHF 8’250 dans ce cas.",
+    "lesson": "L’impôt sur les acquisitions est calculé séparément au taux légal et s’ajoute à la dette TDFN. L’achat étranger n’est pas du chiffre d’affaires de l’entreprise et ne doit pas être ajouté au ch. 200.",
     "accountingBasis": "Contre-prestations convenues"
   },
   {

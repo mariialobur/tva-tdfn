@@ -1,4 +1,4 @@
-// Ancrage juridique par cas — version 14.0.0
+// Ancrage juridique par cas — version 15.0.0
 // La règle affichée près de la mission reste courte; la note détaille le lien entre la norme et le geste professionnel.
 export const LEGAL_BASIS = {
 A:{skill:'Calculer la dette TDFN sur le chiffre d’affaires brut TVA comprise, sans déduire séparément l’impôt préalable courant.',refs:[{citation:'art. 37, al. 2, LTVA',sourceId:'ltva',note:'Le TDFN est appliqué comme multiplicateur au chiffre d’affaires TVA comprise.'},{citation:'art. 37, al. 3, LTVA',sourceId:'ltva',note:'Le TDFN tient compte forfaitairement de l’impôt préalable usuel.'}]},

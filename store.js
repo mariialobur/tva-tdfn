@@ -1,9 +1,10 @@
 import { CASES } from './data.js';
 
-export const STORAGE_KEY = 'tva_tdfn_v140_state';
-export const STATE_VERSION = 140;
+export const STORAGE_KEY = 'tva_tdfn_v150_state';
+export const STATE_VERSION = 150;
 
 const LEGACY_KEYED_STATES = [
+  { key: 'tva_tdfn_v140_state', version: 140 },
   { key: 'tva_tdfn_v130_state', version: 130 },
   { key: 'tva_tdfn_v120_state', version: 120 },
   { key: 'tva_tdfn_v100_state', version: 100 },
@@ -16,7 +17,7 @@ const LEGACY_INDEXED_STATES = [
 ];
 const V84_INDEX_IDS = ['A','B','C','D','E','F','G','H','I','J','K0','L','M','Q','R','D1','D2','D3','D4','K1','K2','K3','K4','K5','L0','L1','L2','L3','L4','L5','L6','L7'];
 const LEGACY_WORKSHEET_KEYS = ['tva_tdfn_v84_transition_worksheets', 'tva_tdfn_v81_transition_worksheets'];
-const STATE_GROUPS = ['steps','answers','quiz','scores','assisted','attempts','reported','finalRound','acquisitionRate','dossierOpen'];
+const STATE_GROUPS = ['steps','answers','quiz','scores','assisted','attempts','reported','finalRound','acquisitionRate','dossierOpen','mastered'];
 
 export const publicCaseId = (caseItem) => String(caseItem?.id || caseItem?.publicId || '');
 const validIds = new Set(CASES.map(publicCaseId));
@@ -29,9 +30,9 @@ export function createDefaultState() {
     current: Math.max(0, caseIndexByPublicId('J1')),
     currentId: 'J1',
     mode: 'guided',
-    steps: {}, answers: {}, quiz: {}, scores: {}, assisted: {}, attempts: {}, reported: {},
+    steps: {}, answers: {}, quiz: {}, scores: {}, assisted: {}, attempts: {}, reported: {}, mastered: {},
     finalRound: {}, acquisitionRate: {}, dossierOpen: {}, worksheets: {}, precheck: {},
-    ui: { activeModule: null, onboardingSeen: false, reviewMode: false, reviewQueue: [], reviewPosition: 0 }, migrations: {},
+    ui: { activeModule: null, onboardingSeen: false, reviewMode: false, reviewQueue: [], reviewPosition: 0, validationMode: false, validationQueue: [], validationPosition: 0 }, migrations: {},
     free: { activities: [{ label: 'Activité 1', rate: 6.2 }] }
   };
 }
