@@ -1,0 +1,10 @@
+Validation du paquet v16 refined — 12.08.2026
+
+OK  apply-v16-refined.py : compilation Python réussie
+OK  test d'application sur une copie synthétique des blocs v15 : réussi
+OK  sauvegarde automatique v15 : créée avant écriture
+OK  app.js après insertion du code v16 : node --check réussi
+OK  MutationObserver : absent de la solution v16 refined
+OK  fichiers de données / calcul / scoring : non modifiés par le script
+
+À contrôler après déploiement réel : rendu mobile 375–390 px, navigation entre les premiers/deuxièmes cas des modules 3/7/8, ouverture du Mémo, persistance de progression existante.
