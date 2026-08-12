@@ -1,22 +1,20 @@
-# Changelog — v16 refined
+# Changelog — v16.2 audited final — 12.08.2026
 
-## UX / pédagogie
-- Onboarding: 4 учебных шага + лишние понятия заменены на 3 TDFN-ориентира.
-- Acquis/Maîtrisé убраны из onboarding.
-- Module legal intro показывается только в первом кейсе relevant module.
-- Module legal intro перенесён перед micro-lesson.
+## Audit corrections
 
-## Théorie / droit
-- `Repères de chiffre d’affaires` переименованы в `Repères AFC pour l’entrée aux TDFN`.
-- Уточнена область применения ориентиров первой année / année précédant effective → TDFN.
-- Добавлено явное разграничение с maintien après dépassement.
-- Réforme 2025 представлена как Avant / Depuis 2025.
-- Effective → TDFN: rappel ch. 415.
-- TDFN → effective: rappel ch. 410.
+- Removed answer leakage from final dossier checklists T1/T2.
+- Rewrote T1/T2 inputs as neutral accounting/documents instead of prequalified VAT categories.
+- Removed numeric answer leakage from S4 checklist.
+- Reframed S3 as a documented reduction of consideration and explicitly stated that overdue payment alone does not automatically justify a VAT correction.
+- Added targeted post-validation diagnostics to T2 (rubrique / qualification / correction / base).
+- Clarified acquisition-tax CHF 10'000 threshold for VAT-registered vs non-registered recipients.
+- Aligned static progress placeholder with 43 scored cases.
+- Updated SEO/OG description and cache version to 16.2.0.
+- Added standalone structural/source/arithmetic validator and pre-v16.2 restore script.
 
-## Technique
-- Удалён enhancement-layer как архитектурный принцип.
-- Нет MutationObserver.
-- Рендер module context добавляется в `renderCaseHead()`.
-- CSS и JS version query обновляются до `16.0.0`.
-- Перед записью создаётся backup v15.
+## Preserved
+
+- 44 total cases / 43 scored / Q free.
+- Current sport TDFN correction: 2.1%, 3.0%, 3.7%, 4.5% where applicable.
+- v16 refined onboarding, 2025 memo, entry reference table and integrated module context.
+- Cloudflare Web Analytics optional setup/removal tools.

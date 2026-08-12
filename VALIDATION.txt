@@ -1,10 +1,18 @@
-Validation du paquet v16 refined — 12.08.2026
+Validation du package v16.2 audited
+Date: 12.08.2026
 
-OK  apply-v16-refined.py : compilation Python réussie
-OK  test d'application sur une copie synthétique des blocs v15 : réussi
-OK  sauvegarde automatique v15 : créée avant écriture
-OK  app.js après insertion du code v16 : node --check réussi
-OK  MutationObserver : absent de la solution v16 refined
-OK  fichiers de données / calcul / scoring : non modifiés par le script
-
-À contrôler après déploiement réel : rendu mobile 375–390 px, navigation entre les premiers/deuxièmes cas des modules 3/7/8, ouverture du Mémo, persistance de progression existante.
+Contrôles intégrés à APPLY-FINAL.py / VALIDATE-FINAL.py:
+- 44 identifiants de cas uniques
+- 43 cas évalués, seul Q exclu
+- couverture modules: chaque cas exactement une fois
+- taux sport D: 2,1 / 3,7 / 4,5
+- taux sport D3: 2,1 / 3,0 / 3,7 / 4,5
+- T1/T2: aucune somme-solution dans la checklist
+- T1/T2: suppression des labels préqualifiés export/subvention/SaaS
+- T2: bases TDFN 245'000; dette TDFN 7'025; acquisition 810; total 7'835
+- références sourceIds contrôlées contre OFFICIAL_SOURCES lorsqu'il est présent
+- T1/T2 sans micro-théorie guidée (mode final autonome)
+- HTML statique: 0 / 43 acquis · 0 maîtrisés
+- cache: 16.2.0
+- date sources: 12.08.2026
+- node --check sur les JS si Node est disponible
