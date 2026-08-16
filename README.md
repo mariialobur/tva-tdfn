@@ -44,7 +44,7 @@ Le projet s’adresse notamment aux personnes qui souhaitent consolider leur pra
 | **Cas pratiques**     | PME, fiduciaire, commerce, services, hôtellerie, garage, opérations internationales… |
 | **Méthode**           | analyser → calculer → reporter au décompte                                           |
 | **Références**        | LTVA, OTVA, publications AFC et rubriques du décompte                                |
-| **Évaluation finale** | 12 questions aléatoires, sans aide pendant l’épreuve                                 |
+| **Évaluation finale** | 12 questions aléatoires, débloquées après validation des 43 étapes sans assistance |
 | **Attestation**       | document en 2 pages : résultat + relevé détaillé des thèmes abordés                  |
 | **Accès**             | gratuit, sans inscription                                                            |
 
@@ -151,7 +151,7 @@ Le module final comprend :
 * seuil de réussite : **9 / 12** ;
 * possibilité de refaire une nouvelle série.
 
-L’évaluation devient accessible après avoir travaillé les **43 étapes évaluées** du parcours.
+L’évaluation devient accessible après avoir **validé les 43 étapes évaluées sans assistance**.
 
 > [!NOTE]
 > Cette évaluation mesure uniquement la réussite aux questions proposées dans ce projet. Elle ne constitue pas une validation professionnelle générale des compétences en TVA.
