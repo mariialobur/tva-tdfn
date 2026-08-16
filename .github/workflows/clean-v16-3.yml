@@ -1,0 +1,105 @@
+name: Clean v16.3 integration
+
+on:
+  push:
+    branches: [clean-v16.3]
+    paths: ['.github/workflows/clean-v16-3.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: ${{ !contains(github.event.head_commit.message, '[clean-v16.3]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: clean-v16.3
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Integrate audited corrections into source of truth
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+
+          // audit-fixes.js imports and mutates the canonical exports from data.js.
+          await import('./audit-fixes.js');
+          const data = await import('./data.js');
+
+          const header = `// v16.3-clean · 16.08.2026\n// Données fiscales intégrées dans la source de vérité après revue ciblée Fedlex/AFC.\n// Aucun patch d’exécution n’est requis pour corriger le contenu.\n\n`;
+          const serialize = (name, value) => `export const ${name} = ${JSON.stringify(value, null, 2)};\n\n`;
+          const output = header
+            + serialize('OFFICIAL_SOURCES', data.OFFICIAL_SOURCES)
+            + serialize('DEDUCTIONS', data.DEDUCTIONS)
+            + serialize('CASES', data.CASES)
+            + serialize('TRANSITION_WORKSHEETS', data.TRANSITION_WORKSHEETS);
+          fs.writeFileSync('data.js', output, 'utf8');
+
+          let html = fs.readFileSync('index.html', 'utf8');
+          html = html.replace('styles.css?v=16.2.0', 'styles.css?v=16.3.0');
+          html = html.replace(
+            'Une activité dépassant strictement 10 % du chiffre d’affaires total imposable doit être traitée selon le TDFN correspondant; la règle spéciale à 50 % a été supprimée.',
+            'Depuis 2025, la limitation générale à deux TDFN est supprimée. Pour l’attribution d’un TDFN supplémentaire, l’art. 86 OTVA distingue notamment les nouveaux assujettis ou nouvelles activités (chiffres d’affaires escomptés des douze premiers mois) et les autres assujettis (trois périodes fiscales précédentes). Le seuil est strictement supérieur à 10 %; les activités soumises au même TDFN sont additionnées.'
+          );
+          html = html.replace(
+            /<script type="module">\s*\/\/ Important: audited content corrections are applied before the application renders\.\s*await import\('\.\/audit-fixes\.js\?v=16\.3\.0'\);\s*await import\('\.\/app\.js\?v=16\.3\.0'\);\s*await import\('\.\/evaluation\.js\?v=17\.2\.0'\);\s*<\/script>/m,
+            `<script type="module" src="app.js?v=16.3.0"></script>\n<script type="module" src="evaluation.js?v=17.2.0"></script>`
+          );
+          html = html.replace(
+            'Mise à jour : 16.08.2026 · révision fiscale ciblée et sources principales contrôlées le 16.08.2026.',
+            'Mise à jour : 16.08.2026 · contenu fiscal intégré après contrôle ciblé des sources principales le 16.08.2026.'
+          );
+          fs.writeFileSync('index.html', html, 'utf8');
+
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          pkg.version = '16.3.0';
+          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n', 'utf8');
+
+          let readme = fs.readFileSync('README.md', 'utf8');
+          readme = readme.replace(
+            '| **Évaluation finale** | 12 questions aléatoires, sans aide pendant l’épreuve                                 |',
+            '| **Évaluation finale** | 12 questions aléatoires, débloquées après validation des 43 étapes sans assistance |'
+          );
+          readme = readme.replace(
+            'L’évaluation devient accessible après avoir travaillé les **43 étapes évaluées** du parcours.',
+            'L’évaluation devient accessible après avoir **validé les 43 étapes évaluées sans assistance**.'
+          );
+          fs.writeFileSync('README.md', readme, 'utf8');
+          NODE
+
+      - name: Remove runtime audit patch
+        run: rm -f audit-fixes.js
+
+      - name: Static integrity checks
+        shell: bash
+        run: |
+          node --check data.js
+          node --check evaluation.js
+          node --check app.js
+          test ! -e audit-fixes.js
+          ! grep -q "audit-fixes.js" index.html
+          grep -q "app.js?v=16.3.0" index.html
+          grep -q "evaluation.js?v=17.2.0" index.html
+          grep -q "v16.3-clean" data.js
+          grep -q "art. 77, al. 3, OTVA" data.js
+          grep -q "année écoulée" data.js
+          grep -q "étapes validées sans assistance" evaluation.js
+
+      - name: Smoke tests
+        run: node smoke-test.mjs
+
+      - name: Commit clean source
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data.js index.html evaluation.js evaluation.css package.json README.md
+          git add -u audit-fixes.js
+          git rm --ignore-unmatch .github/workflows/clean-v16-3.yml
+          git commit -m "refactor: integrate audited TVA corrections into v16.3 [clean-v16.3]"
+          git push origin clean-v16.3
