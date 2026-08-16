@@ -83,7 +83,7 @@ const MODULE_INTRO_RULES_V16 = {
   2: {
     badge: 'Dès 01.01.2025',
     title: 'Plusieurs activités : appliquer les règles en vigueur depuis 2025',
-    text: 'Plus de deux TDFN peuvent désormais être appliqués. Pour une activité concernée, le seuil déterminant est strictement supérieur à 10 % du chiffre d’affaires total imposable; l’ancienne règle spéciale à 50 % des branches mixtes a été supprimée.',
+    text: 'Plus de deux TDFN peuvent désormais être appliqués. La règle des 10 % reste déterminante, mais son appréciation dépend de la situation de l’assujetti selon l’art. 86 OTVA: chiffres d’affaires escomptés des douze premiers mois pour un nouvel assujetti ou une nouvelle activité, et trois périodes fiscales précédentes pour un assujetti déjà établi. Le module suivant traite ces conditions en détail.',
     url: 'https://www.estv.admin.ch/fr/tva-methode-des-taux-de-la-dette-fiscale-nette-2025'
   },
   6: {

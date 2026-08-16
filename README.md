@@ -142,7 +142,7 @@ Une évaluation séparée apparaît à la fin du parcours afin de distinguer cla
 
 Le module final comprend :
 
-* **12 questions** tirées aléatoirement d’une banque de 18 ;
+* **12 questions** tirées aléatoirement d’une banque de questions auditée ;
 * aucune aide pendant l’épreuve ;
 * aucune solution visible avant la remise ;
 * aucun mémo ou source accessible pendant le test ;
@@ -151,7 +151,7 @@ Le module final comprend :
 * seuil de réussite : **9 / 12** ;
 * possibilité de refaire une nouvelle série.
 
-L’évaluation devient accessible après avoir **validé les 43 étapes évaluées sans assistance**.
+L’évaluation devient accessible après avoir **acquis les 43 étapes évaluées sans consultation de la solution**.
 
 > [!NOTE]
 > Cette évaluation mesure uniquement la réussite aux questions proposées dans ce projet. Elle ne constitue pas une validation professionnelle générale des compétences en TVA.
@@ -249,7 +249,7 @@ La seconde page constitue un **RELEVÉ DU PARCOURS** et décrit plus préciséme
 
 Le document peut ensuite être **imprimé ou enregistré en PDF** directement depuis le navigateur.
 
-Le nom utilisé pour préparer l’attestation reste local au module de génération du document.
+Le nom utilisé pour préparer l’attestation reste local au module de génération du document. Le résultat et l’identité ne sont pas vérifiables par un tiers auprès du site: aucun registre serveur des attestations n’est tenu.
 
 > [!CAUTION]
 > L’attestation confirme uniquement l’achèvement de ce parcours d’entraînement et la réussite de son auto-évaluation finale. Le relevé décrit les thèmes abordés au cours du parcours. Ces documents **ne constituent ni un diplôme, ni un titre professionnel, ni une certification reconnue ou accréditée**. L’identité du participant n’est pas vérifiée.
@@ -302,7 +302,7 @@ Le contenu pédagogique s’appuie en priorité sur les sources officielles suis
 Les sources utiles sont reliées directement aux cas et regroupées dans le référentiel du simulateur.
 
 **Dernière mise à jour du projet : 16.08.2026**
-**Revue des sources principales : 12.08.2026**
+**Revue des sources principales : 16.08.2026**
 
 > [!TIP]
 > Une règle, un taux ou une pratique TVA peut évoluer. En cas de divergence, la législation, les publications AFC et le service officiel en vigueur priment toujours sur le contenu du simulateur.

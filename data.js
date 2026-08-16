@@ -417,7 +417,7 @@ export const CASES = [
     "description": "Le cas applique les TDFN en vigueur dès 2025 à trois activités distinctes: commerce d’articles de sport hors vêtements, location et services sur skis ou snowboards.",
     "mission": "Réconciliez CHF 300’000 TTC avec trois comptes de produits, puis calculez la dette TDFN activité par activité.",
     "clientNote": "Les factures restent établies aux taux légaux applicables; les montants du dossier sont des contre-prestations TTC.",
-    "afcNote": "TDFN contrôlés dans l’ordonnance AFC RS 641.202.62 en vigueur dès 2025: commerce d’articles de sport hors vêtements 2,1 %, location 3,7 % et services/réparations sur articles de sport 4,5 %. La dette totale du cas est CHF 8’700; le taux moyen résultant de 2,90 % est un indicateur de synthèse, jamais un TDFN à appliquer.",
+    "afcNote": "Dans les hypothèses du cas, les trois TDFN indiqués sont déjà attribués à l’entreprise. Valeurs contrôlées dans l’ordonnance AFC RS 641.202.62 en vigueur dès 2025: commerce d’articles de sport hors vêtements 2,1 %, location 3,7 % et services/réparations sur articles de sport 4,5 %. La dette totale du cas est CHF 8’700; le taux moyen résultant de 2,90 % est un indicateur de synthèse, jamais un TDFN à appliquer.",
     "given": [
       {
         "label": "Commerce d’articles de sport hors vêtements",
@@ -506,7 +506,7 @@ export const CASES = [
     "conceptualNote": "Les montants du cas sont des contre-prestations TTC. Les quatre activités dépassent chacune 10 % du chiffre d’affaires imposable total et sont donc ventilées avec leur TDFN propre.",
     "mission": "Réconciliez le ch. 200 avec les quatre comptes de produits, puis reportez chaque base TTC dans le calcul TDFN.",
     "clientNote": "La comptabilité utilise des comptes de produits distincts pour véhicules neufs, pneus, atelier mécanique-électricité et carrosserie-peinture.",
-    "afcNote": "Les TDFN utilisés correspondent aux activités 2025 de la liste AFC: véhicules neufs 0,6 %, pneus 1,3 %, réparations/électricité 3,7 %, carrosserie/peinture 4,5 %.",
+    "afcNote": "Dans les hypothèses du cas, ces quatre TDFN sont déjà attribués à l’entreprise. Les valeurs correspondent aux activités 2025 de la liste normative AFC: véhicules neufs 0,6 %, pneus 1,3 %, réparations/électricité 3,7 %, carrosserie/peinture 4,5 %.",
     "given": [
       {
         "label": "Vente de voitures neuves",
@@ -1850,7 +1850,7 @@ export const CASES = [
         "label": "IP admis sur la machine",
         "amount": 4050,
         "note": "Mise en service le 01.01.2026.",
-        "tag": "1 période"
+        "tag": "1 année"
       },
       {
         "label": "Part résiduelle de la machine",
@@ -2016,7 +2016,7 @@ export const CASES = [
     "conceptualNote": "Le cas fournit directement l’impôt préalable définitivement admis afin de concentrer l’exercice sur la transition de méthode.",
     "mission": "Identifiez la bonne base, appliquez la part résiduelle et documentez le ch. 415.",
     "clientNote": "L’équipement sert à des activités imposables et exclues. La clé d’utilisation a déjà été contrôlée dans les périodes antérieures.",
-    "afcNote": "TVA de la facture CHF 8’100; impôt préalable définitivement admis après corrections CHF 6’075; une année écoulée écoulée.",
+    "afcNote": "TVA de la facture CHF 8’100; impôt préalable définitivement admis après corrections CHF 6’075; une année écoulée.",
     "given": [
       {
         "label": "TVA figurant sur la facture",
@@ -2103,7 +2103,7 @@ export const CASES = [
       {
         "label": "Méthode jusqu’au 31.12.2026",
         "note": "TDFN appliquée pendant toute la période fiscale 2026.",
-        "tag": "1 période"
+        "tag": "1 année"
       },
       {
         "label": "Méthode dès le 01.01.2027",

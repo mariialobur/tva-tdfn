@@ -185,6 +185,7 @@ export function resetAllState() {
   Object.assign(state, fresh);
   try {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('tva_tdfn_final_evaluation_v3_audited');
     for (const key of LEGACY_WORKSHEET_KEYS) localStorage.removeItem(key);
   } catch {}
   saveState();
