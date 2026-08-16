@@ -1,0 +1,271 @@
+name: Professional TDFN memo v16.4
+
+on:
+  push:
+    branches: [memo-pro-v16.4]
+    paths: ['.github/workflows/memo-pro-v16-4.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  update-memo:
+    if: ${{ !contains(github.event.head_commit.message, '[memo-v16.4]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: memo-pro-v16.4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Replace memo with professional reference
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+
+          let html = fs.readFileSync('index.html', 'utf8');
+          const start = html.indexOf('<dialog id="memoDialog"');
+          const end = html.indexOf('<dialog id="sourceDialog"', start);
+          if (start < 0 || end < 0) throw new Error('Memo dialog markers not found');
+
+          const memo = String.raw`<dialog id="memoDialog" class="source-dialog memo-dialog" aria-labelledby="memoTitle">
+  <div class="dialog-head">
+    <div><p class="eyebrow">Aide de travail</p><h2 id="memoTitle">Mémo professionnel TDFN</h2></div>
+    <button class="icon-button" type="button" id="closeMemo" aria-label="Fermer">×</button>
+  </div>
+  <div class="memo-content memo-content--pro">
+    <div class="memo-intro">
+      <div><strong>L’essentiel en 60 secondes</strong><span>Les règles à vérifier avant de calculer.</span></div>
+      <p>Ce mémo sert de repère pendant l’entraînement. Pour un dossier réel, la loi, l’OTVA, l’ordonnance AFC sur les TDFN et la pratique AFC en vigueur restent déterminantes.</p>
+    </div>
+
+    <section class="memo-rule">
+      <h3>1. Le principe TDFN</h3>
+      <div class="memo-flow"><span>Facture client<br><strong>TVA au taux légal</strong></span><b>→</b><span>Décompte AFC<br><strong>CA brut TTC × TDFN autorisé</strong></span></div>
+      <p>Le TDFN ne remplace pas le taux légal facturé au client. Dans le calcul courant selon cette méthode, l’impôt préalable n’est en principe pas déterminé facture par facture: il est pris en compte forfaitairement dans le TDFN.</p>
+      <div class="memo-traps memo-traps--compact"><span>Taux légal ≠ TDFN</span><span>TDFN ≠ taux moyen</span><span>Base TDFN = brut TTC</span></div>
+    </section>
+
+    <section class="memo-rule">
+      <h3>2. Vérifier l’admissibilité</h3>
+      <div class="memo-limits"><div><small>CA annuel provenant de prestations imposables, TVA comprise</small><strong>≤ CHF 5’024’000</strong></div><div><small>Impôt annuel calculé avec les TDFN</small><strong>≤ CHF 108’000</strong></div></div>
+      <p>Les deux limites sont cumulatives. Elles ne suffisent pas à elles seules: les exclusions prévues notamment à l’art. 77 OTVA doivent aussi être contrôlées.</p>
+      <p class="memo-warning"><strong>Maintien dans la méthode:</strong> si l’une ou les deux limites de l’art. 37, al. 1, LTVA sont dépassées pendant trois périodes fiscales consécutives, le passage à la méthode effective intervient au début de la période fiscale suivante (art. 81, al. 3, OTVA).</p>
+    </section>
+
+    <section class="memo-rule memo-rule--reference">
+      <h3>3. Repères AFC pour l’entrée aux TDFN</h3>
+      <p>Pour la <strong>première année d’assujettissement</strong>, ou l’<strong>année précédant un passage de la méthode effective aux TDFN</strong>, la limite de CHF 108’000 conduit aux repères de chiffre d’affaires suivants.</p>
+      <div class="memo-rate-table-wrap">
+        <table class="memo-rate-table">
+          <thead><tr><th>TDFN</th><th>CA annuel maximal de référence</th></tr></thead>
+          <tbody>
+            <tr><td>0,1 % · 0,6 % · 1,3 % · 2,1 %</td><td>CHF 5’024’000</td></tr>
+            <tr><td>3,0 %</td><td>CHF 3’600’000</td></tr>
+            <tr><td>3,7 %</td><td>CHF 2’920’000</td></tr>
+            <tr><td>4,5 %</td><td>CHF 2’400’000</td></tr>
+            <tr><td>5,3 %</td><td>CHF 2’040’000</td></tr>
+            <tr><td>6,2 %</td><td>CHF 1’740’000</td></tr>
+            <tr><td>6,8 %</td><td>CHF 1’590’000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="memo-warning"><strong>À ne pas confondre:</strong> ces montants sont des repères d’entrée liés à la limite d’impôt de CHF 108’000. Pour la valeur exacte d’un TDFN par branche ou activité, la référence normative est l’ordonnance AFC RS 641.202.62.</p>
+      <div class="memo-source-row"><a class="memo-inline-source" href="https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires" target="_blank" rel="noopener noreferrer">AFC — conditions et plafonds ↗</a><a class="memo-inline-source" href="https://www.fedlex.admin.ch/eli/cc/2024/500/fr" target="_blank" rel="noopener noreferrer">Fedlex — ordonnance TDFN ↗</a></div>
+    </section>
+
+    <section class="memo-rule memo-rule--reform">
+      <div class="memo-rule-heading"><h3>4. Plusieurs activités et règle des 10 %</h3><span>Dès 2025</span></div>
+      <p>La limitation générale à deux TDFN a été supprimée. L’analyse ne se résume toutefois pas à «10,1 % = nouveau taux immédiatement».</p>
+      <div class="memo-grid memo-grid--two">
+        <div class="memo-point"><strong>Nouveau contribuable / nouvelle activité</strong><span>Le seuil se vérifie sur les chiffres d’affaires escomptés des douze premiers mois.</span></div>
+        <div class="memo-point"><strong>Assujetti déjà établi</strong><span>Il faut regarder les trois périodes fiscales précédentes; la part doit avoir été supérieure à 10 % dans chacune.</span></div>
+        <div class="memo-point"><strong>Même TDFN</strong><span>Les chiffres d’affaires des activités soumises au même TDFN sont additionnés pour le test des 10 %.</span></div>
+        <div class="memo-point"><strong>10,0 %</strong><span>Le seuil est «supérieur à 10 %». Exactement 10,0 % ne le franchit pas.</span></div>
+      </div>
+      <p>Si une activité bénéficiant d’un TDFN propre ne dépasse plus le seuil pendant trois périodes fiscales consécutives, l’autorisation du taux correspondant devient caduque au début de la quatrième période fiscale.</p>
+      <a class="memo-inline-source" href="https://www.estv.admin.ch/fr/tva-methode-des-taux-de-la-dette-fiscale-nette-2025" target="_blank" rel="noopener noreferrer">AFC — changements TDFN dès 2025 ↗</a>
+    </section>
+
+    <div class="memo-section-title"><span>Nuances professionnelles</span><small>À ouvrir lorsque le dossier dépasse le cas standard.</small></div>
+
+    <details class="memo-detail">
+      <summary><span>5. Quel TDFN appliquer réellement?</span><small>Autorisation · art. 88 OTVA</small></summary>
+      <div class="memo-detail__body">
+        <p>Le TDFN théorique d’une activité et les TDFN effectivement autorisés pour l’entreprise ne sont pas toujours la même question. Les chiffres d’affaires doivent être enregistrés séparément lorsque plusieurs TDFN sont autorisés.</p>
+        <div class="memo-callout"><strong>Si le TDFN propre d’une activité n’est pas autorisé</strong><span>L’art. 88, al. 2, OTVA détermine quel TDFN déjà autorisé doit être utilisé. Le chiffre d’affaires n’est pas «ignoré» parce que l’activité reste sous un seuil.</span></div>
+        <p>Ne créez jamais un «taux moyen» pour remplacer les TDFN autorisés: un taux moyen peut servir d’indicateur analytique, mais pas de TDFN à déclarer.</p>
+        <div class="memo-source-row"><a class="memo-inline-source" href="https://www.fedlex.admin.ch/eli/cc/2009/828/fr" target="_blank" rel="noopener noreferrer">OTVA — art. 86 à 88 ↗</a><a class="memo-inline-source" href="https://www.fedlex.admin.ch/eli/cc/2024/500/fr" target="_blank" rel="noopener noreferrer">Ordonnance AFC — taux exacts ↗</a></div>
+      </div>
+    </details>
+
+    <details class="memo-detail">
+      <summary><span>6. Opérations internationales et impôt sur les acquisitions</span><small>Lieu · export · prestataire étranger</small></summary>
+      <div class="memo-detail__body">
+        <p>Avant de calculer un TDFN, il faut qualifier le flux: prestation imposable en Suisse, prestation fournie à l’étranger, exportation exonérée ou acquisition soumise à l’impôt sur les acquisitions.</p>
+        <ul>
+          <li>Une exportation ou une prestation exonérée ne devient pas imposable au TDFN simplement parce qu’elle figure dans la comptabilité des produits.</li>
+          <li>Certaines prestations de services acquises auprès d’entreprises étrangères, notamment celles régies par le principe du lieu du destinataire, peuvent être soumises à l’impôt sur les acquisitions.</li>
+          <li>Pour un assujetti TVA, une acquisition remplissant les conditions doit être déclarée et imposée; la méthode TDFN ne fait pas disparaître cette obligation.</li>
+          <li>La preuve documentaire de l’exportation ou du traitement international doit être conservée.</li>
+        </ul>
+        <a class="memo-inline-source" href="https://www.estv.admin.ch/fr/impot-sur-les-acquisitions-tva" target="_blank" rel="noopener noreferrer">AFC — impôt sur les acquisitions ↗</a>
+      </div>
+    </details>
+
+    <details class="memo-detail">
+      <summary><span>7. Prestations exclues, option et subventions</span><small>Ne pas classifier automatiquement</small></summary>
+      <div class="memo-detail__body">
+        <p><strong>Prestations exclues:</strong> vérifier d’abord l’art. 21 LTVA et la nature exacte de la prestation. L’option n’est pas un réflexe automatique sous TDFN.</p>
+        <p><strong>Option:</strong> l’art. 77, al. 3, OTVA interdit spécifiquement aux assujettis TDFN d’opter pour les prestations de l’art. 21, al. 2, ch. 1 à 24 et 27 à 31 LTVA. Les ch. 25 et 26 ne sont pas visés par cette interdiction spécifique; les conditions générales de l’option doivent néanmoins être contrôlées.</p>
+        <p><strong>Subventions:</strong> un paiement d’une collectivité publique n’est pas automatiquement une subvention. Le dossier doit permettre de distinguer une contribution de droit public d’une contre-prestation. L’art. 18, al. 3, LTVA prévoit une règle de qualification lorsque la collectivité publique indique expressément au bénéficiaire qu’il s’agit d’une subvention ou autre contribution de droit public.</p>
+        <div class="memo-source-row"><a class="memo-inline-source" href="https://www.fedlex.admin.ch/eli/cc/2009/615/fr" target="_blank" rel="noopener noreferrer">LTVA — art. 18, 21 et 22 ↗</a><a class="memo-inline-source" href="https://www.fedlex.admin.ch/eli/cc/2009/828/fr" target="_blank" rel="noopener noreferrer">OTVA — art. 77 ↗</a></div>
+      </div>
+    </details>
+
+    <details class="memo-detail">
+      <summary><span>8. Rectification ou concordance annuelle?</span><small>Deux procédures différentes</small></summary>
+      <div class="memo-detail__body">
+        <div class="memo-grid memo-grid--two">
+          <div class="memo-point"><strong>Erreur isolée</strong><span>Pour corriger un décompte mensuel, trimestriel ou semestriel précis, utiliser le décompte rectificatif de la période concernée.</span></div>
+          <div class="memo-point"><strong>Concordance annuelle</strong><span>Comparer les décomptes avec les comptes annuels et déclarer les différences dans la concordance annuelle selon l’art. 72 LTVA.</span></div>
+        </div>
+        <p>Si aucun décompte rectificatif de concordance annuelle ne parvient à l’AFC dans les 240 jours suivant la fin de l’exercice, l’AFC part du principe que les décomptes remis sont complets et corrects et que la période fiscale est finalisée. Une correction tardive peut aussi avoir des conséquences en matière d’intérêt moratoire.</p>
+        <div class="memo-source-row"><a class="memo-inline-source" href="https://www.estv.admin.ch/fr/tva-decompte-de-rectification" target="_blank" rel="noopener noreferrer">AFC — décompte rectificatif ↗</a><a class="memo-inline-source" href="https://www.estv.admin.ch/fr/tva-concordance-annuelle" target="_blank" rel="noopener noreferrer">AFC — concordance annuelle ↗</a></div>
+      </div>
+    </details>
+
+    <details class="memo-detail">
+      <summary><span>9. Changement de méthode et valeur résiduelle</span><small>Ch. 415 · ch. 410</small></summary>
+      <div class="memo-detail__body">
+        <div class="memo-before-after">
+          <div><small>Effective → TDFN</small><strong>Correction avant le changement</strong><p>L’impôt préalable antérieurement déduit sur la valeur résiduelle concernée doit être corrigé dans le dernier décompte selon la méthode effective, au ch. 415.</p></div>
+          <div><small>TDFN → effective</small><strong>Dégrèvement après le changement</strong><p>L’impôt préalable admissible sur la valeur résiduelle peut être revendiqué dans le premier décompte selon la méthode effective, au ch. 410.</p></div>
+        </div>
+        <p class="memo-warning"><strong>Unité correcte:</strong> pour le calcul de la valeur résiduelle selon l’art. 31, al. 3, LTVA, raisonner en <strong>années écoulées</strong>: réduction de 1/5 par année pour les biens mobiliers et prestations de services, et de 1/20 par année pour les biens immobiliers, sous réserve des conditions applicables au cas.</p>
+        <a class="memo-inline-source" href="https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires" target="_blank" rel="noopener noreferrer">AFC — changements de méthode ↗</a>
+      </div>
+    </details>
+
+    <details class="memo-detail">
+      <summary><span>10. Périodes, délais et décompte annuel</span><small>Ne pas mélanger les calendriers</small></summary>
+      <div class="memo-detail__body">
+        <p>Le décompte selon la méthode TDFN est <strong>en règle générale semestriel</strong>. La remise et le paiement suivent les délais légaux applicables; dans le parcours, le réflexe de base est de contrôler l’échéance plutôt que de la déduire du seul mot «semestre».</p>
+        <p>Depuis 2025, le <strong>décompte annuel</strong> est une périodicité distincte, sur demande et sous conditions, avec un seuil de chiffre d’affaires propre de <strong>CHF 5’005’000</strong>. Pour les assujettis TDFN utilisant le décompte annuel, un acompte est prévu, avec échéance au 30 août selon les informations AFC actuelles.</p>
+        <p class="memo-warning"><strong>Trois notions différentes:</strong> période fiscale ≠ période de décompte ≠ décompte annuel.</p>
+        <a class="memo-inline-source" href="https://www.estv.admin.ch/fr/tva-decompte-annuel-2025" target="_blank" rel="noopener noreferrer">AFC — décompte annuel ↗</a>
+      </div>
+    </details>
+
+    <section class="memo-rule memo-rule--traps">
+      <div class="memo-rule-heading"><h3>11. Pièges fréquents</h3><span>Contrôle rapide</span></div>
+      <div class="memo-traps">
+        <span>Taux légal ≠ TDFN</span>
+        <span>TDFN ≠ taux moyen calculé</span>
+        <span>10,0 % ≠ supérieur à 10 %</span>
+        <span>Activité sous 10 % ≠ CA ignoré</span>
+        <span>TDFN théorique ≠ TDFN autorisé</span>
+        <span>Paiement public ≠ automatiquement subvention</span>
+        <span>Rectificatif ≠ concordance annuelle</span>
+        <span>Période fiscale ≠ période de décompte</span>
+        <span>Valeur résiduelle = années écoulées</span>
+        <span>Export / étranger: qualifier avant de calculer</span>
+      </div>
+    </section>
+
+    <section class="memo-rule memo-rule--reflex">
+      <h3>12. Réflexe fiduciaire</h3>
+      <ol class="memo-reflex-list"><li><strong>Qualifier</strong><span>Quelle prestation? Où est-elle réputée fournie? Imposable, exonérée, exclue ou hors territoire?</span></li><li><strong>Identifier la règle TDFN</strong><span>Admissibilité, activité, TDFN autorisé, seuil des 10 %, éventuelle règle de l’art. 88.</span></li><li><strong>Choisir la rubrique</strong><span>Déterminer où le flux doit apparaître dans le décompte avant de calculer.</span></li><li><strong>Calculer</strong><span>Utiliser la bonne base, le bon signe et le bon taux.</span></li><li><strong>Réconcilier</strong><span>Comparer produits, bases déclarées, corrections et créance fiscale.</span></li><li><strong>Documenter</strong><span>Conserver la preuve du traitement retenu et la source officielle utilisée.</span></li></ol>
+    </section>
+
+    <div class="memo-source-links memo-source-links--pro">
+      <a href="https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires" target="_blank" rel="noopener noreferrer">AFC — TDFN</a>
+      <a href="https://www.estv.admin.ch/fr/tva-methode-des-taux-de-la-dette-fiscale-nette-2025" target="_blank" rel="noopener noreferrer">AFC — réforme 2025</a>
+      <a href="https://www.fedlex.admin.ch/eli/cc/2009/615/fr" target="_blank" rel="noopener noreferrer">LTVA</a>
+      <a href="https://www.fedlex.admin.ch/eli/cc/2009/828/fr" target="_blank" rel="noopener noreferrer">OTVA</a>
+      <a href="https://www.fedlex.admin.ch/eli/cc/2024/500/fr" target="_blank" rel="noopener noreferrer">Ordonnance TDFN</a>
+      <button class="btn small" type="button" data-action="open-sources">Référentiel officiel complet</button>
+    </div>
+  </div>
+</dialog>
+`;
+
+          html = html.slice(0, start) + memo + html.slice(end);
+          html = html.replace('styles.css?v=16.3.0', 'styles.css?v=16.4.0');
+          html = html.replace(
+            'Mise à jour : 16.08.2026 · contenu fiscal intégré après contrôle ciblé des sources principales le 16.08.2026.',
+            'Mise à jour : 16.08.2026 · mémo professionnel enrichi et contenu fiscal contrôlé sur les sources principales.'
+          );
+          fs.writeFileSync('index.html', html, 'utf8');
+
+          let css = fs.readFileSync('styles.css', 'utf8');
+          const marker = '/* v16.4 — professional TDFN memo */';
+          if (!css.includes(marker)) {
+            css += String.raw`
+
+/* v16.4 — professional TDFN memo */
+.memo-content--pro{gap:12px}
+.memo-intro{display:grid;grid-template-columns:minmax(220px,.7fr) 1.3fr;gap:14px;align-items:center;padding:14px 16px;border-radius:11px;background:linear-gradient(135deg,#edf6f8,#f8fbfc);border:1px solid #d5e6eb}
+.memo-intro strong{display:block;color:var(--brand-dark);font-size:1rem}.memo-intro span{display:block;margin-top:2px;color:var(--muted);font-size:.8125rem}.memo-intro p{margin:0;color:#455c66;font-size:.875rem;line-height:1.5}
+.memo-section-title{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin:7px 2px 0;padding:10px 2px 3px;border-bottom:1px solid var(--line)}.memo-section-title span{color:var(--brand-dark);font-size:.92rem;font-weight:850;text-transform:uppercase;letter-spacing:.045em}.memo-section-title small{color:var(--muted);font-size:.8125rem}
+.memo-grid{display:grid;gap:8px;margin:9px 0}.memo-grid--two{grid-template-columns:1fr 1fr}.memo-point{padding:10px 11px;border:1px solid var(--line);border-radius:9px;background:#fff}.memo-point strong{display:block;color:#294b58;font-size:.85rem}.memo-point span{display:block;margin-top:3px;color:var(--muted);font-size:.8125rem;line-height:1.45}
+.memo-detail{overflow:hidden;border:1px solid var(--line);border-radius:10px;background:#fff}.memo-detail>summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;cursor:pointer;list-style:none}.memo-detail>summary::-webkit-details-marker{display:none}.memo-detail>summary::after{content:'+';grid-column:3;color:var(--brand);font-size:1rem;font-weight:900}.memo-detail[open]>summary::after{content:'−'}.memo-detail>summary span{color:var(--brand-dark);font-size:.9rem;font-weight:850}.memo-detail>summary small{color:var(--muted);font-size:.75rem;text-align:right}.memo-detail[open]>summary{background:#f8fbfc;border-bottom:1px solid var(--line)}.memo-detail__body{padding:12px 14px 14px}.memo-detail__body p{margin:5px 0;color:#52656e;font-size:.875rem}.memo-detail__body ul{margin:7px 0;padding-left:20px;color:#52656e;font-size:.875rem}.memo-detail__body li{margin:4px 0}
+.memo-callout{display:grid;gap:3px;margin:9px 0;padding:10px 12px;border-left:4px solid var(--brand);border-radius:0 9px 9px 0;background:var(--brand-soft)}.memo-callout strong{font-size:.85rem;color:var(--brand-dark)}.memo-callout span{color:#49616c;font-size:.8125rem;line-height:1.45}
+.memo-source-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}.memo-source-row .memo-inline-source{margin-top:0}
+.memo-traps{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.memo-traps span{display:inline-flex;align-items:center;min-height:31px;padding:5px 9px;border:1px solid #d7e2e6;border-radius:999px;background:#f8fbfc;color:#3f5964;font-size:.78rem;font-weight:750}.memo-traps--compact{margin-top:9px}.memo-rule--traps{background:#fbfcfc}.memo-rule--reflex{border-color:#cfe0e6;background:#f9fcfd}
+.memo-reflex-list{display:grid;gap:7px!important;padding-left:0!important;list-style:none}.memo-reflex-list li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;padding:7px 0;border-bottom:1px solid #e8edef}.memo-reflex-list li:last-child{border-bottom:0}.memo-reflex-list strong{color:var(--brand-dark);font-size:.84rem}.memo-reflex-list span{color:var(--muted);font-size:.8125rem;line-height:1.45}
+.memo-source-links--pro{padding-top:4px;border-top:1px solid var(--line)}
+@media(max-width:700px){.memo-intro{grid-template-columns:1fr}.memo-grid--two{grid-template-columns:1fr}.memo-section-title{display:grid;gap:2px}.memo-detail>summary{grid-template-columns:minmax(0,1fr) auto}.memo-detail>summary small{display:none}.memo-detail>summary::after{grid-column:2}.memo-reflex-list li{grid-template-columns:1fr;gap:2px}.memo-traps span{width:100%;border-radius:8px}.memo-source-row{display:grid}.memo-source-row .memo-inline-source{width:100%;justify-content:space-between}}
+`;
+          }
+          fs.writeFileSync('styles.css', css, 'utf8');
+
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          pkg.version = '16.4.0';
+          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n', 'utf8');
+          NODE
+
+      - name: Validate memo release
+        shell: bash
+        run: |
+          node --check app.js
+          node --check data.js
+          node --check evaluation.js
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const html = fs.readFileSync('index.html','utf8');
+          const css = fs.readFileSync('styles.css','utf8');
+          const { CASES } = await import('./data.js');
+          if (CASES.filter(c => !c.excludeFromProgress).length !== 43) throw new Error('Expected 43 evaluated cases');
+          const required = [
+            'Mémo professionnel TDFN',
+            'art. 81, al. 3, OTVA',
+            'trois périodes fiscales précédentes',
+            'art. 88, al. 2, OTVA',
+            'art. 77, al. 3, OTVA',
+            '240 jours',
+            'années écoulées',
+            'CHF 5’005’000',
+            'Pièges fréquents',
+            'Réflexe fiduciaire'
+          ];
+          for (const text of required) if (!html.includes(text)) throw new Error(`Missing memo text: ${text}`);
+          if (!css.includes('v16.4 — professional TDFN memo')) throw new Error('Memo CSS missing');
+          if (!html.includes('styles.css?v=16.4.0')) throw new Error('CSS cache version missing');
+          if (html.includes('audit-fixes.js')) throw new Error('Runtime audit patch must remain absent');
+          console.log('Professional memo validated; 43 evaluated cases preserved.');
+          NODE
+
+      - name: Commit memo update
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html styles.css package.json
+          git rm --ignore-unmatch .github/workflows/memo-pro-v16-4.yml
+          git commit -m "feat: expand professional TDFN memo [memo-v16.4]"
+          git push origin memo-pro-v16.4
