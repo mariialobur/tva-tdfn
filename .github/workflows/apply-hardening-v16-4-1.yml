@@ -1,0 +1,11 @@
+name: Apply v16.4.1 hardening
+on:
+  push:
+    branches: [hardening-v16.4.1]
+permissions:
+  contents: write
+jobs:
+  registered:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Temporary registration workflow; branch version performs the hardening."
