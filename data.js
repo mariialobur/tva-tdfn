@@ -1,7 +1,6 @@
-// v16-final-content · 12.08.2026
-// v16.2-audited-content · 12.08.2026
-// Données intégrées — version 16.2.0
-// Cas, sources et tableaux de transition sont réunis dans un module unique.
+// v16.3-clean · 16.08.2026
+// Données fiscales intégrées dans la source de vérité après revue ciblée Fedlex/AFC.
+// Aucun patch d’exécution n’est requis pour corriger le contenu.
 
 export const OFFICIAL_SOURCES = [
   {
@@ -35,9 +34,9 @@ export const OFFICIAL_SOURCES = [
   {
     "id": "rates",
     "title": "Ordonnance AFC sur la valeur des TDFN — RS 641.202.62",
-    "scope": "TDFN par branche et activité dès 01.01.2025",
+    "scope": "Référence normative prioritaire pour le TDFN exact par branche et activité dès le 01.01.2025",
     "url": "https://www.fedlex.admin.ch/eli/cc/2024/500/fr",
-    "status": "Droit fédéral"
+    "status": "Droit fédéral · référence pour la valeur exacte des TDFN"
   },
   {
     "id": "changes",
@@ -112,7 +111,7 @@ export const OFFICIAL_SOURCES = [
   {
     "id": "tdfn-2025-additional-rates",
     "title": "AFC — TDFN dès 2025: activités et taux supplémentaires",
-    "scope": "Plus de deux TDFN, règle des 10 % et déclaration directe d’un taux supplémentaire avec contrôle ultérieur de l’AFC",
+    "scope": "Vue d’ensemble de la réforme 2025 (plusieurs TDFN, règle des 10 %). Pour le taux exact d’une activité, contrôler l’ordonnance AFC RS 641.202.62.",
     "url": "https://www.estv.admin.ch/fr/tva-methode-des-taux-de-la-dette-fiscale-nette-2025",
     "status": "Source administrative actuelle"
   },
@@ -418,7 +417,7 @@ export const CASES = [
     "description": "Le cas applique les TDFN en vigueur dès 2025 à trois activités distinctes: commerce d’articles de sport hors vêtements, location et services sur skis ou snowboards.",
     "mission": "Réconciliez CHF 300’000 TTC avec trois comptes de produits, puis calculez la dette TDFN activité par activité.",
     "clientNote": "Les factures restent établies aux taux légaux applicables; les montants du dossier sont des contre-prestations TTC.",
-    "afcNote": "Selon la table AFC 2025: commerce d’articles de sport hors vêtements 2,1 %, location 3,7 % et services sur skis ou snowboards 4,5 %. La dette totale du cas est CHF 8’700; le taux moyen résultant de 2,90 % est un indicateur de synthèse, pas un TDFN à appliquer.",
+    "afcNote": "TDFN contrôlés dans l’ordonnance AFC RS 641.202.62 en vigueur dès 2025: commerce d’articles de sport hors vêtements 2,1 %, location 3,7 % et services/réparations sur articles de sport 4,5 %. La dette totale du cas est CHF 8’700; le taux moyen résultant de 2,90 % est un indicateur de synthèse, jamais un TDFN à appliquer.",
     "given": [
       {
         "label": "Commerce d’articles de sport hors vêtements",
@@ -450,12 +449,13 @@ export const CASES = [
       "Chaque activité représente 20 % ou plus du ch. 299 dans ce cas.",
       "La somme des bases du calcul doit correspondre au ch. 299."
     ],
-    "legal": "AFC — TDFN dès 2025, exemple du magasin d’articles de sport · art. 37 LTVA",
+    "legal": "Ordonnance AFC sur la valeur des TDFN — RS 641.202.62 · art. 37 LTVA · art. 86 à 88 OTVA",
     "sourceIds": [
-      "tdfn-2025-additional-rates",
       "rates",
+      "otva",
+      "ltva",
       "prototype",
-      "ltva"
+      "tdfn-2025-additional-rates"
     ],
     "rates": [
       {
@@ -707,7 +707,7 @@ export const CASES = [
     "conceptualNote": "Depuis 2025, le commerce d’articles de sport hors vêtements relève ici de 2,1 %, le commerce de vêtements de sport de 3,0 %, la location de 3,7 % et les services sur skis ou snowboards de 4,5 %. Les quatre activités dépassent 10 % du chiffre d’affaires imposable du cas et restent donc ventilées séparément. Le ch. 299 est CHF 300’000, après déduction de CHF 30’000 d’exportations du ch. 200.",
     "mission": "Saisissez le chiffre d’affaires au ch. 200, déduisez les exportations au ch. 220, puis réconciliez quatre bases TDFN distinctes avec le ch. 299.",
     "clientNote": "Les CHF 30’000 d’exportations disposent des preuves requises et ne sont inclus dans aucune base TDFN suisse. Les quatre activités suisses sont suivies sur des comptes de produits distincts.",
-    "afcNote": "La table AFC 2025 distingue désormais, pour ce dossier, articles de sport hors vêtements 2,1 %, vêtements de sport 3,0 %, location 3,7 % et services sur skis ou snowboards 4,5 %.",
+    "afcNote": "Les TDFN exacts utilisés dans ce cas sont contrôlés dans l’ordonnance AFC RS 641.202.62: commerce d’articles de sport hors vêtements 2,1 %, vêtements de sport 3,0 %, location 3,7 % et services/réparations 4,5 %. Les exportations documentées restent hors des bases TDFN suisses.",
     "given": [
       {
         "label": "Articles de sport hors vêtements — Suisse",
@@ -752,13 +752,13 @@ export const CASES = [
       "Chaque activité suisse du cas dépasse 10 % du chiffre d’affaires imposable et reste ventilée séparément.",
       "L’impôt TDFN total est CHF 9’070."
     ],
-    "legal": "Art. 23 et 37 LTVA · art. 84, 86 et 88 OTVA · ordonnance AFC sur la valeur des TDFN dès 2025",
+    "legal": "Ordonnance AFC sur la valeur des TDFN — RS 641.202.62 · art. 23 et 37 LTVA · art. 86 à 88 OTVA",
     "sourceIds": [
-      "tdfn-2025-additional-rates",
       "rates",
       "otva",
-      "afc-main",
-      "forms"
+      "ltva",
+      "prototype",
+      "tdfn-2025-additional-rates"
     ],
     "rates": [
       {
@@ -769,7 +769,7 @@ export const CASES = [
       },
       {
         "label": "Vêtements de sport — Suisse",
-        "rate": 3.0,
+        "rate": 3,
         "base": 50000,
         "tax": 1500
       },
@@ -819,7 +819,7 @@ export const CASES = [
     "type": "quiz",
     "description": "La règle officielle vise une part supérieure à 10 % du chiffre d’affaires total imposable. Une activité exactement à 10,0 % ne franchit pas ce seuil.",
     "conceptualNote": "Le dénominateur du cas est CHF 500’000 de chiffre d’affaires total imposable. La location représente exactement 10,0 %, tandis que la réparation représente 10,1 %. Le cas vérifie uniquement le franchissement du seuil; l’attribution concrète des TDFN reste à documenter selon les activités réelles et le contrôle de l’AFC.",
-    "mission": "Calculez les deux pourcentages et identifiez l’activité qui déclenche l’application d’un TDFN supplémentaire selon la règle «supérieure à 10 %».",
+    "mission": "Calculez les deux pourcentages et identifiez l’activité qui franchit, dans ce calcul, le seuil strictement supérieur à 10 %. Ce cas ne décide pas à lui seul de l’autorisation effective d’un TDFN.",
     "clientNote": "Les trois activités sont enregistrées sur des comptes de produits distincts et rapprochées avec le chiffre d’affaires imposable.",
     "afcNote": "La formulation officielle est «supérieure à 10 %», et non «égale ou supérieure à 10 %».",
     "given": [
@@ -854,7 +854,7 @@ export const CASES = [
       "La règle vise une part strictement supérieure à 10 %.",
       "La ventilation comptable doit permettre de reproduire le test."
     ],
-    "legal": "Art. 37 LTVA · pratique AFC TDFN dès 2025 · règle des 10 %",
+    "legal": "Art. 86 et 88 OTVA · art. 37 LTVA · règle des 10 %",
     "sourceIds": [
       "tdfn-2025-additional-rates",
       "otva",
@@ -872,13 +872,13 @@ export const CASES = [
         "why": "CHF 50’000 / CHF 500’000 = 10,0 %."
       },
       {
-        "q": "La location franchit-elle à elle seule le seuil formulé comme «supérieure à 10 %»?",
+        "q": "Quelle activité franchit ici le seuil strictement supérieur à 10 % selon ce seul calcul?",
         "options": [
           "Oui",
           "Non"
         ],
         "answer": 1,
-        "why": "Une part exactement égale à 10,0 % n’est pas supérieure à 10 %."
+        "why": "La réparation atteint 10,1 % tandis que la location atteint exactement 10,0 %. Le seuil strict est donc franchi uniquement par la réparation dans ce calcul; l’autorisation effective s’apprécie ensuite selon les règles temporelles de l’art. 86 OTVA."
       },
       {
         "q": "Quelle part représente la réparation?",
@@ -901,7 +901,7 @@ export const CASES = [
         "why": "La réparation dépasse 10 %; la location atteint exactement 10 % sans le dépasser."
       }
     ],
-    "lesson": "Dans un contrôle réel, une différence de 0,1 point peut changer la conclusion. Le calcul du dénominateur et la séparation comptable des activités doivent donc être reproductibles."
+    "lesson": "Une différence de 0,1 point peut changer l’analyse du seuil. Attention: une activité qui ne franchit pas le seuil n’est pas ignorée. Si son TDFN propre n’a pas été autorisé, l’art. 88, al. 2, OTVA détermine quel TDFN autorisé doit être appliqué à son chiffre d’affaires."
   },
   {
     "id": "E",
@@ -949,11 +949,12 @@ export const CASES = [
       "La prévision couvre les douze premiers mois.",
       "Les activités au même TDFN sont regroupées."
     ],
-    "legal": "AFC — TDFN dès 2025, règle des 10 % · Info TVA 12",
+    "legal": "Art. 86, al. 2, let. a, et al. 3 OTVA · art. 37 LTVA",
     "sourceIds": [
       "tdfn-2025-additional-rates",
       "info12-154",
-      "rates"
+      "rates",
+      "otva"
     ],
     "questions": [
       {
@@ -990,7 +991,7 @@ export const CASES = [
         "why": "La location atteint 11 %, alors que la réparation reste à 9 %."
       }
     ],
-    "lesson": "Pour un nouvel assujetti ou une nouvelle activité, la référence est la prévision des douze premiers mois."
+    "lesson": "Pour un nouvel assujetti ou le début d’une nouvelle activité, le test des 10 % repose sur les chiffres d’affaires escomptés des douze premiers mois. Les activités soumises au même TDFN sont additionnées pour ce test."
   },
   {
     "id": "F",
@@ -1003,10 +1004,10 @@ export const CASES = [
     "level": "Avancé",
     "risk": "high",
     "type": "quiz",
-    "description": "Pour une entreprise existante, un dépassement devient régulier seulement lorsqu’il se produit durant trois périodes fiscales consécutives.",
+    "description": "Pour un assujetti déjà établi, la limite de 10 % est appréciée sur les trois périodes fiscales précédentes. Elle est considérée comme dépassée lorsque la part de l’activité concernée est supérieure à 10 % au cours de chacune de ces trois périodes.",
     "mission": "Examinez 2025, 2026 et 2027, regroupez les activités soumises au même TDFN et déterminez le traitement dès 2028.",
     "clientNote": "Les pourcentages sont déjà calculés sur le chiffre d’affaires imposable total de chaque période.",
-    "afcNote": "Si la part dépasse 10 % pendant trois périodes consécutives, le TDFN supplémentaire est demandé à partir de la quatrième période.",
+    "afcNote": "Art. 86, al. 2, let. b, OTVA: pour les autres assujettis, la référence est constituée par les trois périodes fiscales précédentes. Le dépassement doit être supérieur à 10 % dans chacune d’elles; les activités soumises au même TDFN sont additionnées selon l’al. 3.",
     "given": [
       {
         "label": "Location d’articles de sport",
@@ -1038,11 +1039,11 @@ export const CASES = [
       "La part doit être strictement supérieure à 10 % dans chacune.",
       "La conséquence intervient au début de la quatrième période."
     ],
-    "legal": "Info TVA 12 — règle des 10 %, trois périodes fiscales consécutives et effet dès la quatrième",
+    "legal": "Art. 86, al. 2, let. b, al. 3 et 4 OTVA · art. 37 LTVA · Info TVA 12",
     "sourceIds": [
-      "tdfn-2025-additional-rates",
+      "otva",
       "info12-154",
-      "rates"
+      "ltva"
     ],
     "questions": [
       {
@@ -1729,7 +1730,7 @@ export const CASES = [
   {
     "id": "K2",
     "tab": "K2 · Ordinateur",
-    "title": "Un ordinateur — calculer la part résiduelle selon les périodes fiscales",
+    "title": "Un ordinateur — calculer la part résiduelle selon les années écoulées",
     "entity": "Digital Comptabilité Sàrl",
     "sector": "Services",
     "location": "Renens",
@@ -1738,7 +1739,7 @@ export const CASES = [
     "risk": "medium",
     "type": "quiz",
     "description": "La valeur résiduelle TVA ne suit pas l’amortissement comptable. Le calcul part de l’impôt préalable effectivement déduit.",
-    "conceptualNote": "Pour ce cas pédagogique, deux périodes fiscales sont prises en compte pour la dépréciation à raison de 1/5 par période.",
+    "conceptualNote": "Pour ce cas pédagogique, deux années écoulées sont prises en compte pour la dépréciation à raison de 1/5 par année écoulée.",
     "mission": "Calculez la part résiduelle, la correction et la rubrique du dernier décompte selon la méthode effective.",
     "clientNote": "L’ordinateur est affecté exclusivement à l’activité imposable et aucun changement d’utilisation n’est intervenu.",
     "afcNote": "L’impôt préalable de CHF 810 a été entièrement admis lors de l’acquisition. Mise en service le 01.01.2025.",
@@ -1755,7 +1756,7 @@ export const CASES = [
         "tag": "Départ"
       },
       {
-        "label": "Périodes fiscales prises en compte",
+        "label": "Années écoulées prises en compte",
         "amount": 2,
         "note": "2025 et 2026.",
         "tag": "2 × 20 %"
@@ -1768,10 +1769,10 @@ export const CASES = [
     ],
     "checks": [
       "Utiliser l’impôt préalable admis, pas la valeur comptable nette.",
-      "Déterminer les périodes fiscales selon les règles TVA.",
+      "Déterminer les années écoulées selon les règles TVA.",
       "Reporter le résultat au ch. 415 du dernier décompte selon la méthode effective."
     ],
-    "legal": "Art. 31 et 37 LTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 415 · art. 79 OTVA",
+    "legal": "Art. 31, al. 3, et art. 37 LTVA · art. 79 OTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 415",
     "sourceIds": [
       "tdfn-transition-2025",
       "afc-main",
@@ -1781,7 +1782,7 @@ export const CASES = [
     ],
     "questions": [
       {
-        "q": "Quelle part résiduelle reste après deux périodes fiscales à 20 % chacune?",
+        "q": "Quelle part résiduelle reste après deux années écoulées à 20 % chacune?",
         "options": [
           "40 %",
           "60 %",
@@ -1833,11 +1834,11 @@ export const CASES = [
     "level": "Transition · application",
     "risk": "high",
     "type": "quiz",
-    "description": "Un stock encore disponible conserve ici 100 % de l’impôt préalable admis, tandis qu’une machine utilisée perd 1/5 par période fiscale.",
+    "description": "Un stock encore disponible conserve ici 100 % de l’impôt préalable admis, tandis qu’une machine utilisée perd 1/5 par année écoulée.",
     "conceptualNote": "Le montant du stock est déjà rapproché avec les factures et représente l’impôt préalable effectivement déduit; il ne provient pas d’un taux appliqué globalement à la valeur comptable.",
     "mission": "Calculez séparément la correction du stock et celle de la machine, puis totalisez le ch. 415.",
     "clientNote": "Le stock est composé uniquement de marchandises achetées en Suisse, encore non vendues et non utilisées au 31.12.2026.",
-    "afcNote": "La machine a été mise en service le 01.01.2026 et une période fiscale est prise en compte.",
+    "afcNote": "La machine a été mise en service le 01.01.2026 et une année écoulée est prise en compte.",
     "given": [
       {
         "label": "IP admis sur le stock encore disponible",
@@ -1853,7 +1854,7 @@ export const CASES = [
       },
       {
         "label": "Part résiduelle de la machine",
-        "note": "80 % après une période fiscale.",
+        "note": "80 % après une année écoulée.",
         "tag": "4/5"
       }
     ],
@@ -1862,7 +1863,7 @@ export const CASES = [
       "Ne pas appliquer automatiquement 8,1 % à la valeur comptable du stock.",
       "Séparer les biens non utilisés des immobilisations déjà utilisées."
     ],
-    "legal": "Art. 31 et 37 LTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 415 · art. 79 OTVA",
+    "legal": "Art. 31, al. 3, et art. 37 LTVA · art. 79 OTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 415",
     "sourceIds": [
       "tdfn-transition-2025",
       "afc-main",
@@ -1929,7 +1930,7 @@ export const CASES = [
     "conceptualNote": "Le cas suppose qu’une licence ERP perpétuelle et un développement individualisé constituent un résultat encore disponible. Les abonnements et prestations courantes des périodes écoulées sont consommés; aucune charge payée d’avance ne couvre une période postérieure au changement.",
     "mission": "Séparez les prestations encore disponibles des charges déjà consommées, puis calculez la correction ERP.",
     "clientNote": "L’ERP continue d’être exploité après le passage. Les frais annuels de support, de SaaS et d’hébergement prennent fin au 31.12.2026 et ne comprennent aucune avance pour 2027.",
-    "afcNote": "L’impôt préalable admis sur la licence perpétuelle et le développement durable est de CHF 1’620; une période fiscale est prise en compte.",
+    "afcNote": "L’impôt préalable admis sur la licence perpétuelle et le développement durable est de CHF 1’620; une année écoulée est prise en compte.",
     "given": [
       {
         "label": "Licence ERP perpétuelle et développement individualisé",
@@ -1949,7 +1950,7 @@ export const CASES = [
       },
       {
         "label": "Part résiduelle ERP",
-        "note": "80 % après une période fiscale.",
+        "note": "80 % après une année écoulée.",
         "tag": "4/5"
       }
     ],
@@ -1958,7 +1959,7 @@ export const CASES = [
       "Exclure maintenance et exploitation courantes du calcul.",
       "Éviter de reprendre automatiquement toutes les factures de services des cinq dernières années."
     ],
-    "legal": "Art. 31 et 37 LTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 415 · art. 79 OTVA",
+    "legal": "Art. 31, al. 3, et art. 37 LTVA · art. 79 OTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 415",
     "sourceIds": [
       "tdfn-transition-2025",
       "afc-main",
@@ -2015,7 +2016,7 @@ export const CASES = [
     "conceptualNote": "Le cas fournit directement l’impôt préalable définitivement admis afin de concentrer l’exercice sur la transition de méthode.",
     "mission": "Identifiez la bonne base, appliquez la part résiduelle et documentez le ch. 415.",
     "clientNote": "L’équipement sert à des activités imposables et exclues. La clé d’utilisation a déjà été contrôlée dans les périodes antérieures.",
-    "afcNote": "TVA de la facture CHF 8’100; impôt préalable définitivement admis après corrections CHF 6’075; une période fiscale écoulée.",
+    "afcNote": "TVA de la facture CHF 8’100; impôt préalable définitivement admis après corrections CHF 6’075; une année écoulée écoulée.",
     "given": [
       {
         "label": "TVA figurant sur la facture",
@@ -2031,7 +2032,7 @@ export const CASES = [
       },
       {
         "label": "Part résiduelle",
-        "note": "80 % après une période fiscale.",
+        "note": "80 % après une année écoulée.",
         "tag": "4/5"
       }
     ],
@@ -2040,7 +2041,7 @@ export const CASES = [
       "Conserver la clé d’affectation et son rapprochement.",
       "Ne pas recalculer rétroactivement une déduction fictive de 100 %."
     ],
-    "legal": "Art. 31 et 37 LTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 415 · art. 79 OTVA",
+    "legal": "Art. 31, al. 3, et art. 37 LTVA · art. 79 OTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 415",
     "sourceIds": [
       "tdfn-transition-2025",
       "afc-main",
@@ -2283,7 +2284,7 @@ export const CASES = [
     "risk": "medium",
     "type": "quiz",
     "description": "L’entreprise n’a pas déduit l’impôt préalable pendant la période TDFN. La part correspondant à la valeur résiduelle peut devenir déductible lors du passage à la méthode effective.",
-    "conceptualNote": "L’ordinateur a été mis en service le 01.01.2025. Deux périodes fiscales sont prises en compte à raison de 1/5 chacune; l’utilisation future ouvre entièrement droit à déduction.",
+    "conceptualNote": "L’ordinateur a été mis en service le 01.01.2025. Deux années écoulées sont prises en compte à raison de 1/5 chacune; l’utilisation future ouvre entièrement droit à déduction.",
     "mission": "Calculez la part résiduelle et le montant à porter au ch. 410 du premier décompte effectif.",
     "clientNote": "La facture suisse documente une TVA de CHF 810. L’actif est utilisé exclusivement pour l’activité imposable après le changement.",
     "afcNote": "La valeur comptable commerciale n’est pas la base du calcul TVA.",
@@ -2295,7 +2296,7 @@ export const CASES = [
         "tag": "Base"
       },
       {
-        "label": "Périodes fiscales prises en compte",
+        "label": "Années écoulées prises en compte",
         "amount": 2,
         "note": "2025 et 2026.",
         "tag": "2 × 20 %"
@@ -2316,7 +2317,7 @@ export const CASES = [
       "Appliquer 60 % de valeur résiduelle.",
       "Déduire CHF 486 au ch. 410 du premier décompte effectif."
     ],
-    "legal": "Art. 32 et 37 LTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 410 · art. 81 OTVA",
+    "legal": "Art. 32 et art. 31, al. 3, LTVA · art. 37 LTVA · art. 81 OTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 410",
     "sourceIds": [
       "tdfn-transition-2025",
       "afc-main",
@@ -2333,7 +2334,7 @@ export const CASES = [
           "80 %"
         ],
         "answer": 1,
-        "why": "Deux périodes à 20 % représentent 40 % de dépréciation; il reste 60 %."
+        "why": "Deux années écoulées à 20 % représentent 40 % de dépréciation; il reste 60 %."
       },
       {
         "q": "Quel montant peut être revendiqué?",
@@ -2369,7 +2370,7 @@ export const CASES = [
     "level": "Transition inverse · application",
     "risk": "high",
     "type": "quiz",
-    "description": "Un stock non utilisé conserve ici 100 % de l’impôt grevant, tandis qu’une machine déjà utilisée conserve 80 % après une période fiscale.",
+    "description": "Un stock non utilisé conserve ici 100 % de l’impôt grevant, tandis qu’une machine déjà utilisée conserve 80 % après une année écoulée.",
     "conceptualNote": "Les montants de TVA ont été rapprochés avec les factures et l’inventaire. Aucun calcul global à partir de la valeur comptable du stock n’est admis.",
     "mission": "Calculez chaque ligne et totalisez la déduction du premier décompte effectif.",
     "clientNote": "Le stock n’a pas encore été vendu ni utilisé. La machine a été mise en service le 01.01.2026 et sera affectée entièrement à l’activité imposable.",
@@ -2398,7 +2399,7 @@ export const CASES = [
       "Machine: CHF 4’050 × 80 % = CHF 3’240.",
       "Total ch. 410: CHF 6’480."
     ],
-    "legal": "Art. 32 et 37 LTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 410 · art. 81 OTVA",
+    "legal": "Art. 32 et art. 31, al. 3, LTVA · art. 37 LTVA · art. 81 OTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 410",
     "sourceIds": [
       "tdfn-transition-2025",
       "afc-main",
@@ -2454,7 +2455,7 @@ export const CASES = [
     "description": "Le dégrèvement ultérieur ne vise pas toutes les prestations payées sous TDFN. Il faut déterminer si leur résultat est encore disponible au moment du changement.",
     "conceptualNote": "Le cas retient une licence ERP perpétuelle et un développement individualisé encore exploités. Le SaaS, l’hébergement, le support, la publicité et la comptabilité des périodes écoulées sont consommés; aucune avance 2027 n’existe.",
     "mission": "Qualifiez chaque prestation et calculez uniquement le montant lié à l’ERP.",
-    "clientNote": "L’impôt grevant documenté sur l’ERP est CHF 1’620. Une période fiscale est prise en compte et l’utilisation future ouvre entièrement droit.",
+    "clientNote": "L’impôt grevant documenté sur l’ERP est CHF 1’620. Une année écoulée est prise en compte et l’utilisation future ouvre entièrement droit.",
     "afcNote": "Les prestations courantes consommées ne sont pas transformées en valeur résiduelle par le seul passage à la méthode effective.",
     "given": [
       {
@@ -2481,7 +2482,7 @@ export const CASES = [
       "ERP: CHF 1’620 × 80 % = CHF 1’296.",
       "Autres prestations: aucune déduction dans les hypothèses."
     ],
-    "legal": "Art. 32 et 37 LTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 410 · art. 81 OTVA",
+    "legal": "Art. 32 et art. 31, al. 3, LTVA · art. 37 LTVA · art. 81 OTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 410",
     "sourceIds": [
       "tdfn-transition-2025",
       "afc-main",
@@ -2535,7 +2536,7 @@ export const CASES = [
     "risk": "high",
     "type": "quiz",
     "description": "La valeur résiduelle ne suffit pas. Le dégrèvement est limité à la part d’utilisation qui ouvrira droit à déduction sous la méthode effective.",
-    "conceptualNote": "L’équipement a supporté CHF 8’100 de TVA documentée. Après une période fiscale, la part résiduelle est 80 %. L’utilisation future est prévue à 75 % pour des prestations imposables et à 25 % pour des prestations exclues.",
+    "conceptualNote": "L’équipement a supporté CHF 8’100 de TVA documentée. Après une année écoulée, la part résiduelle est 80 %. L’utilisation future est prévue à 75 % pour des prestations imposables et à 25 % pour des prestations exclues.",
     "mission": "Appliquez successivement la part résiduelle et la part ouvrant droit à déduction.",
     "clientNote": "La clé future de 75/25 est fondée sur un budget d’activité et sera revue si l’utilisation réelle diverge.",
     "afcNote": "Le cas ne suppose pas un droit rétroactif de 100 %: la déduction est limitée à l’affectation ouvrant droit.",
@@ -2567,7 +2568,7 @@ export const CASES = [
       "Documenter la clé future.",
       "Ne pas confondre la part résiduelle avec la part ouvrant droit."
     ],
-    "legal": "Art. 32 et 37 LTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 410 · art. 81 OTVA",
+    "legal": "Art. 32 et art. 31, al. 3, LTVA · art. 37 LTVA · art. 81 OTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 410",
     "sourceIds": [
       "tdfn-transition-2025",
       "afc-main",
@@ -2612,7 +2613,7 @@ export const CASES = [
   {
     "id": "L6",
     "tab": "L6 · Immeuble expert",
-    "title": "Immeuble propre — valeur résiduelle sur vingt périodes",
+    "title": "Immeuble propre — valeur résiduelle sur vingt ans",
     "entity": "Administration Immo SA",
     "sector": "Entreprise avec bâtiment administratif propre",
     "location": "Vaud",
@@ -2620,11 +2621,11 @@ export const CASES = [
     "level": "Transition inverse · expert",
     "risk": "high",
     "type": "quiz",
-    "description": "Pour un immeuble, la dépréciation TVA se calcule en principe à raison de 1/20 par période fiscale. Les hypothèses doivent être strictement encadrées.",
+    "description": "Pour un bien immobilier, la valeur résiduelle TVA est réduite linéairement de 1/20 par année écoulée. Les hypothèses doivent être strictement encadrées.",
     "conceptualNote": "Le cas porte uniquement sur des travaux augmentant la valeur d’un bâtiment propre utilisé intégralement pour une activité imposable. Le terrain, l’entretien courant, les subventions, l’utilisation mixte et les règles spéciales de transformation importante sont exclus.",
-    "mission": "Calculez la part résiduelle après trois périodes fiscales et le montant du ch. 410.",
+    "mission": "Calculez la part résiduelle après trois années écoulées et le montant du ch. 410.",
     "clientNote": "Travaux mis en service le 01.01.2024; impôt grevant documenté CHF 16’200; utilisation ouvrant droit 100 % après le changement.",
-    "afcNote": "Trois périodes représentent 15 % de dépréciation; la part résiduelle est 85 %.",
+    "afcNote": "Trois années écoulées représentent 15 % de réduction; la part résiduelle est 85 %.",
     "given": [
       {
         "label": "Impôt grevant sur travaux augmentant la valeur",
@@ -2633,7 +2634,7 @@ export const CASES = [
         "tag": "Base"
       },
       {
-        "label": "Périodes fiscales prises en compte",
+        "label": "Années écoulées prises en compte",
         "amount": 3,
         "note": "2024, 2025 et 2026.",
         "tag": "3 × 5 %"
@@ -2651,11 +2652,11 @@ export const CASES = [
     ],
     "checks": [
       "Exclure terrain et frais d’entretien courant.",
-      "Appliquer 5 % par période fiscale.",
+      "Appliquer 5 % par année écoulée.",
       "CHF 16’200 × 85 % = CHF 13’770.",
       "Conserver factures, mise en service, affectation et historique des corrections."
     ],
-    "legal": "Art. 32 et 37 LTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 410 · art. 81 OTVA",
+    "legal": "Art. 32 et art. 31, al. 3, LTVA · art. 37 LTVA · art. 81 OTVA · pratique AFC applicable aux changements de méthode dès 2025 · ch. 410",
     "sourceIds": [
       "tdfn-transition-2025",
       "afc-main",
@@ -2665,7 +2666,7 @@ export const CASES = [
     ],
     "questions": [
       {
-        "q": "Quelle part résiduelle subsiste après trois périodes à 5 %?",
+        "q": "Quelle part résiduelle subsiste après trois années écoulées à 5 %?",
         "options": [
           "15 %",
           "80 %",
@@ -2804,9 +2805,9 @@ export const CASES = [
     "period": "S1 2026",
     "level": "Avancé",
     "risk": "medium",
-    "description": "Les autres mouvements de fonds sont déclarés séparément et ne sont pas ajoutés au chiffre d’affaires imposable.",
+    "description": "Une subvention ou autre contribution de droit public, dûment qualifiée dans le dossier, est déclarée séparément et n’est pas ajoutée à la contre-prestation imposable.",
     "mission": "Déclarez les honoraires au ch. 200, puis reportez la subvention au ch. 900 et le dividende au ch. 910.",
-    "clientNote": "Les honoraires imposables sont facturés au taux légal; la subvention et le dividende suivent leur qualification propre.",
+    "clientNote": "La décision cantonale désigne expressément le versement de CHF 20’000 comme subvention / contribution de droit public. Dans les hypothèses du cas, aucune contre-prestation individualisable n’est fournie au canton en échange de ce montant.",
     "afcNote": "Les montants des ch. 900 et 910 figurent dans la section III et ne modifient pas automatiquement le ch. 299.",
     "given": [
       {
@@ -2818,7 +2819,7 @@ export const CASES = [
       {
         "label": "Subvention cantonale",
         "amount": 20000,
-        "note": "Montant à déclarer au ch. 900 dans ce cas simplifié.",
+        "note": "La décision de la collectivité publique qualifie expressément ce versement comme subvention / contribution de droit public dans les hypothèses du cas.",
         "tag": "900"
       },
       {
@@ -2838,7 +2839,7 @@ export const CASES = [
       "Les ch. 900 et 910 n’augmentent pas la base TDFN.",
       "La qualification et les pièces justificatives restent indispensables."
     ],
-    "legal": "Art. 18, al. 2, LTVA · prototype AFC, section III",
+    "legal": "Art. 18, al. 2, let. a, et al. 3 LTVA · prototype AFC, section III",
     "sourceIds": [
       "ltva",
       "prototype",
@@ -2864,7 +2865,7 @@ export const CASES = [
       "ch900": "La subvention est portée séparément au ch. 900.",
       "ch910": "Le dividende est porté séparément au ch. 910."
     },
-    "lesson": "La section III documente des mouvements de fonds sans les confondre avec les contre-prestations imposables.",
+    "lesson": "Ne jamais déduire la qualification du seul nom du payeur. Le cas suppose une subvention / contribution de droit public qualifiée et documentée; une contre-prestation versée par une collectivité publique suivrait son propre traitement TVA.",
     "accountingBasis": "Contre-prestations convenues"
   },
   {
@@ -2970,7 +2971,7 @@ export const CASES = [
     "description": "Sous TDFN, l’option pour imposer des prestations exclues est fortement limitée. Le réflexe correct n’est donc pas de commencer par le ch. 205, mais de vérifier d’abord si l’option est juridiquement admissible.",
     "mission": "Qualifiez une contre-prestation de CHF 30’000 provenant de produits agricoles de la propre exploitation. L’entreprise applique les TDFN et a valablement exercé l’option pour cette prestation relevant de l’art. 21, al. 2, ch. 26 LTVA.",
     "clientNote": "Le dossier documente que la prestation relève bien de l’exception de l’art. 21, al. 2, ch. 26 LTVA. Il ne s’agit ni de formation, ni de location immobilière, ni d’une autre prestation exclue pour laquelle l’option serait interdite sous TDFN.",
-    "afcNote": "En principe, un assujetti aux TDFN ne peut pas opter pour l’imposition des prestations exclues. L’art. 77, al. 3, OTVA maintient toutefois des exceptions pour les prestations visées à l’art. 21, al. 2, ch. 25, 26, 28 et 28bis LTVA. Ce cas porte uniquement sur le ch. 26. Une option valable doit être distinguée d’une simple mention erronée de TVA sur une facture.",
+    "afcNote": "Sous TDFN, l’art. 77, al. 3, OTVA interdit l’option pour les prestations visées à l’art. 21, al. 2, ch. 1 à 24 et 27 à 31 LTVA. Les ch. 25 et 26 ne sont donc pas visés par cette interdiction spécifique. Le présent cas porte uniquement sur le ch. 26 et suppose que les autres conditions de l’option sont remplies.",
     "given": [
       {
         "label": "Contre-prestation concernée",
@@ -2991,15 +2992,15 @@ export const CASES = [
     ],
     "checks": [
       "Sous TDFN, vérifier l’admissibilité de l’option avant toute saisie au ch. 205.",
-      "Ne pas transposer ce traitement à une autre prestation exclue: vérifier l’art. 77, al. 3, OTVA et la liste complète des exceptions (art. 21, al. 2, ch. 25, 26, 28 et 28bis LTVA).",
+      "Ne pas transposer ce traitement à une autre prestation exclue: contrôler l’art. 22 LTVA et l’art. 77, al. 3, OTVA. Sous TDFN, l’interdiction spécifique vise les ch. 1 à 24 et 27 à 31 de l’art. 21, al. 2, LTVA.",
       "Une contre-prestation valablement imposée par option reste comprise au ch. 200; le ch. 205 en précise la part et ne constitue pas une déduction."
     ],
-    "legal": "Art. 22 LTVA · art. 77, al. 3, OTVA · Info TVA 12 TDFN · prototype AFC, ch. 200, 205 et 230",
+    "legal": "Art. 22 LTVA · art. 77, al. 3, OTVA · prototype AFC, ch. 200, 205 et 230",
     "sourceIds": [
       "ltva",
       "otva",
-      "info12",
-      "prototype"
+      "prototype",
+      "info12"
     ],
     "questions": [
       {
@@ -3009,7 +3010,7 @@ export const CASES = [
           "Non"
         ],
         "answer": 1,
-        "why": "Sous TDFN, l’option est en principe exclue. L’art. 77, al. 3, OTVA prévoit toutefois des exceptions pour les prestations visées à l’art. 21, al. 2, ch. 25, 26, 28 et 28bis LTVA."
+        "why": "Non. Sous TDFN, l’art. 77, al. 3, OTVA interdit l’option pour les prestations de l’art. 21, al. 2, ch. 1 à 24 et 27 à 31 LTVA. Le cas utilise le ch. 26, qui n’est pas visé par cette interdiction spécifique."
       },
       {
         "q": "L’exception retenue dans ce dossier — produits agricoles de la propre exploitation visés à l’art. 21, al. 2, ch. 26 LTVA — permet-elle une option sous TDFN?",
@@ -3048,7 +3049,7 @@ export const CASES = [
         "why": "Une prestation valablement imposée par option n’est pas traitée comme une prestation exclue sans option au ch. 230."
       }
     ],
-    "lesson": "Sous TDFN, la première question n’est pas «où saisir l’option?», mais «cette option est-elle admise?». L’art. 77, al. 3, OTVA maintient les exceptions des ch. 25, 26, 28 et 28bis de l’art. 21, al. 2, LTVA. Le ch. 205 ne s’utilise qu’après cette qualification."
+    "lesson": "Sous TDFN, l’option est fortement restreinte. Le ch. 26 utilisé ici n’est pas visé par l’interdiction spécifique de l’art. 77, al. 3, OTVA; cela ne dispense jamais de vérifier les conditions générales de l’option."
   },
   {
     "id": "O",
@@ -3135,9 +3136,9 @@ export const CASES = [
     "risk": "high",
     "accountingBasis": "Contre-prestations convenues",
     "description": "Après la qualification juridique du cas M, le dossier de reprise a déterminé une correction de CHF 2’000 constituant une charge fiscale. Ce cas porte uniquement sur son report avec le bon signe dans le décompte TDFN.",
-    "mission": "Calculez la dette TDFN sur CHF 20’000 TTC, puis reportez la charge fiscale documentée de CHF 2’000 au ch. 415 avec le signe prévu par la pratique AFC et contrôlez le montant à payer.",
+    "mission": "Calculez la dette TDFN sur CHF 20’000 TTC, puis reportez la charge fiscale documentée de CHF 2’000 au ch. 415 avec le signe qui permet au calcul du décompte d’augmenter correctement la dette.",
     "clientNote": "Les méthodes des parties, l’affectation, les valeurs résiduelles et le calcul de la correction ont déjà été vérifiés dans le dossier. Ne refaites pas la qualification du cas M: concentrez-vous sur la saisie.",
-    "afcNote": "Pour une correction constituant une charge fiscale dans ce contexte, le montant est déclaré négativement au ch. 415. Une correction de CHF 2’000 est donc saisie CHF -2’000; le ch. 500 augmente en conséquence.",
+    "afcNote": "Dans ce cas, la correction constitue une charge fiscale de CHF 2’000. Le ch. 415 intervient dans la zone de crédits/corrections du décompte; la saisie de CHF −2’000 conduit donc à augmenter le montant final à payer de CHF 2’000.",
     "given": [
       {
         "label": "Honoraires imposables, TVA comprise",
@@ -3187,9 +3188,9 @@ export const CASES = [
       "ch200": "Le chiffre d’affaires imposable du semestre est CHF 20’000 TTC.",
       "r0base": "La base TDFN est CHF 20’000.",
       "r0tax": "CHF 20’000 × 6,2 % = CHF 1’240.",
-      "ch415": "La correction de CHF 2’000 constitue une charge fiscale. La pratique AFC prévoit son report comme montant négatif au ch. 415; le calcul final augmente donc la dette de CHF 2’000."
+      "ch415": "CHF −2’000 sont saisis au ch. 415 dans les hypothèses de ce dossier. Comme cette rubrique intervient dans le calcul des crédits/corrections, le signe négatif augmente ici la dette finale de CHF 2’000."
     },
-    "lesson": "Qualification d’abord, saisie ensuite. Une charge fiscale relevant de ce mécanisme est reportée négativement au ch. 415; le signe ne se choisit jamais à partir du seul intitulé visuel «Crédit d’impôt»."
+    "lesson": "Le signe découle du sens fiscal de la correction et du mécanisme de calcul du formulaire. Ne jamais choisir le signe en se fondant uniquement sur l’intitulé visuel d’une rubrique."
   },
   {
     "id": "R",
@@ -4138,7 +4139,7 @@ export const TRANSITION_WORKSHEETS = {
       },
       {
         "id": "machine",
-        "label": "Machine · une période fiscale prise en compte",
+        "label": "Machine · une année écoulée prise en compte",
         "base": "Impôt préalable admis CHF 4’050",
         "expectedTreatment": "yes",
         "expectedResidual": 80,
@@ -4243,7 +4244,7 @@ export const TRANSITION_WORKSHEETS = {
       },
       {
         "id": "machine",
-        "label": "Machine · une période fiscale",
+        "label": "Machine · une année écoulée",
         "base": "Impôt grevant documenté CHF 4’050",
         "expectedTreatment": "yes",
         "expectedResidual": 80,
@@ -4351,3 +4352,4 @@ export const TRANSITION_WORKSHEETS = {
     ]
   }
 };
+
