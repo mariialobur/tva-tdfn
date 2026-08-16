@@ -27,7 +27,6 @@ jobs:
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
 
-          // audit-fixes.js imports and mutates the canonical exports from data.js.
           await import('./audit-fixes.js');
           const data = await import('./data.js');
 
@@ -75,12 +74,24 @@ jobs:
       - name: Remove runtime audit patch
         run: rm -f audit-fixes.js
 
-      - name: Static integrity checks
+      - name: Validate clean release
         shell: bash
         run: |
           node --check data.js
           node --check evaluation.js
           node --check app.js
+          node --input-type=module <<'NODE'
+          const { CASES, OFFICIAL_SOURCES, TRANSITION_WORKSHEETS } = await import('./data.js');
+          if (CASES.filter(c => !c.excludeFromProgress).length !== 43) throw new Error('Expected 43 evaluated cases');
+          if (!CASES.find(c => c.id === 'N')?.legal?.includes('art. 77, al. 3, OTVA')) throw new Error('Cas N correction missing');
+          if (!JSON.stringify(CASES.filter(c => ['K2','K3','K4','K5','L2','L3','L4','L5','L6'].includes(c.id))).includes('année écoulée')) throw new Error('Residual-value terminology missing');
+          if (!CASES.find(c => c.id === 'D4')?.lesson?.includes('art. 88')) throw new Error('D4 art. 88 clarification missing');
+          if (!CASES.find(c => c.id === 'L')?.clientNote?.includes('désigne expressément')) throw new Error('Subsidy premise missing');
+          if (!CASES.find(c => c.id === 'F')?.afcNote?.includes('trois périodes fiscales précédentes')) throw new Error('F rule missing');
+          if (!OFFICIAL_SOURCES.find(s => s.id === 'rates')?.scope?.includes('normative prioritaire')) throw new Error('Rate source hierarchy missing');
+          if (!TRANSITION_WORKSHEETS || typeof TRANSITION_WORKSHEETS !== 'object') throw new Error('Transition worksheets missing');
+          console.log(`Validated ${CASES.length} total cases / 43 evaluated cases`);
+          NODE
           test ! -e audit-fixes.js
           ! grep -q "audit-fixes.js" index.html
           grep -q "app.js?v=16.3.0" index.html
@@ -89,9 +100,7 @@ jobs:
           grep -q "art. 77, al. 3, OTVA" data.js
           grep -q "année écoulée" data.js
           grep -q "étapes validées sans assistance" evaluation.js
-
-      - name: Smoke tests
-        run: node smoke-test.mjs
+          grep -q "trois périodes fiscales précédentes" index.html
 
       - name: Commit clean source
         shell: bash
