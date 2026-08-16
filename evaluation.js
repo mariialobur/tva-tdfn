@@ -6,6 +6,82 @@ const PASS_SCORE = 9;
 const PROJECT_URL = 'https://mariialobur.github.io/tva-tdfn/';
 const STORAGE_KEY = 'tva_tdfn_final_evaluation_v2';
 
+const COURSE_THEMES = [
+  {
+    title: "1. Fondamentaux de la méthode TDFN",
+    items: [
+      "Admissibilité à la méthode et contrôle des limites applicables",
+      "Distinction entre taux légal facturé au client et TDFN utilisé dans le décompte",
+      "Calcul sur les contre-prestations brutes, TVA comprise",
+      "Traitement forfaitaire de l’impôt préalable dans la méthode TDFN"
+    ]
+  },
+  {
+    title: "2. Activités multiples et attribution des TDFN",
+    items: [
+      "Identification et ventilation de plusieurs activités au sein d’une même entreprise",
+      "Application de plusieurs TDFN et contrôle de la règle des 10 %",
+      "Choix du TDFN selon l’activité réellement exercée",
+      "Réconciliation des comptes de produits avec les bases déclarées"
+    ]
+  },
+  {
+    title: "3. Construction et lecture du décompte TVA",
+    items: [
+      "Report du chiffre d’affaires et des contre-prestations dans les rubriques du décompte",
+      "Ventilation des bases soumises aux différents TDFN",
+      "Déductions et rubriques particulières du décompte",
+      "Contrôles arithmétiques et contrôles de cohérence"
+    ]
+  },
+  {
+    title: "4. Opérations particulières et internationales",
+    items: [
+      "Prestations exonérées et prestations fournies à l’étranger",
+      "Impôt sur les acquisitions et opérations avec des prestataires étrangers",
+      "Qualification des flux avant leur traitement dans le décompte",
+      "Distinction entre chiffre d’affaires, déductions et opérations à déclarer séparément"
+    ]
+  },
+  {
+    title: "5. Travail courant en fiduciaire",
+    items: [
+      "Contre-prestations convenues et contre-prestations reçues",
+      "Périodes de décompte, délais et suivi administratif",
+      "Acomptes, paiements et contrôles de dossier",
+      "Lecture des informations du client et préparation du décompte"
+    ]
+  },
+  {
+    title: "6. Rectifications et concordance annuelle",
+    items: [
+      "Correction d’un décompte déjà remis",
+      "Décompte de rectification et traitement des écarts",
+      "Concordance annuelle et contrôle final de la période fiscale",
+      "Identification des incohérences avant remise ou correction"
+    ]
+  },
+  {
+    title: "7. Changements de méthode",
+    items: [
+      "Passage de la méthode effective à la méthode TDFN",
+      "Passage de la méthode TDFN à la méthode effective",
+      "Corrections liées à la valeur résiduelle lors du changement",
+      "Utilisation des rubriques 415 et 410 selon le sens du changement"
+    ]
+  },
+  {
+    title: "8. Mise en pratique sur des dossiers PME",
+    items: [
+      "Cas progressifs dans plusieurs secteurs d’activité",
+      "Dossiers multi-activités avec plusieurs taux et plusieurs flux",
+      "Dossier fiduciaire final combinant analyse, calcul et décompte",
+      "Atelier libre pour tester un scénario de manière autonome"
+    ]
+  }
+];
+
+
 const QUESTION_BANK = [
   {
     id: 'limits',
@@ -343,7 +419,7 @@ function submitExam(event) {
     total: EXAM_SIZE,
     passed: score >= PASS_SCORE,
     completedAt: new Date().toISOString(),
-    evaluationVersion: '17.0.0',
+    evaluationVersion: '17.1.0',
     detail
   };
   saveLastResult(result);
@@ -425,33 +501,120 @@ function renderAttestation(name) {
   const layer = ensureExamLayer();
   const date = new Intl.DateTimeFormat('fr-CH', { day: '2-digit', month: 'long', year: 'numeric' }).format(new Date(lastResult.completedAt));
   const total = scoredCases().length;
+  const percent = Math.round(lastResult.score / lastResult.total * 100);
+
+  const compactThemes = [
+    "Fondamentaux TDFN",
+    "Activités multiples",
+    "Décompte TVA",
+    "Opérations internationales",
+    "Travail fiduciaire",
+    "Rectifications",
+    "Changements de méthode",
+    "Cas PME"
+  ];
+
+  const detailedThemes = COURSE_THEMES.map(group => `
+    <section class="tdfn-record-group">
+      <h3>${esc(group.title)}</h3>
+      <ul>
+        ${group.items.map(item => `<li>${esc(item)}</li>`).join('')}
+      </ul>
+    </section>`).join('');
+
   layer.innerHTML = `
     <main class="tdfn-attestation-screen">
       <div class="tdfn-attestation-toolbar no-print">
-        <button class="btn primary" id="tdfnPrintAttestation" type="button">Imprimer / enregistrer en PDF</button>
+        <button class="btn primary" id="tdfnPrintAttestation" type="button">Imprimer / enregistrer les 2 pages en PDF</button>
         <button class="btn" id="tdfnBackFromAttestation" type="button">Retour</button>
       </div>
-      <article class="tdfn-attestation" id="tdfnAttestation">
-        <div class="tdfn-attestation-topline"></div>
-        <p class="tdfn-attestation-kicker">TVA suisse · entraînement pratique</p>
-        <h1>ATTESTATION DE PARCOURS</h1>
-        <p class="tdfn-attestation-subtitle">Méthode des taux de la dette fiscale nette (TDFN)</p>
-        <div class="tdfn-attestation-person">
-          <span>Parcours complété sous le nom indiqué</span>
-          <strong>${esc(name)}</strong>
-          <span>43 étapes d’entraînement travaillées et auto-évaluation finale réussie.</span>
-        </div>
-        <div class="tdfn-attestation-metrics">
-          <div><strong>${total}</strong><span>étapes du parcours évaluées</span></div>
-          <div><strong>${lastResult.score} / ${lastResult.total}</strong><span>évaluation finale</span></div>
-          <div><strong>${esc(date)}</strong><span>date de l’évaluation</span></div>
-        </div>
-        <div class="tdfn-attestation-project">
-          <strong>TVA — Entraînement pratique</strong>
-          <span>${esc(PROJECT_URL)}</span>
-        </div>
-        <p class="tdfn-attestation-disclaimer">Projet pédagogique indépendant. Cette attestation atteste uniquement l’achèvement de ce parcours d’entraînement et la réussite de son auto-évaluation finale. Elle ne constitue ni un diplôme, ni un titre professionnel, ni une certification reconnue ou accréditée. Le projet est indépendant et sans affiliation avec l’AFC/ESTV. Le nom est saisi par le participant et son identité n’est pas vérifiée.</p>
-      </article>
+
+      <div class="tdfn-attestation-document" id="tdfnAttestation">
+        <article class="tdfn-attestation-page tdfn-attestation-page--certificate">
+          <div class="tdfn-attestation-topline"></div>
+          <div class="tdfn-page-number">1 / 2</div>
+
+          <header class="tdfn-attestation-header">
+            <p class="tdfn-attestation-kicker">TVA suisse · entraînement pratique</p>
+            <h1>ATTESTATION DE PARCOURS</h1>
+            <p class="tdfn-attestation-subtitle">Méthode des taux de la dette fiscale nette (TDFN)</p>
+          </header>
+
+          <div class="tdfn-attestation-person">
+            <span>Parcours complété sous le nom indiqué</span>
+            <strong>${esc(name)}</strong>
+            <span>a travaillé l’ensemble du parcours d’entraînement et a réussi l’auto-évaluation finale.</span>
+          </div>
+
+          <div class="tdfn-attestation-metrics">
+            <div><strong>${total}</strong><span>étapes évaluées</span></div>
+            <div><strong>${lastResult.score} / ${lastResult.total}</strong><span>évaluation finale · ${percent} %</span></div>
+            <div><strong>${esc(date)}</strong><span>date de l’évaluation</span></div>
+          </div>
+
+          <section class="tdfn-attestation-themes">
+            <p class="tdfn-section-label">Thèmes abordés</p>
+            <div class="tdfn-theme-chips">
+              ${compactThemes.map(theme => `<span>${esc(theme)}</span>`).join('')}
+            </div>
+            <p class="tdfn-attestation-follow">Le relevé détaillé du contenu du parcours figure en page 2.</p>
+          </section>
+
+          <div class="tdfn-attestation-project">
+            <strong>TVA — Entraînement pratique</strong>
+            <span>${esc(PROJECT_URL)}</span>
+          </div>
+
+          <p class="tdfn-attestation-disclaimer">
+            Projet pédagogique indépendant. Cette attestation confirme uniquement l’achèvement de ce parcours d’entraînement et la réussite de son auto-évaluation finale. Elle ne constitue ni un diplôme, ni un titre professionnel, ni une certification reconnue ou accréditée. Le projet est indépendant et sans affiliation avec l’AFC/ESTV. Le nom est saisi par le participant et son identité n’est pas vérifiée.
+          </p>
+        </article>
+
+        <article class="tdfn-attestation-page tdfn-attestation-page--record">
+          <div class="tdfn-attestation-topline"></div>
+          <div class="tdfn-page-number">2 / 2</div>
+
+          <header class="tdfn-record-header">
+            <p class="tdfn-attestation-kicker">TVA suisse · méthode TDFN</p>
+            <h2>RELEVÉ DU PARCOURS</h2>
+            <p>Contenu et thèmes abordés au cours de l’entraînement pratique.</p>
+          </header>
+
+          <div class="tdfn-record-summary">
+            <div>
+              <span>Participant</span>
+              <strong>${esc(name)}</strong>
+            </div>
+            <div>
+              <span>Parcours</span>
+              <strong>${total} étapes évaluées + atelier libre</strong>
+            </div>
+            <div>
+              <span>Évaluation finale</span>
+              <strong>${lastResult.score} / ${lastResult.total} · ${percent} %</strong>
+            </div>
+          </div>
+
+          <div class="tdfn-record-grid">
+            ${detailedThemes}
+          </div>
+
+          <footer class="tdfn-record-footer">
+            <div>
+              <strong>Référentiel pédagogique</strong>
+              <span>LTVA · OTVA · publications et informations pratiques de l’AFC utilisées dans les cas du parcours.</span>
+            </div>
+            <div>
+              <strong>Projet</strong>
+              <span>${esc(PROJECT_URL)}</span>
+            </div>
+          </footer>
+
+          <p class="tdfn-attestation-disclaimer tdfn-record-disclaimer">
+            Ce relevé décrit les thèmes couverts par le parcours. Il ne constitue pas une attestation de compétences professionnelles acquises, un diplôme ou une certification reconnue. L’attestation et le relevé sont générés localement à partir du résultat enregistré dans le navigateur.
+          </p>
+        </article>
+      </div>
     </main>`;
 
   layer.querySelector('#tdfnPrintAttestation').addEventListener('click', () => window.print());
