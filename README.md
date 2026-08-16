@@ -27,11 +27,11 @@ Un parcours interactif, gratuit et en français pour **comprendre, calculer et p
 
 ## Pourquoi ce projet ?
 
-La méthode TDFN paraît simple lorsqu’elle est résumée à une formule : chiffre d’affaires brut, TVA comprise, multiplié par un taux. En pratique, les difficultés commencent souvent **avant le calcul** : quelle opération faut-il qualifier ? Quel montant doit être reporté ? Plusieurs activités doivent-elles être séparées ? Quel TDFN utiliser ? Que faire lors d’un changement de méthode, d’une correction ou d’une opération internationale ?
+La méthode TDFN paraît relativement simple lorsqu’elle est résumée à une formule : chiffre d’affaires brut, TVA comprise, multiplié par un taux. En pratique, les difficultés commencent souvent **avant le calcul** : quelle opération faut-il qualifier ? Quel montant doit être reporté ? Plusieurs activités doivent-elles être séparées ? Quel TDFN utiliser ? Comment traiter une acquisition de prestations à l’étranger, une correction ou un changement de méthode ?
 
-L’objectif de cet entraînement est de travailler ces réflexes dans un environnement où l’erreur est permise. Chaque dossier oblige à **analyser la situation, effectuer le calcul puis reconstruire le décompte**, avec une correction pédagogique et les références officielles utiles.
+L’objectif de cet entraînement est de travailler ces réflexes dans un environnement où l’erreur est permise. Chaque dossier invite à **analyser la situation, effectuer le calcul puis reconstruire le décompte**, avec une correction pédagogique et les références officielles utiles.
 
-Le projet vise particulièrement les personnes qui souhaitent consolider leur pratique de la TVA suisse : comptables, collaborateurs de fiduciaire, personnes en formation, indépendants ou professionnels qui veulent réviser la méthode TDFN sur des cas concrets.
+Le projet s’adresse notamment aux personnes qui souhaitent consolider leur pratique de la TVA suisse : comptables, collaborateurs de fiduciaire, personnes en formation, indépendants ou professionnels souhaitant réviser la méthode TDFN à travers des situations concrètes.
 
 ---
 
@@ -45,7 +45,7 @@ Le projet vise particulièrement les personnes qui souhaitent consolider leur pr
 | **Méthode**           | analyser → calculer → reporter au décompte                                           |
 | **Références**        | LTVA, OTVA, publications AFC et rubriques du décompte                                |
 | **Évaluation finale** | 12 questions aléatoires, sans aide pendant l’épreuve                                 |
-| **Attestation**       | `ATTESTATION DE PARCOURS` après réussite de l’auto-évaluation finale                 |
+| **Attestation**       | document en 2 pages : résultat + relevé détaillé des thèmes abordés                  |
 | **Accès**             | gratuit, sans inscription                                                            |
 
 ---
@@ -56,26 +56,30 @@ Le projet vise particulièrement les personnes qui souhaitent consolider leur pr
 
 Le parcours commence par les mécanismes qui provoquent le plus d’erreurs : distinction entre **taux légal facturé au client** et **TDFN utilisé dans le décompte**, base de calcul TTC, dette fiscale calculée sur les contre-prestations et traitement forfaitaire de l’impôt préalable.
 
-Les premiers cas servent à installer les bons automatismes avant de passer à des dossiers plus denses.
+Les premiers cas servent à installer les bons automatismes avant de passer à des dossiers plus complexes.
 
 ### `2` Travailler plusieurs activités et plusieurs TDFN
 
-Des entreprises réelles n’exercent pas toujours une seule activité. Le parcours propose notamment des situations de commerce, location, atelier, garage automobile, hôtellerie ou prestations de services avec plusieurs flux à ventiler.
+Une entreprise réelle n’exerce pas toujours une seule activité. Le parcours propose notamment des situations de commerce, location, atelier, garage automobile, hôtellerie ou prestations de services avec plusieurs flux à ventiler.
 
-L’objectif n’est pas seulement d’obtenir le bon total, mais de comprendre **pourquoi une activité doit être identifiée séparément**, comment contrôler la cohérence de la ventilation et comment éviter de transformer un taux moyen en TDFN fictif.
+L’objectif n’est pas uniquement d’obtenir le bon total, mais de comprendre **pourquoi une activité doit être identifiée séparément**, comment contrôler la cohérence de la ventilation et comment éviter de transformer un taux moyen en TDFN fictif.
 
 ### `3` Aller au-delà du simple calcul
 
-Les exercices abordent progressivement des sujets de pratique courante :
+Les exercices abordent progressivement plusieurs sujets de pratique courante :
 
 * admissibilité à la méthode TDFN et limites applicables ;
-* règle des activités représentant plus de 10 % ;
-* plusieurs TDFN depuis les changements entrés en vigueur en 2025 ;
+* distinction entre taux légal et TDFN ;
+* calcul sur les contre-prestations TVA comprise ;
+* activités multiples et règle des 10 % ;
+* utilisation de plusieurs TDFN ;
 * contre-prestations convenues ou reçues ;
-* opérations internationales et impôt sur les acquisitions ;
+* opérations internationales ;
+* impôt sur les acquisitions ;
 * déductions et rubriques du décompte ;
-* rectifications et concordance annuelle ;
-* délais, paiements et contrôles de cohérence ;
+* rectifications ;
+* concordance annuelle ;
+* délais et contrôles de cohérence ;
 * passage de la méthode effective aux TDFN ;
 * passage des TDFN à la méthode effective ;
 * corrections liées aux changements de méthode ;
@@ -89,7 +93,9 @@ Le participant ne reçoit pas uniquement une réponse numérique : il doit déte
 
 ### `5` Comprendre ses erreurs
 
-Une mauvaise réponse n’est pas traitée comme un simple « faux ». Plusieurs cas contiennent des diagnostics ciblés capables d’identifier des erreurs typiques : base HT utilisée à la place du TTC, mauvaise rubrique, confusion entre taux légal et TDFN, ventilation incohérente ou correction mal positionnée.
+Une mauvaise réponse n’est pas traitée comme un simple « faux ».
+
+Plusieurs cas contiennent des diagnostics ciblés capables d’identifier des erreurs typiques : base HT utilisée à la place du TTC, mauvaise rubrique, confusion entre taux légal et TDFN, ventilation incohérente ou correction mal positionnée.
 
 Après validation, la solution et les sources permettent de reconstruire le raisonnement.
 
@@ -97,7 +103,7 @@ Après validation, la solution et les sources permettent de reconstruire le rais
 
 ## 🧭 Comment fonctionne le parcours ?
 
-Chaque dossier suit une logique volontairement répétitive afin de créer des réflexes professionnels.
+Chaque dossier suit une logique volontairement répétitive afin de développer progressivement des réflexes de travail.
 
 ### Étape 1 — Analyser
 
@@ -119,14 +125,14 @@ Après validation, le parcours fournit une explication, des diagnostics lorsque 
 
 ## 📈 Progression : `Acquis` et `Maîtrisé`
 
-Le compteur de progression ne sert pas uniquement à indiquer combien de pages ont été ouvertes.
+Le compteur de progression ne sert pas uniquement à indiquer combien de cas ont été ouverts.
 
 * **Acquis** : le cas a été réussi après la phase d’apprentissage.
 * **Maîtrisé** : le même raisonnement a été revalidé ensuite sans s’appuyer sur l’exemple.
 
-La progression reste enregistrée dans le navigateur afin de pouvoir revenir au parcours plus tard.
+La progression reste enregistrée localement dans le navigateur afin de pouvoir reprendre le parcours plus tard.
 
-Un **atelier libre** complète les cas guidés pour permettre de tester un scénario sans suivre une solution imposée.
+Un **atelier libre** complète les cas guidés pour permettre de tester un scénario de manière plus autonome.
 
 ---
 
@@ -137,7 +143,9 @@ Une évaluation séparée apparaît à la fin du parcours afin de distinguer cla
 Le module final comprend :
 
 * **12 questions** tirées aléatoirement d’une banque de 18 ;
-* aucune aide, solution, mémo ou source pendant l’épreuve ;
+* aucune aide pendant l’épreuve ;
+* aucune solution visible avant la remise ;
+* aucun mémo ou source accessible pendant le test ;
 * ordre des réponses mélangé ;
 * correction affichée uniquement après la remise ;
 * seuil de réussite : **9 / 12** ;
@@ -152,22 +160,99 @@ L’évaluation devient accessible après avoir travaillé les **43 étapes éva
 
 ## 📄 Attestation de parcours
 
-Après réussite de l’auto-évaluation finale, une **ATTESTATION DE PARCOURS** peut être générée directement dans le navigateur.
+Après réussite de l’auto-évaluation finale, une **ATTESTATION DE PARCOURS en deux pages** peut être générée directement dans le navigateur.
 
-Elle reprend notamment :
+### Page 1 — Attestation de parcours
 
-* le nom saisi par le participant ;
-* les 43 étapes du parcours travaillées ;
+La première page présente :
+
+* le nom indiqué par le participant ;
+* les **43 étapes évaluées** du parcours ;
 * le résultat obtenu à l’évaluation finale ;
+* le pourcentage de réussite ;
 * la date de l’évaluation ;
+* une synthèse des principaux thèmes abordés ;
 * l’adresse du projet.
 
-Le document peut ensuite être **imprimé ou enregistré en PDF** depuis le navigateur.
+Les thèmes principaux apparaissent sous forme synthétique afin que le document reste lisible :
 
-Le nom saisi pour l’attestation est utilisé localement pour préparer le document et n’est pas envoyé par ce module.
+`Fondamentaux TDFN · Activités multiples · Décompte TVA · Opérations internationales · Travail fiduciaire · Rectifications · Changements de méthode · Cas PME`
+
+### Page 2 — Relevé du parcours
+
+La seconde page constitue un **RELEVÉ DU PARCOURS** et décrit plus précisément les sujets travaillés pendant l’entraînement.
+
+#### 1. Fondamentaux de la méthode TDFN
+
+* admissibilité à la méthode et contrôle des limites applicables ;
+* distinction entre taux légal facturé au client et TDFN utilisé dans le décompte ;
+* calcul sur les contre-prestations brutes, TVA comprise ;
+* traitement forfaitaire de l’impôt préalable dans la méthode TDFN.
+
+#### 2. Activités multiples et attribution des TDFN
+
+* identification et ventilation de plusieurs activités ;
+* application de plusieurs TDFN ;
+* contrôle de la règle des 10 % ;
+* choix du TDFN selon l’activité réellement exercée ;
+* réconciliation des comptes de produits avec les bases déclarées.
+
+#### 3. Construction et lecture du décompte TVA
+
+* report du chiffre d’affaires ;
+* ventilation des bases soumises aux différents TDFN ;
+* rubriques particulières du décompte ;
+* déductions ;
+* contrôles arithmétiques ;
+* contrôles de cohérence.
+
+#### 4. Opérations particulières et internationales
+
+* prestations exonérées ;
+* prestations fournies à l’étranger ;
+* impôt sur les acquisitions ;
+* opérations avec des prestataires étrangers ;
+* qualification des flux avant leur traitement dans le décompte.
+
+#### 5. Travail courant en fiduciaire
+
+* contre-prestations convenues et reçues ;
+* périodes de décompte ;
+* délais ;
+* acomptes et paiements ;
+* contrôles de dossier ;
+* préparation du décompte à partir des informations du client.
+
+#### 6. Rectifications et concordance annuelle
+
+* correction d’un décompte déjà remis ;
+* décompte de rectification ;
+* traitement des écarts ;
+* concordance annuelle ;
+* contrôles avant remise ou correction.
+
+#### 7. Changements de méthode
+
+* passage de la méthode effective à la méthode TDFN ;
+* passage de la méthode TDFN à la méthode effective ;
+* corrections liées à la valeur résiduelle ;
+* utilisation des rubriques correspondantes du décompte.
+
+#### 8. Mise en pratique sur des dossiers PME
+
+* cas progressifs dans plusieurs secteurs d’activité ;
+* dossiers multi-activités ;
+* combinaison de plusieurs taux et plusieurs flux ;
+* dossier fiduciaire final ;
+* analyse, calcul et reconstruction du décompte ;
+* atelier libre.
+
+Le document peut ensuite être **imprimé ou enregistré en PDF** directement depuis le navigateur.
+
+Le nom utilisé pour préparer l’attestation reste local au module de génération du document.
 
 > [!CAUTION]
-> L’attestation confirme uniquement l’achèvement de ce parcours d’entraînement et la réussite de son auto-évaluation finale. Elle **ne constitue ni un diplôme, ni un titre professionnel, ni une certification reconnue ou accréditée**. L’identité du participant n’est pas vérifiée.
+> L’attestation confirme uniquement l’achèvement de ce parcours d’entraînement et la réussite de son auto-évaluation finale. Le relevé décrit les thèmes abordés au cours du parcours. Ces documents **ne constituent ni un diplôme, ni un titre professionnel, ni une certification reconnue ou accréditée**. L’identité du participant n’est pas vérifiée.
 
 ---
 
@@ -205,12 +290,14 @@ Le contenu pédagogique s’appuie en priorité sur les sources officielles suis
 
 * **LTVA — RS 641.20** ;
 * **OTVA — RS 641.201** ;
-* ordonnance de l’AFC sur la valeur des TDFN ;
+* ordonnance de l’AFC relative aux taux de la dette fiscale nette ;
 * **Info TVA 12 — Taux de la dette fiscale nette** ;
 * publications AFC relatives aux modifications applicables depuis 2025 ;
-* informations AFC sur les changements de méthode ;
+* informations AFC concernant les changements de méthode ;
 * formulaires et rubriques officielles du décompte TVA ;
-* informations AFC sur les rectifications, la concordance annuelle et le décompte en ligne.
+* informations AFC relatives aux rectifications ;
+* concordance annuelle ;
+* informations et services du Portail AFC.
 
 Les sources utiles sont reliées directement aux cas et regroupées dans le référentiel du simulateur.
 
@@ -226,7 +313,9 @@ Les sources utiles sont reliées directement aux cas et regroupées dans le réf
 
 Aucun compte n’est nécessaire pour utiliser le parcours.
 
-La progression et le résultat de l’évaluation sont conservés localement dans le navigateur. Le nom utilisé pour préparer l’attestation n’est pas transmis par le module d’attestation.
+La progression et le résultat de l’évaluation sont conservés localement dans le navigateur.
+
+Le nom utilisé pour préparer l’attestation est saisi par le participant et utilisé localement pour générer le document.
 
 Une réinitialisation du parcours permet d’effacer la progression locale et de recommencer.
 
@@ -238,14 +327,14 @@ Le projet a été conçu comme un **environnement d’entraînement**, pas comme
 
 Il ne peut notamment pas :
 
-* confirmer à la place de l’AFC le droit d’une entreprise d’utiliser la méthode TDFN ;
-* garantir que le TDFN retenu correspond à l’activité réelle d’une entreprise déterminée ;
-* vérifier l’exhaustivité et la valeur probante des justificatifs d’un dossier réel ;
+* confirmer à la place de l’AFC le droit d’une entreprise déterminée d’utiliser la méthode TDFN ;
+* garantir que le TDFN retenu correspond à l’activité réelle d’une entreprise particulière ;
+* vérifier l’exhaustivité ou la valeur probante des justificatifs d’un dossier réel ;
 * remplacer l’analyse d’un cas particulier par un professionnel compétent ;
-* reproduire toutes les particularités et tous les contrôles du Portail AFC ;
-* garantir qu’une règle restée correcte lors de la dernière revue n’a pas été modifiée ensuite.
+* reproduire toutes les particularités ou tous les contrôles du Portail AFC ;
+* garantir qu’une règle restée correcte lors de la dernière revue n’a pas été modifiée ultérieurement.
 
-Les montants, entreprises et scénarios du parcours ont une finalité pédagogique.
+Les entreprises, montants et scénarios du parcours ont une finalité pédagogique.
 
 ---
 
@@ -253,11 +342,11 @@ Les montants, entreprises et scénarios du parcours ont une finalité pédagogiq
 
 ### Version en ligne
 
-La manière la plus simple est d’ouvrir directement :
+La manière la plus simple d’utiliser le parcours est de l’ouvrir directement :
 
-**👉 https://mariialobur.github.io/tva-tdfn/**
+### 👉 https://mariialobur.github.io/tva-tdfn/
 
-Aucune installation n’est nécessaire.
+Aucune installation et aucune inscription ne sont nécessaires.
 
 ### Lancer une copie localement
 
@@ -289,7 +378,7 @@ tva-tdfn/
 ├── store.js                # état et progression locale
 ├── components.js           # composants d’interface
 ├── evaluation.js           # évaluation finale + attestation
-├── evaluation.css          # styles de l’évaluation et de l’attestation
+├── evaluation.css          # styles évaluation + document 2 pages
 ├── styles.css              # styles principaux
 ├── legal-basis.js          # références juridiques
 └── preview-*.png           # captures utilisées dans ce README
@@ -299,7 +388,7 @@ tva-tdfn/
 
 ## 🛠️ Principes du projet
 
-Quelques choix structurants guident le développement :
+Quelques choix structurants guident le développement.
 
 **Pratique avant mémorisation.** Les cas cherchent à reproduire un raisonnement de travail plutôt qu’un questionnaire de définitions.
 
@@ -309,9 +398,11 @@ Quelques choix structurants guident le développement :
 
 **Erreur utile.** Lorsqu’une erreur typique peut être identifiée, l’interface essaie d’expliquer le raisonnement qui a probablement conduit au mauvais résultat.
 
-**Progression sans compte.** L’outil doit rester simple à ouvrir et à reprendre.
+**Progression sans compte.** L’outil doit rester simple à ouvrir, quitter puis reprendre.
 
 **Séparation entre entraînement et évaluation.** Les solutions servent à apprendre pendant le parcours ; elles disparaissent pendant l’auto-évaluation finale.
+
+**Attestation descriptive.** Le document final décrit le parcours suivi, son résultat et les thèmes abordés, sans prétendre attribuer un diplôme ou une qualification professionnelle.
 
 ---
 
@@ -320,11 +411,13 @@ Quelques choix structurants guident le développement :
 Les prochaines évolutions pourront notamment porter sur :
 
 * enrichissement de la banque de questions finales ;
-* davantage de cas complexes et multi-activités ;
+* ajout de nouveaux cas complexes ;
+* davantage de situations multi-activités ;
 * amélioration continue des diagnostics d’erreurs ;
 * revue périodique des sources AFC et Fedlex ;
-* amélioration de l’accessibilité et de l’expérience mobile ;
-* nouveaux parcours spécialisés autour de situations TVA concrètes.
+* amélioration de l’accessibilité ;
+* amélioration de l’expérience mobile ;
+* développement de nouveaux parcours spécialisés autour de situations TVA concrètes.
 
 Les suggestions de cas, signalements d’erreurs et remarques sur l’expérience utilisateur sont les bienvenus via les **Issues GitHub**.
 
