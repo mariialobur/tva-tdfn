@@ -4,7 +4,7 @@ import { state, publicCaseId } from './store.js';
 const EXAM_SIZE = 12;
 const PASS_SCORE = 9;
 const PROJECT_URL = 'https://mariialobur.github.io/tva-tdfn/';
-const STORAGE_KEY = 'tva_tdfn_final_evaluation_v2';
+const STORAGE_KEY = 'tva_tdfn_final_evaluation_v3_audited';
 
 const COURSE_THEMES = [
   {
@@ -84,137 +84,229 @@ const COURSE_THEMES = [
 
 const QUESTION_BANK = [
   {
-    id: 'limits',
-    q: "Une entreprise souhaite utiliser les TDFN. Quelles sont les deux limites quantitatives générales à respecter?",
-    options: [
-      "CA imposable annuel TTC ≤ CHF 5’024’000 et impôt dû selon TDFN ≤ CHF 108’000",
-      "CA annuel HT ≤ CHF 5’005’000 et impôt préalable ≤ CHF 108’000",
-      "CA imposable annuel TTC ≤ CHF 100’000 et impôt dû ≤ CHF 5’024’000",
-      "Seule la limite d’impôt de CHF 108’000 est déterminante"
-    ],
-    answer: 0
+    id: 'gross-base',
+    q: "Sur quelle base la dette fiscale TDFN est-elle calculée pour une prestation imposable?",
+    options: ["Le chiffre d’affaires brut, TVA comprise", "Le chiffre d’affaires hors TVA", "Le bénéfice net", "L’impôt préalable"],
+    answer: 0,
+    why: "La méthode TDFN applique le taux autorisé aux contre-prestations brutes, TVA comprise.",
+    sourceLabel: "AFC — TDFN et taux forfaitaires",
+    sourceUrl: "https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires"
   },
   {
     id: 'invoice-rate',
-    q: "Une entreprise décompte au TDFN de 6,2 %. Quel taux doit-elle indiquer sur une facture suisse soumise au taux normal?",
-    options: ["6,2 %", "8,1 %", "2,6 %", "Aucun taux ne doit être indiqué"],
-    answer: 1
-  },
-  {
-    id: 'gross-base',
-    q: "Sur quelle base la dette fiscale TDFN est-elle calculée pour une prestation imposable?",
-    options: [
-      "Le chiffre d’affaires brut, TVA comprise",
-      "Le chiffre d’affaires hors TVA uniquement",
-      "Le bénéfice net après charges",
-      "Le montant de l’impôt préalable"
-    ],
-    answer: 0
-  },
-  {
-    id: 'calc-400k',
-    q: "Un architecte encaisse CHF 400’000 TVA comprise et dispose d’un TDFN de 6,2 %. Quelle dette fiscale TDFN en résulte?",
-    options: ["CHF 24’800", "CHF 32’400", "CHF 22’940", "CHF 6’200"],
-    answer: 0
+    q: "Une entreprise décompte au TDFN de 6,2 %. Quel taux indique-t-elle sur une facture suisse soumise au taux normal?",
+    options: ["6,2 %", "8,1 %", "2,6 %", "Aucun taux"],
+    answer: 1,
+    why: "Le TDFN sert au calcul avec l’AFC; la facture au client reste soumise au taux légal applicable.",
+    sourceLabel: "AFC — TDFN et taux forfaitaires",
+    sourceUrl: "https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires"
   },
   {
     id: 'input-tax',
     q: "Dans le calcul courant selon la méthode TDFN, comment l’impôt préalable est-il traité?",
-    options: [
-      "Il n’est en principe pas déterminé et déduit séparément; il est pris en compte forfaitairement dans le TDFN",
-      "Il est toujours déduit facture par facture comme à la méthode effective",
-      "Il est ajouté au chiffre d’affaires brut",
-      "Il est déduit uniquement lorsque le TDFN dépasse 5 %"
-    ],
-    answer: 0
+    options: ["Il est pris en compte forfaitairement par le TDFN et n’est en principe pas déduit séparément", "Il est toujours déduit facture par facture", "Il est ajouté au chiffre d’affaires", "Il n’existe plus juridiquement"],
+    answer: 0,
+    why: "La simplification TDFN intègre forfaitairement l’impôt préalable dans la valeur du taux.",
+    sourceLabel: "AFC — TDFN et taux forfaitaires",
+    sourceUrl: "https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires"
   },
   {
-    id: 'ten-percent',
-    q: "Depuis 2025, une activité représente exactement 10,0 % du chiffre d’affaires total imposable. La règle générale «plus de 10 %» est-elle franchie par ce seul fait?",
-    options: ["Non", "Oui", "Oui, mais seulement au taux normal", "Uniquement si le CA dépasse CHF 5’005’000"],
-    answer: 0
+    id: 'limits',
+    q: "Quelles sont les deux limites quantitatives générales de la méthode TDFN?",
+    options: ["CA imposable annuel TTC ≤ CHF 5’024’000 et impôt calculé avec les TDFN ≤ CHF 108’000", "CA HT ≤ CHF 5’005’000 et impôt préalable ≤ CHF 108’000", "CA ≤ CHF 100’000 uniquement", "Aucune limite"],
+    answer: 0,
+    why: "Les deux limites doivent être respectées; elles ne remplacent pas les autres conditions d’admissibilité.",
+    sourceLabel: "AFC — TDFN et taux forfaitaires",
+    sourceUrl: "https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires"
   },
   {
-    id: 'multiple-rates',
-    q: "Depuis le 1er janvier 2025, combien de TDFN une entreprise peut-elle en principe appliquer lorsque plusieurs activités déterminantes remplissent les conditions?",
-    options: ["Au maximum un", "Au maximum deux", "Plus de deux sont possibles", "Toujours exactement trois"],
-    answer: 2
+    id: 'exact-ten',
+    q: "Une activité représente exactement 10,0 % du chiffre d’affaires total provenant de prestations imposables. Le seuil «supérieur à 10 %» est-il franchi?",
+    options: ["Non", "Oui", "Oui seulement au taux normal", "Oui si l’entreprise est une SA"],
+    answer: 0,
+    why: "L’art. 86 OTVA exige une part supérieure à 10 %, pas égale à 10 %.",
+    sourceLabel: "OTVA — art. 86",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2009/828/fr"
   },
   {
-    id: 'change-effective-to-tdfn',
-    q: "Lors d’un passage de la méthode effective aux TDFN, où est portée la correction liée aux impôts préalables sur la valeur résiduelle?",
-    options: ["Au chiffre 415 du dernier décompte avant le changement", "Au chiffre 410 du premier décompte TDFN", "Au chiffre 200", "Aucune correction n’est possible"],
-    answer: 0
+    id: 'new-activity',
+    q: "Comment apprécie-t-on le seuil de 10 % pour un nouvel assujetti ou le début d’une nouvelle activité?",
+    options: ["Sur les chiffres d’affaires escomptés des douze premiers mois", "Sur les trois années antérieures", "Sur un seul mois", "Sur le bénéfice prévu"],
+    answer: 0,
+    why: "Art. 86, al. 2, let. a, OTVA: l’appréciation est prospective sur les douze premiers mois.",
+    sourceLabel: "OTVA — art. 86",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2009/828/fr"
   },
   {
-    id: 'change-tdfn-to-effective',
-    q: "Lors d’un passage des TDFN à la méthode effective, où peut être porté l’impôt préalable sur la valeur résiduelle qui devient déductible?",
-    options: ["Au chiffre 410 du premier décompte après le changement", "Au chiffre 415 du dernier décompte TDFN", "Au chiffre 200", "Uniquement dans la déclaration d’impôt direct"],
-    answer: 0
+    id: 'existing-three-periods',
+    q: "Pour un assujetti déjà établi, quand la limite de 10 % est-elle considérée comme dépassée pour une activité selon l’art. 86 OTVA?",
+    options: ["Si la part est >10 % dans chacune des trois périodes fiscales précédentes", "Dès qu’elle dépasse 10 % une seule fois", "Après deux mois consécutifs", "Uniquement si elle atteint 50 %"],
+    answer: 0,
+    why: "Pour les autres assujettis, l’art. 86, al. 2, let. b, OTVA se fonde sur les trois périodes fiscales précédentes et exige >10 % dans chacune.",
+    sourceLabel: "OTVA — art. 86",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2009/828/fr"
+  },
+  {
+    id: 'same-rate-group',
+    q: "Deux activités distinctes relèvent du même TDFN. Comment sont-elles traitées pour vérifier le seuil de 10 %?",
+    options: ["Leurs chiffres d’affaires sont additionnés", "Elles sont toujours testées séparément", "On retient uniquement la plus grande", "Elles sont exclues du calcul"],
+    answer: 0,
+    why: "Art. 86, al. 3, OTVA: les chiffres d’affaires des activités soumises au même TDFN sont additionnés.",
+    sourceLabel: "OTVA — art. 86",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2009/828/fr"
+  },
+  {
+    id: 'more-than-two',
+    q: "Depuis 2025, plus de deux TDFN peuvent-ils être autorisés pour une même entreprise?",
+    options: ["Oui, si les activités déterminantes remplissent les conditions", "Non, jamais plus de deux", "Seulement pour les collectivités publiques", "Seulement pendant un an"],
+    answer: 0,
+    why: "La limitation générale à deux TDFN a été supprimée avec la réforme entrée en vigueur en 2025.",
+    sourceLabel: "AFC — modifications TDFN dès 2025",
+    sourceUrl: "https://www.estv.admin.ch/fr/tva-methode-des-taux-de-la-dette-fiscale-nette-2025"
+  },
+  {
+    id: 'unauthorized-activity-rate',
+    q: "Une activité a son propre TDFN dans l’ordonnance, mais ce TDFN n’a pas été autorisé pour l’entreprise. Son chiffre d’affaires est-il ignoré?",
+    options: ["Non; l’art. 88 OTVA détermine le TDFN autorisé à utiliser", "Oui, il est hors champ", "Oui, s’il reste sous 10 %", "Il est toujours imposé au taux légal de 8,1 % dans le calcul TDFN"],
+    answer: 0,
+    why: "Art. 88, al. 2, OTVA règle le traitement des activités dont le TDFN propre n’a pas été autorisé.",
+    sourceLabel: "OTVA — art. 88",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2009/828/fr"
+  },
+  {
+    id: 'art88-direction',
+    q: "Selon l’art. 88, al. 2, OTVA, quel TDFN autorisé utilise-t-on en principe si le TDFN propre d’une activité n’a pas été autorisé?",
+    options: ["Le taux autorisé immédiatement supérieur; s’il n’existe aucun taux supérieur autorisé, le taux immédiatement inférieur", "Toujours le taux le plus bas", "Toujours le taux légal de la facture", "Le taux moyen de l’entreprise"],
+    answer: 0,
+    why: "C’est la règle explicite de l’art. 88, al. 2, OTVA.",
+    sourceLabel: "OTVA — art. 88",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2009/828/fr"
+  },
+  {
+    id: 'rates-source',
+    q: "Quelle source doit être contrôlée en priorité pour la valeur exacte d’un TDFN par branche ou activité dès 2025?",
+    options: ["L’ordonnance AFC RS 641.202.62 publiée sur Fedlex", "Un taux moyen calculé dans la comptabilité", "Une ancienne brochure commerciale", "Le taux légal de 8,1 %"],
+    answer: 0,
+    why: "La valeur exacte des TDFN par activité est fixée dans l’ordonnance AFC RS 641.202.62.",
+    sourceLabel: "Fedlex — RS 641.202.62",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2024/500/fr"
+  },
+  {
+    id: 'sport-rental',
+    q: "Dans l’ordonnance AFC RS 641.202.62, quel TDFN est indiqué pour la location d’articles de sport?",
+    options: ["3,7 %", "3,0 %", "4,5 %", "5,3 %"],
+    answer: 0,
+    why: "La liste normative indique 3,7 % pour «Sport, articles de –: location».",
+    sourceLabel: "Fedlex — RS 641.202.62",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2024/500/fr"
+  },
+  {
+    id: 'sport-service',
+    q: "Dans l’ordonnance AFC RS 641.202.62, quel TDFN est indiqué pour les travaux de réparation / service sur articles de sport, notamment skis et snowboards?",
+    options: ["4,5 %", "5,3 %", "3,7 %", "2,1 %"],
+    answer: 0,
+    why: "La liste normative indique 4,5 % pour les travaux de réparation/service sur articles de sport et pour le service sur skis/snowboards.",
+    sourceLabel: "Fedlex — RS 641.202.62",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2024/500/fr"
+  },
+  {
+    id: 'effective-to-tdfn',
+    q: "Lors d’un passage de la méthode effective aux TDFN dès 2025, où est déclarée la correction sur la valeur résiduelle concernée?",
+    options: ["Au ch. 415 du dernier décompte selon la méthode effective", "Au ch. 410 du premier décompte TDFN", "Au ch. 200", "Nulle dans tous les cas"],
+    answer: 0,
+    why: "La correction est effectuée avant le changement et portée au ch. 415 du dernier décompte effectif.",
+    sourceLabel: "AFC — changements de méthode TDFN",
+    sourceUrl: "https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires"
+  },
+  {
+    id: 'tdfn-to-effective',
+    q: "Lors d’un passage des TDFN à la méthode effective, où peut être revendiqué le dégrèvement sur la valeur résiduelle admissible?",
+    options: ["Au ch. 410 du premier décompte selon la méthode effective", "Au ch. 415 du dernier décompte TDFN", "Au ch. 220", "Dans l’impôt direct"],
+    answer: 0,
+    why: "Le dégrèvement admissible est porté après le changement, au ch. 410 du premier décompte effectif.",
+    sourceLabel: "AFC — changements de méthode TDFN",
+    sourceUrl: "https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires"
+  },
+  {
+    id: 'residual-movable',
+    q: "Pour calculer la valeur résiduelle TVA d’un bien mobilier, quelle réduction linéaire prévoit l’art. 31, al. 3, LTVA?",
+    options: ["1/5 par année écoulée", "1/5 par semestre", "1/20 par année", "Aucune réduction"],
+    answer: 0,
+    why: "L’art. 31, al. 3, LTVA prévoit une réduction d’un cinquième par année écoulée pour les biens mobiliers et les prestations de services.",
+    sourceLabel: "LTVA — art. 31",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2009/615/fr"
+  },
+  {
+    id: 'residual-immovable',
+    q: "Pour un bien immobilier, quelle réduction linéaire de la valeur résiduelle TVA est prévue?",
+    options: ["1/20 par année écoulée", "1/5 par année écoulée", "1/20 par semestre", "10 % par trimestre"],
+    answer: 0,
+    why: "Pour les biens immobiliers, la réduction linéaire est d’un vingtième par année écoulée.",
+    sourceLabel: "LTVA — art. 31",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2009/615/fr"
+  },
+  {
+    id: 'option-tdfn',
+    q: "Sous TDFN, quelles prestations sont visées par l’interdiction spécifique d’option de l’art. 77, al. 3, OTVA?",
+    options: ["Art. 21, al. 2, ch. 1 à 24 et 27 à 31 LTVA", "Uniquement ch. 25 et 26", "Toutes les prestations sans exception", "Aucune"],
+    answer: 0,
+    why: "Le texte actuel de l’art. 77, al. 3, OTVA vise les ch. 1 à 24 et 27 à 31.",
+    sourceLabel: "OTVA — art. 77",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2009/828/fr"
+  },
+  {
+    id: 'subsidy',
+    q: "Une collectivité publique indique expressément au bénéficiaire que les fonds versés constituent une subvention ou une autre contribution de droit public. Quelle règle la LTVA prévoit-elle?",
+    options: ["Ces fonds sont réputés subvention / contribution de droit public au sens de l’art. 18 LTVA", "Ils sont automatiquement un chiffre d’affaires au taux normal", "Ils sont toujours un prêt", "Ils doivent toujours être ajoutés au ch. 200"],
+    answer: 0,
+    why: "L’art. 18, al. 3, LTVA prévoit expressément cette qualification lorsque la collectivité publique l’indique au destinataire.",
+    sourceLabel: "LTVA — art. 18",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2009/615/fr"
   },
   {
     id: 'periodicity',
-    q: "Selon l’AFC, à quelle fréquence le décompte TDFN est-il établi en règle générale?",
-    options: ["Mensuellement", "Trimestriellement", "Semestriellement", "Tous les deux ans"],
-    answer: 2
+    q: "Quelle est la périodicité ordinaire du décompte lorsque la méthode TDFN est appliquée?",
+    options: ["Semestrielle", "Trimestrielle", "Mensuelle", "Tous les deux ans"],
+    answer: 0,
+    why: "La LTVA prévoit le décompte semestriel pour la méthode TDFN.",
+    sourceLabel: "LTVA — périodicité du décompte",
+    sourceUrl: "https://www.fedlex.admin.ch/eli/cc/2009/615/fr"
   },
   {
-    id: 'eligibility-exclusions',
-    q: "Une entreprise respecte les deux limites quantitatives TDFN. Cela suffit-il toujours pour avoir droit à la méthode?",
-    options: [
-      "Non, les exclusions prévues par les règles TDFN doivent encore être contrôlées",
-      "Oui, les deux limites suffisent dans tous les cas",
-      "Oui, si elle facture au taux normal de 8,1 %",
-      "Non, car les TDFN sont réservés aux collectivités publiques"
-    ],
-    answer: 0
+    id: 'deadline',
+    q: "Dans quel délai le décompte TVA doit-il en principe être remis et la créance fiscale payée après la fin de la période de décompte?",
+    options: ["60 jours", "30 jours", "90 jours", "180 jours"],
+    answer: 0,
+    why: "L’AFC rappelle un délai ordinaire de 60 jours pour la remise et le paiement.",
+    sourceLabel: "AFC — Payer la TVA",
+    sourceUrl: "https://www.estv.admin.ch/fr/payer-la-tva"
   },
   {
-    id: 'entry-62',
-    q: "Pour l’année précédant un passage de la méthode effective aux TDFN, quel repère maximal de chiffre d’affaires l’AFC indique-t-elle pour un TDFN de 6,2 %?",
-    options: ["CHF 1,74 mio", "CHF 2,04 mio", "CHF 2,40 mio", "CHF 5,024 mio"],
-    answer: 0
+    id: 'rectification',
+    q: "Une erreur isolée est découverte après la remise d’un décompte semestriel. Quelle procédure correspond à la correction de cette période précise?",
+    options: ["Le décompte rectificatif de la période concernée", "Ajouter silencieusement l’opération au semestre suivant", "Attendre obligatoirement cinq ans", "Modifier uniquement la comptabilité sans informer l’AFC"],
+    answer: 0,
+    why: "L’AFC distingue le rectificatif d’une période précise de la concordance annuelle.",
+    sourceLabel: "AFC — Concordance annuelle / rectification",
+    sourceUrl: "https://www.estv.admin.ch/fr/tva-concordance-annuelle"
   },
   {
-    id: 'entry-53',
-    q: "Pour l’année précédant un passage de la méthode effective aux TDFN, quel repère maximal de chiffre d’affaires l’AFC indique-t-elle pour un TDFN de 5,3 %?",
-    options: ["CHF 1,59 mio", "CHF 1,74 mio", "CHF 2,04 mio", "CHF 3,60 mio"],
-    answer: 2
+    id: 'concordance',
+    q: "Si aucun décompte rectificatif de concordance annuelle ne parvient à l’AFC dans les 240 jours suivant la fin de l’exercice, quelle présomption pratique l’AFC applique-t-elle?",
+    options: ["Les décomptes remis sont considérés complets et corrects et la période fiscale est finalisée", "La société est automatiquement radiée", "Aucune conséquence", "Le TDFN est automatiquement révoqué"],
+    answer: 0,
+    why: "C’est la règle expliquée par l’AFC pour la concordance annuelle selon l’art. 72 LTVA.",
+    sourceLabel: "AFC — Concordance annuelle TVA",
+    sourceUrl: "https://www.estv.admin.ch/fr/tva-concordance-annuelle"
   },
   {
-    id: 'entry-45',
-    q: "Pour l’année précédant un passage de la méthode effective aux TDFN, quel repère maximal de chiffre d’affaires l’AFC indique-t-elle pour un TDFN de 4,5 %?",
-    options: ["CHF 2,04 mio", "CHF 2,40 mio", "CHF 2,92 mio", "CHF 3,60 mio"],
-    answer: 1
-  },
-  {
-    id: 'calc-50k',
-    q: "Un chiffre d’affaires de CHF 50’000 TVA comprise est soumis à un TDFN de 3,7 %. Quelle est la dette fiscale?",
+    id: 'calc-ttc',
+    q: "CHF 50’000 TVA comprise sont soumis à un TDFN de 3,7 %. Quelle dette fiscale résulte du calcul?",
     options: ["CHF 1’850", "CHF 1’350", "CHF 3’700", "CHF 4’050"],
-    answer: 0
-  },
-  {
-    id: 'calc-ht',
-    q: "Une prestation est comptabilisée CHF 20’000 hors TVA au taux légal de 8,1 %. Avec un TDFN de 6,2 %, quel montant de dette TDFN obtient-on après conversion correcte en TTC?",
-    options: ["CHF 1’240,00", "CHF 1’340,44", "CHF 1’620,00", "CHF 1’752,22"],
-    answer: 1
-  },
-  {
-    id: 'calc-multi',
-    q: "Deux activités produisent respectivement CHF 80’000 TTC au TDFN de 2,1 % et CHF 20’000 TTC au TDFN de 5,3 %. Quelle est la dette totale?",
-    options: ["CHF 2’740", "CHF 3’700", "CHF 2’100", "CHF 5’300"],
-    answer: 0
-  },
-  {
-    id: 'reform-2025',
-    q: "Quelle modification générale est entrée en vigueur pour les TDFN au 1er janvier 2025?",
-    options: [
-      "La limitation générale à deux TDFN a été supprimée et les activités représentant plus de 10 % doivent être examinées selon leur TDFN correspondant",
-      "Les TDFN ont été supprimés pour toutes les PME",
-      "Le taux normal de TVA est passé de 8,1 % à 6,2 %",
-      "Tous les décomptes TDFN sont devenus mensuels"
-    ],
-    answer: 0
+    answer: 0,
+    why: "CHF 50’000 × 3,7 % = CHF 1’850.",
+    sourceLabel: "AFC — principe de calcul TDFN sur le brut TTC",
+    sourceUrl: "https://www.estv.admin.ch/fr/tva-taux-de-la-dette-fiscale-nette-et-taux-forfaitaires"
   }
 ];
 
@@ -250,10 +342,7 @@ function scoredCases() {
 }
 
 function completedCaseCount() {
-  return scoredCases().filter(c => {
-    const id = publicCaseId(c);
-    return Number.isFinite(state.scores?.[id]) || Boolean(state.assisted?.[id]) || Number(state.attempts?.[id] || 0) > 0;
-  }).length;
+  return acquiredCaseCount();
 }
 
 function acquiredCaseCount() {
@@ -305,11 +394,11 @@ function updateLauncher() {
   const unlocked = completed >= total;
 
   if (!unlocked) {
-    status.innerHTML = `<strong>${completed} / ${total} étapes évaluées</strong><span>L’évaluation finale se débloque après avoir travaillé les ${total} étapes évaluées.</span>`;
+    status.innerHTML = `<strong>${completed} / ${total} étapes validées sans assistance</strong><span>L’évaluation finale se débloque après validation des ${total} étapes sans assistance.</span>`;
     start.disabled = true;
     start.textContent = 'Évaluation verrouillée';
   } else {
-    status.innerHTML = `<strong>Parcours complet: ${completed} / ${total} étapes évaluées</strong><span>${acquired} étapes acquises sans consultation de la solution.</span>`;
+    status.innerHTML = `<strong>Parcours validé: ${completed} / ${total} étapes acquises sans assistance</strong><span>Les ${acquired} étapes requises ont été validées sans consultation de la solution.</span>`;
     start.disabled = false;
     start.textContent = lastResult?.passed ? 'Refaire l’évaluation' : 'Commencer l’évaluation';
   }
@@ -411,7 +500,7 @@ function submitExam(event) {
     const correct = Boolean(selected?.correct);
     if (correct) score += 1;
     const correctOption = item.shuffledOptions.find(option => option.correct);
-    return { id: item.id, q: item.q, selected: selected?.label || '', correctAnswer: correctOption?.label || '', correct };
+    return { id: item.id, q: item.q, selected: selected?.label || '', correctAnswer: correctOption?.label || '', correct, why: item.why || '', sourceLabel: item.sourceLabel || '', sourceUrl: item.sourceUrl || '' };
   });
 
   const result = {
@@ -419,7 +508,7 @@ function submitExam(event) {
     total: EXAM_SIZE,
     passed: score >= PASS_SCORE,
     completedAt: new Date().toISOString(),
-    evaluationVersion: '17.1.0',
+    evaluationVersion: '17.2.0-audited',
     detail
   };
   saveLastResult(result);
@@ -450,6 +539,8 @@ function renderResult(result) {
             <h3>${index + 1}. ${esc(item.q)}</h3>
             <p><strong>Votre réponse:</strong> ${esc(item.selected)}</p>
             ${item.correct ? '<p class="tdfn-review-ok">Réponse correcte.</p>' : `<p><strong>Réponse attendue:</strong> ${esc(item.correctAnswer)}</p>`}
+            ${item.why ? `<p class="tdfn-review-why"><strong>Pourquoi:</strong> ${esc(item.why)}</p>` : ''}
+            ${item.sourceUrl ? `<p class="tdfn-review-link"><a href="${esc(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(item.sourceLabel || 'Source officielle')}</a></p>` : ''}
           </article>`).join('')}
         <div class="tdfn-review-source">
           <strong>Références de contrôle</strong>
@@ -466,7 +557,8 @@ function renderResult(result) {
 }
 
 function openAttestationForm() {
-  if (!lastResult?.passed) return;
+  const total = scoredCases().length;
+  if (!lastResult?.passed || acquiredCaseCount() < total) return;
   const layer = ensureExamLayer();
   document.documentElement.classList.add('tdfn-exam-active');
   layer.hidden = false;
@@ -543,11 +635,11 @@ function renderAttestation(name) {
           <div class="tdfn-attestation-person">
             <span>Parcours complété sous le nom indiqué</span>
             <strong>${esc(name)}</strong>
-            <span>a travaillé l’ensemble du parcours d’entraînement et a réussi l’auto-évaluation finale.</span>
+            <span>a validé les étapes évaluées du parcours sans assistance et a réussi l’auto-évaluation finale.</span>
           </div>
 
           <div class="tdfn-attestation-metrics">
-            <div><strong>${total}</strong><span>étapes évaluées</span></div>
+            <div><strong>${total}</strong><span>étapes validées sans assistance</span></div>
             <div><strong>${lastResult.score} / ${lastResult.total}</strong><span>évaluation finale · ${percent} %</span></div>
             <div><strong>${esc(date)}</strong><span>date de l’évaluation</span></div>
           </div>
@@ -566,7 +658,7 @@ function renderAttestation(name) {
           </div>
 
           <p class="tdfn-attestation-disclaimer">
-            Projet pédagogique indépendant. Cette attestation confirme uniquement l’achèvement de ce parcours d’entraînement et la réussite de son auto-évaluation finale. Elle ne constitue ni un diplôme, ni un titre professionnel, ni une certification reconnue ou accréditée. Le projet est indépendant et sans affiliation avec l’AFC/ESTV. Le nom est saisi par le participant et son identité n’est pas vérifiée.
+            Projet pédagogique indépendant. Cette attestation confirme uniquement la validation des étapes évaluées de ce parcours d’entraînement et la réussite de son auto-évaluation finale. Elle ne constitue ni un diplôme, ni un titre professionnel, ni une certification reconnue ou accréditée. Le projet est indépendant et sans affiliation avec l’AFC/ESTV. Le nom est saisi par le participant et son identité n’est pas vérifiée.
           </p>
         </article>
 
@@ -587,7 +679,7 @@ function renderAttestation(name) {
             </div>
             <div>
               <span>Parcours</span>
-              <strong>${total} étapes évaluées + atelier libre</strong>
+              <strong>${total} étapes validées · atelier libre disponible</strong>
             </div>
             <div>
               <span>Évaluation finale</span>
