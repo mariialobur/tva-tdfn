@@ -4,7 +4,7 @@ import { state, publicCaseId } from './store.js';
 const EXAM_SIZE = 12;
 const PASS_SCORE = 9;
 const PROJECT_URL = 'https://mariialobur.github.io/tva-tdfn/';
-const STORAGE_KEY = 'tva_tdfn_final_evaluation_v1';
+const STORAGE_KEY = 'tva_tdfn_final_evaluation_v2';
 
 const QUESTION_BANK = [
   {
@@ -163,8 +163,10 @@ function loadLastResult() {
 }
 
 function saveLastResult(result) {
-  lastResult = result;
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(result)); } catch {}
+  const previous = loadLastResult();
+  const keepPrevious = previous?.passed && (!result.passed || Number(previous.score) > Number(result.score));
+  lastResult = keepPrevious ? previous : result;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(lastResult)); } catch {}
 }
 
 function scoredCases() {
@@ -172,7 +174,10 @@ function scoredCases() {
 }
 
 function completedCaseCount() {
-  return scoredCases().filter(c => Number.isFinite(state.scores?.[publicCaseId(c)])).length;
+  return scoredCases().filter(c => {
+    const id = publicCaseId(c);
+    return Number.isFinite(state.scores?.[id]) || Boolean(state.assisted?.[id]) || Number(state.attempts?.[id] || 0) > 0;
+  }).length;
 }
 
 function acquiredCaseCount() {
@@ -196,7 +201,7 @@ function injectLauncher() {
     <div class="tdfn-final-card__text">
       <p class="eyebrow">Fin du parcours</p>
       <h2>Évaluation finale TDFN</h2>
-      <p>12 questions tirées aléatoirement · aucune aide · aucune solution pendant l’épreuve.</p>
+      <p>12 questions tirées aléatoirement · sans aide, mémo ni solution pendant l’épreuve.</p>
       <div class="tdfn-final-status" id="tdfnFinalStatus"></div>
     </div>
     <div class="tdfn-final-card__actions">
@@ -224,7 +229,7 @@ function updateLauncher() {
   const unlocked = completed >= total;
 
   if (!unlocked) {
-    status.innerHTML = `<strong>${completed} / ${total} étapes évaluées</strong><span>L’évaluation finale se débloque après avoir parcouru les ${total} étapes évaluées.</span>`;
+    status.innerHTML = `<strong>${completed} / ${total} étapes évaluées</strong><span>L’évaluation finale se débloque après avoir travaillé les ${total} étapes évaluées.</span>`;
     start.disabled = true;
     start.textContent = 'Évaluation verrouillée';
   } else {
@@ -253,7 +258,7 @@ function startExam() {
   exam = buildExam();
   document.documentElement.classList.add('tdfn-exam-active');
   renderExam();
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
 function renderExam() {
@@ -338,6 +343,7 @@ function submitExam(event) {
     total: EXAM_SIZE,
     passed: score >= PASS_SCORE,
     completedAt: new Date().toISOString(),
+    evaluationVersion: '17.0.0',
     detail
   };
   saveLastResult(result);
@@ -380,7 +386,7 @@ function renderResult(result) {
   layer.querySelector('#tdfnRetryExam')?.addEventListener('click', () => { exam = buildExam(); renderExam(); });
   layer.querySelector('#tdfnCloseResult')?.addEventListener('click', closeExamLayer);
   layer.querySelector('#tdfnResultAttestation')?.addEventListener('click', openAttestationForm);
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
 function openAttestationForm() {
@@ -431,9 +437,9 @@ function renderAttestation(name) {
         <h1>ATTESTATION DE PARCOURS</h1>
         <p class="tdfn-attestation-subtitle">Méthode des taux de la dette fiscale nette (TDFN)</p>
         <div class="tdfn-attestation-person">
-          <span>Cette attestation confirme que</span>
+          <span>Parcours complété sous le nom indiqué</span>
           <strong>${esc(name)}</strong>
-          <span>a complété le parcours d’entraînement pratique et l’auto-évaluation finale.</span>
+          <span>43 étapes d’entraînement travaillées et auto-évaluation finale réussie.</span>
         </div>
         <div class="tdfn-attestation-metrics">
           <div><strong>${total}</strong><span>étapes du parcours évaluées</span></div>
@@ -444,13 +450,13 @@ function renderAttestation(name) {
           <strong>TVA — Entraînement pratique</strong>
           <span>${esc(PROJECT_URL)}</span>
         </div>
-        <p class="tdfn-attestation-disclaimer">Projet pédagogique indépendant. Cette attestation confirme uniquement l’achèvement du parcours d’entraînement et le résultat obtenu à son auto-évaluation finale. Elle ne constitue ni un diplôme, ni un titre professionnel, ni une certification reconnue ou accréditée. Le projet est indépendant et sans affiliation avec l’AFC/ESTV. L’identité du participant n’est pas vérifiée.</p>
+        <p class="tdfn-attestation-disclaimer">Projet pédagogique indépendant. Cette attestation atteste uniquement l’achèvement de ce parcours d’entraînement et la réussite de son auto-évaluation finale. Elle ne constitue ni un diplôme, ni un titre professionnel, ni une certification reconnue ou accréditée. Le projet est indépendant et sans affiliation avec l’AFC/ESTV. Le nom est saisi par le participant et son identité n’est pas vérifiée.</p>
       </article>
     </main>`;
 
   layer.querySelector('#tdfnPrintAttestation').addEventListener('click', () => window.print());
   layer.querySelector('#tdfnBackFromAttestation').addEventListener('click', closeExamLayer);
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
 function init() {
