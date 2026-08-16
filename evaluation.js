@@ -335,6 +335,7 @@ function saveLastResult(result) {
   const keepPrevious = previous?.passed && (!result.passed || Number(previous.score) > Number(result.score));
   lastResult = keepPrevious ? previous : result;
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(lastResult)); } catch {}
+  return keepPrevious;
 }
 
 function scoredCases() {
@@ -394,11 +395,11 @@ function updateLauncher() {
   const unlocked = completed >= total;
 
   if (!unlocked) {
-    status.innerHTML = `<strong>${completed} / ${total} étapes validées sans assistance</strong><span>L’évaluation finale se débloque après validation des ${total} étapes sans assistance.</span>`;
+    status.innerHTML = `<strong>${completed} / ${total} étapes acquises sans consultation de la solution</strong><span>L’évaluation finale se débloque après validation des ${total} étapes sans assistance.</span>`;
     start.disabled = true;
     start.textContent = 'Évaluation verrouillée';
   } else {
-    status.innerHTML = `<strong>Parcours validé: ${completed} / ${total} étapes acquises sans assistance</strong><span>Les ${acquired} étapes requises ont été validées sans consultation de la solution.</span>`;
+    status.innerHTML = `<strong>Parcours validé: ${completed} / ${total} étapes acquises sans consultation de la solution</strong><span>Les ${acquired} étapes requises ont été validées sans consultation de la solution.</span>`;
     start.disabled = false;
     start.textContent = lastResult?.passed ? 'Refaire l’évaluation' : 'Commencer l’évaluation';
   }
@@ -412,9 +413,28 @@ function ensureExamLayer() {
   layer = document.createElement('div');
   layer.id = 'tdfnExamLayer';
   layer.className = 'tdfn-exam-layer';
+  layer.setAttribute('role', 'dialog');
+  layer.setAttribute('aria-modal', 'true');
+  layer.setAttribute('aria-label', 'Parcours final TDFN');
   layer.hidden = true;
   document.body.append(layer);
   return layer;
+}
+
+function setExamIsolation(active) {
+  const layer = document.querySelector('#tdfnExamLayer');
+  [...document.body.children].forEach(node => {
+    if (node === layer) return;
+    if (active) node.setAttribute('inert', '');
+    else node.removeAttribute('inert');
+  });
+}
+
+function focusExamContent() {
+  const target = document.querySelector('#tdfnExamLayer h1, #tdfnExamLayer h2, #tdfnExamLayer input, #tdfnExamLayer button');
+  if (!target) return;
+  target.setAttribute('tabindex', '-1');
+  target.focus({ preventScroll: true });
 }
 
 function startExam() {
@@ -422,7 +442,9 @@ function startExam() {
   if (completedCaseCount() < total) return;
   exam = buildExam();
   document.documentElement.classList.add('tdfn-exam-active');
+  setExamIsolation(true);
   renderExam();
+  focusExamContent();
   window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
@@ -481,6 +503,7 @@ function abortExam() {
 
 function closeExamLayer() {
   document.documentElement.classList.remove('tdfn-exam-active');
+  setExamIsolation(false);
   const layer = document.querySelector('#tdfnExamLayer');
   if (layer) { layer.hidden = true; layer.innerHTML = ''; }
   updateLauncher();
@@ -508,10 +531,10 @@ function submitExam(event) {
     total: EXAM_SIZE,
     passed: score >= PASS_SCORE,
     completedAt: new Date().toISOString(),
-    evaluationVersion: '17.2.0-audited',
+    evaluationVersion: '17.2.1-hardened',
     detail
   };
-  saveLastResult(result);
+  result.bestResultPreserved = saveLastResult(result);
   exam.submitted = true;
   renderResult(result);
 }
@@ -525,8 +548,9 @@ function renderResult(result) {
         <p class="eyebrow">Résultat de l’auto-évaluation</p>
         <h1>${result.score} / ${result.total} · ${percent} %</h1>
         <p>${result.passed ? `Seuil atteint (${PASS_SCORE}/${EXAM_SIZE}). L’attestation de parcours est disponible.` : `Le seuil de ${PASS_SCORE}/${EXAM_SIZE} n’est pas encore atteint. Révisez les points ci-dessous puis tentez une nouvelle série.`}</p>
+        ${result.bestResultPreserved ? `<p class="tdfn-best-result"><strong>Meilleur résultat conservé :</strong> ${lastResult.score} / ${lastResult.total}. L’attestation reste liée à ce meilleur résultat enregistré localement.</p>` : ''}
         <div class="tdfn-result-actions">
-          ${result.passed ? '<button class="btn primary" id="tdfnResultAttestation" type="button">Générer mon attestation</button>' : ''}
+          ${lastResult?.passed ? '<button class="btn primary" id="tdfnResultAttestation" type="button">Générer mon attestation</button>' : ''}
           <button class="btn" id="tdfnRetryExam" type="button">Nouvelle tentative</button>
           <button class="btn ghost" id="tdfnCloseResult" type="button">Retour au parcours</button>
         </div>
@@ -562,6 +586,7 @@ function openAttestationForm() {
   const layer = ensureExamLayer();
   document.documentElement.classList.add('tdfn-exam-active');
   layer.hidden = false;
+  setExamIsolation(true);
   layer.innerHTML = `
     <main class="tdfn-exam-shell tdfn-name-shell">
       <section class="tdfn-name-card">
@@ -635,11 +660,11 @@ function renderAttestation(name) {
           <div class="tdfn-attestation-person">
             <span>Parcours complété sous le nom indiqué</span>
             <strong>${esc(name)}</strong>
-            <span>a validé les étapes évaluées du parcours sans assistance et a réussi l’auto-évaluation finale.</span>
+            <span>a acquis les étapes évaluées du parcours sans consultation de la solution et a réussi l’auto-évaluation finale.</span>
           </div>
 
           <div class="tdfn-attestation-metrics">
-            <div><strong>${total}</strong><span>étapes validées sans assistance</span></div>
+            <div><strong>${total}</strong><span>étapes acquises sans consultation de la solution</span></div>
             <div><strong>${lastResult.score} / ${lastResult.total}</strong><span>évaluation finale · ${percent} %</span></div>
             <div><strong>${esc(date)}</strong><span>date de l’évaluation</span></div>
           </div>
