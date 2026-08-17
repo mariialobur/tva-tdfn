@@ -1,13 +1,29 @@
 name: Quality
 
 on:
+  workflow_dispatch:
   pull_request:
+    paths:
+      - '*.html'
+      - '*.js'
+      - '*.css'
+      - 'package.json'
+      - 'tests/**'
+      - '.github/workflows/quality.yml'
   push:
     branches: [main]
+    paths:
+      - '*.html'
+      - '*.js'
+      - '*.css'
+      - 'package.json'
+      - 'tests/**'
+      - '.github/workflows/quality.yml'
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
