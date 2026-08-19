@@ -10,6 +10,19 @@ async function openVisibleMoreMenu(page){
   await summary.click();
 }
 
+async function unlockFinal(page){
+  await page.goto('/');
+  await dismissOnboarding(page);
+  await page.evaluate(async()=>{
+    const {CASES}=await import('/data.js');
+    const scores={};
+    for(const c of CASES) if(!c.excludeFromProgress) scores[c.id]=100;
+    localStorage.setItem('tva_tdfn_v150_state',JSON.stringify({version:150,currentId:'A',current:0,mode:'guided',scores,assisted:{},attempts:{},mastered:{},ui:{onboardingSeen:true}}));
+  });
+  await page.reload();
+  await expect(page.locator('#tdfnV4Start')).toBeEnabled();
+}
+
 test('trainer, memo and 44-case specialization plan', async({page})=>{
   await page.goto('/');
   await dismissOnboarding(page);
@@ -47,7 +60,24 @@ test('final launcher keeps the honest gate', async({page})=>{
   const launcher=page.locator('#tdfnFinalEvaluation');
   await expect(launcher).toBeVisible();
   await expect(launcher).toContainText('sans consultation de la solution');
-  await expect(page.locator('#tdfnStartExam')).toBeDisabled();
+  await expect(page.locator('#tdfnV4Start')).toBeDisabled();
+});
+
+test('balanced final exam contains 15 questions and all six competency blocks', async({page})=>{
+  await unlockFinal(page);
+  await page.locator('#tdfnV4Start').click();
+  const layer=page.locator('#tdfnExamLayerV4');
+  await expect(layer).toBeVisible();
+  await expect(layer.locator('.tdfn-question')).toHaveCount(15);
+  await expect(layer.locator('#tdfnV4Answered')).toHaveText('0 / 15');
+  const themes=await layer.locator('.tdfn-question > .eyebrow').allTextContents();
+  expect(new Set(themes).size).toBe(6);
+  expect(themes.filter(t=>t==='Principes & calcul').length).toBe(3);
+  expect(themes.filter(t=>t==='Admissibilité & administration').length).toBe(2);
+  expect(themes.filter(t=>t==='Activités multiples & 10 %').length).toBe(3);
+  expect(themes.filter(t=>t==='Attribution des TDFN').length).toBe(2);
+  expect(themes.filter(t=>t==='International & opérations particulières').length).toBe(2);
+  expect(themes.filter(t=>t==='Changements & corrections').length).toBe(3);
 });
 
 test('progress export downloads a JSON snapshot', async({page})=>{
