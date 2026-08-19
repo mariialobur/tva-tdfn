@@ -128,7 +128,6 @@ function migrateIndexedState(raw, legacy) {
   migrated.currentId = current >= 0 ? requestedId : migrated.currentId;
   migrated.mode = raw.mode === 'portal' ? 'portal' : 'guided';
   for (const group of STATE_GROUPS) migrated[group] = mapIndexedGroup(raw[group], ids);
-  // Les anciens cas K et J ont changé de structure: leur score ne doit pas valider K0/J1.
   delete migrated.scores.K0; delete migrated.answers.K0; delete migrated.quiz.K0; delete migrated.assisted.K0;
   delete migrated.scores.J1; delete migrated.answers.J1; delete migrated.quiz.J1; delete migrated.assisted.J1; delete migrated.attempts.J1;
   migrated.free = { ...migrated.free, ...(raw.free || {}) };
@@ -186,6 +185,7 @@ export function resetAllState() {
   try {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem('tva_tdfn_final_evaluation_v3_audited');
+    localStorage.removeItem('tva_tdfn_final_evaluation_v4_blueprint');
     for (const key of LEGACY_WORKSHEET_KEYS) localStorage.removeItem(key);
   } catch {}
   saveState();
@@ -200,7 +200,6 @@ export function clearCaseState(index) {
   if (CASES[index]?.type === 'free') state.free = createDefaultState().free;
   saveState();
 }
-
 
 export function exportStateSnapshot() {
   saveState();
@@ -223,5 +222,4 @@ export function importStateSnapshot(snapshot) {
   return state;
 }
 
-// Persiste immédiatement le schéma intégré, y compris après migration.
 saveState();
