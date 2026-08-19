@@ -1,3 +1,4 @@
+import './tdfn-final-v4.js';
 import { CASES } from './data.js';
 import { state, publicCaseId } from './store.js';
 
