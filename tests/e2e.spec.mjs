@@ -63,7 +63,7 @@ test('final launcher keeps the honest gate', async({page})=>{
   await expect(page.locator('#tdfnV4Start')).toBeDisabled();
 });
 
-test('balanced final exam contains 15 questions and all six competency blocks', async({page})=>{
+test('balanced final exam contains 15 questions, six competency blocks and submits a review', async({page})=>{
   await unlockFinal(page);
   await page.locator('#tdfnV4Start').click();
   const layer=page.locator('#tdfnExamLayerV4');
@@ -78,6 +78,12 @@ test('balanced final exam contains 15 questions and all six competency blocks', 
   expect(themes.filter(t=>t==='Attribution des TDFN').length).toBe(2);
   expect(themes.filter(t=>t==='International & opérations particulières').length).toBe(2);
   expect(themes.filter(t=>t==='Changements & corrections').length).toBe(3);
+  const questions=layer.locator('.tdfn-question');
+  for(let i=0;i<15;i++) await questions.nth(i).locator('input[type="radio"]').first().check();
+  await expect(layer.locator('#tdfnV4Answered')).toHaveText('15 / 15');
+  await layer.getByRole('button',{name:'Remettre l’évaluation'}).click();
+  await expect(layer.locator('.tdfn-result-hero')).toBeVisible();
+  await expect(layer.locator('.tdfn-review-item')).toHaveCount(15);
 });
 
 test('progress export downloads a JSON snapshot', async({page})=>{
@@ -98,6 +104,23 @@ test('valid progress snapshot can be imported', async({page})=>{
   await page.locator('#progressImportInput').setInputFiles({name:'progress.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(snapshot))});
   await expect(page.locator('#caseTitle')).toContainText('Architecte');
   await expect(page.locator('#progressText')).toContainText('1 / 43 acquis');
+});
+
+test('full reset removes v4 final result and starts from a clean state', async({page})=>{
+  await page.addInitScript(()=>{
+    localStorage.setItem('tva_tdfn_v150_state',JSON.stringify({version:150,currentId:'A',current:0,mode:'guided',scores:{A:100},assisted:{},attempts:{},mastered:{},ui:{onboardingSeen:true}}));
+    localStorage.setItem('tva_tdfn_final_evaluation_v4_blueprint',JSON.stringify({score:15,total:15,passed:true,completedAt:new Date().toISOString()}));
+  });
+  await page.goto('/');
+  await dismissOnboarding(page);
+  await page.locator('.progress-button').click();
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('button[data-action="reset-all"]:visible').click();
+  await page.waitForTimeout(900);
+  await expect(page.locator('#tdfnV4Start')).toBeDisabled();
+  const state=await page.evaluate(()=>({final:localStorage.getItem('tva_tdfn_final_evaluation_v4_blueprint'),progress:JSON.parse(localStorage.getItem('tva_tdfn_v150_state')||'{}')}));
+  expect(state.final).toBeNull();
+  expect(Object.keys(state.progress.scores||{})).toHaveLength(0);
 });
 
 test('no duplicate ids', async({page})=>{
