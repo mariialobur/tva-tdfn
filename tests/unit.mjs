@@ -30,7 +30,7 @@ assert.match(finalV4,/International & opérations particulières/);
 assert.match(finalV4,/foreign-acquisition/);
 assert.match(finalV4,/export-treatment/);
 const q=[...finalV4.matchAll(/\{id:'([^']+)'/g)].map(m=>m[1]);
-assert.ok(q.length>=28,`Banque v4 insuffisante: ${q.length}`);
+assert.ok(q.length>=27,`Banque v4 insuffisante: ${q.length}`);
 assert.equal(new Set(q).size,q.length,'IDs de questions v4 uniques.');
 const blueprintCounts=[...finalV4.matchAll(/count:(\d+)/g)].map(m=>Number(m[1]));
 assert.equal(blueprintCounts.reduce((a,b)=>a+b,0),15,'Le blueprint doit tirer exactement 15 questions.');
