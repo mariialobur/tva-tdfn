@@ -32,3 +32,13 @@ jobs:
       - run: npm install
       - run: npx playwright install --with-deps chromium
       - run: npm test
+      - name: Archive Playwright report and visual references
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tdfn-playwright-${{ github.run_number }}
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+          retention-days: 14
