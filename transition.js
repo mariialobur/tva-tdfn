@@ -1,3 +1,4 @@
+import './tdfn-plan.js';
 import { TRANSITION_WORKSHEETS } from './data.js';
 import { state, saveState } from './store.js';
 import { componentMarkup } from './components.js';
