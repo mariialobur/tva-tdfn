@@ -63,6 +63,7 @@ test('progress export downloads a JSON snapshot', async({page})=>{
 test('valid progress snapshot can be imported', async({page})=>{
   await page.goto('/');
   await dismissOnboarding(page);
+  page.once('dialog',dialog=>dialog.accept());
   const snapshot={schema:'tva-tdfn-progress',version:150,exportedAt:new Date().toISOString(),state:{version:150,currentId:'A',current:0,mode:'guided',scores:{A:100},assisted:{},attempts:{},mastered:{},ui:{onboardingSeen:true}}};
   await page.locator('#progressImportInput').setInputFiles({name:'progress.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(snapshot))});
   await expect(page.locator('#caseTitle')).toContainText('Architecte');
