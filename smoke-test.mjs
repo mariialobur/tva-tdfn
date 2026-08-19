@@ -18,5 +18,5 @@ assert.match(finalV4,/const EXAM_SIZE=15/);
 assert.match(finalV4,/const PASS_SCORE=12/);
 assert.match(finalV4,/foreign-acquisition/);
 assert.match(finalV4,/export-treatment/);
-assert.equal(JSON.parse(p).version,'16.4.1');
+assert.equal(JSON.parse(p).version,'18.0.0');
 console.log('Smoke test: OK — TDFN Plan + assessment v4 syntax checked');
